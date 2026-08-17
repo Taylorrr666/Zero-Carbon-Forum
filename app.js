@@ -1,68 +1,97 @@
 /* =========================================================
-   ZERO CARBON FORUM CAP PLATFORM
-   Static GitHub Pages prototype
+   ZERO CARBON FORUM
+   CAP MANAGEMENT PLATFORM
+
+   GitHub Pages Prototype
 ========================================================= */
 
 
 /* =========================================================
-   1. DATA FILES
-
-   Upload these CSV files into the SAME GitHub repository
-   as index.html / style.css / app.js.
+   1. DATA SOURCES
 ========================================================= */
 
 const DATA_FILES = [
 
-{
-  name: "Governance & Strategy",
-  file:
-    "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece)).csv"
-},
+  {
+    name: "Governance & Strategy",
+
+    files: [
+      "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece)).csv",
+      "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece))(1).csv",
+      "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece))(2).csv"
+    ]
+  },
+
 
   {
     name: "Energy & Buildings",
-    file:
+
+    files: [
       "Refreshed Initiative Library_FINAL(Energy&Building (Siyuan)).csv"
+    ]
   },
+
 
   {
     name: "Energy Management Supplement",
-    file:
+
+    files: [
       "Refreshed Initiative Library_FINAL(Energy and Buildings (Adam&AY)).csv"
+    ]
   },
+
 
   {
     name: "F&B Procurement & Menu",
-    file:
+
+    files: [
       "Refreshed Initiative Library_FINAL(F&B Procurement & Menu (Taylor)).csv"
+    ]
   },
+
 
   {
     name: "Packaging & Procurement",
-    file:
+
+    files: [
       "Refreshed Initiative Library_FINAL(Packaging&Procurement(Ece)).csv"
+    ]
   },
+
 
   {
     name: "Supplier & Value Chain",
-    file:
+
+    files: [
       "Refreshed Initiative Library_FINAL(Supplier & Value Chain (Taylor)).csv"
+    ]
   },
+
 
   {
     name: "Transport & Distribution",
-    file:
+
+    files: [
       "Refreshed Initiative Library_FINAL(Transport & Distribution (Vani)).csv"
+    ]
   },
+
 
   {
     name: "Nature & Resources",
-    file:
+
+    files: [
       "Refreshed Initiative Library_FINAL(Nature & Resources (Atharva)).csv"
+    ]
   }
 
 ];
 
+
+
+/* =========================================================
+   2. GLOBAL DATA
+========================================================= */
 
 let initiatives = [];
 
@@ -73,18 +102,24 @@ let currentQuestionRecommendations = [];
 
 
 /* =========================================================
-   2. HELPERS
+   3. BASIC HELPERS
 ========================================================= */
 
 function clean(value) {
 
-  if (value === null || value === undefined) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
+
     return "";
+
   }
 
   return String(value).trim();
 
 }
+
 
 
 function firstValue(row, keys) {
@@ -107,6 +142,7 @@ function firstValue(row, keys) {
 }
 
 
+
 function escapeHTML(value) {
 
   return String(value || "")
@@ -124,48 +160,78 @@ function escapeHTML(value) {
 }
 
 
+
+function truncate(
+  value,
+  limit = 100
+) {
+
+  const text =
+    clean(value);
+
+  if (
+    text.length <= limit
+  ) {
+
+    return text;
+
+  }
+
+  return (
+    text.slice(
+      0,
+      limit
+    ) + "…"
+  );
+
+}
+
+
+
 function isMeaningful(value) {
 
-  const v =
+  const text =
     clean(value)
       .toLowerCase();
 
-  return ![
+  const emptyValues = [
+
     "",
     "-",
+    ".",
     "none",
+    "no",
     "n/a",
     "na",
     "not available",
     "not found",
-    "no",
-    "."
-  ].includes(v);
+    "not specified"
+
+  ];
+
+  return !emptyValues.includes(
+    text
+  );
 
 }
 
 
-function truncate(value, limit = 100) {
 
-  const text = clean(value);
-
-  if (text.length <= limit) {
-    return text;
-  }
-
-  return text.slice(0, limit) + "…";
-
-}
-
-
-function percent(part, total) {
+function percentage(
+  part,
+  total
+) {
 
   if (!total) {
+
     return 0;
+
   }
 
   return Math.round(
-    (part / total) * 100
+    part /
+    total *
+    100
   );
 
 }
@@ -173,12 +239,12 @@ function percent(part, total) {
 
 
 /* =========================================================
-   3. CSV PARSER
+   4. CSV PARSER
 
-   Handles:
-   commas inside quoted cells
-   line breaks inside quoted cells
-   escaped quotes
+   Supports:
+   - quoted commas
+   - quoted line breaks
+   - escaped quotation marks
 ========================================================= */
 
 function parseCSV(text) {
@@ -189,7 +255,7 @@ function parseCSV(text) {
 
   let value = "";
 
-  let quoted = false;
+  let inQuotes = false;
 
 
   for (
@@ -198,16 +264,19 @@ function parseCSV(text) {
     i++
   ) {
 
-    const char = text[i];
+    const char =
+      text[i];
 
     const next =
       text[i + 1];
 
 
-    if (char === '"') {
+    if (
+      char === '"'
+    ) {
 
       if (
-        quoted &&
+        inQuotes &&
         next === '"'
       ) {
 
@@ -219,7 +288,8 @@ function parseCSV(text) {
 
       else {
 
-        quoted = !quoted;
+        inQuotes =
+          !inQuotes;
 
       }
 
@@ -228,10 +298,12 @@ function parseCSV(text) {
 
     else if (
       char === "," &&
-      !quoted
+      !inQuotes
     ) {
 
-      row.push(value);
+      row.push(
+        value
+      );
 
       value = "";
 
@@ -239,9 +311,11 @@ function parseCSV(text) {
 
 
     else if (
-      (char === "\n" ||
-       char === "\r") &&
-      !quoted
+      (
+        char === "\n" ||
+        char === "\r"
+      ) &&
+      !inQuotes
     ) {
 
       if (
@@ -254,21 +328,30 @@ function parseCSV(text) {
       }
 
 
-      row.push(value);
+      row.push(
+        value
+      );
 
       value = "";
 
 
-      if (
+      const usefulRow =
         row.some(
           cell =>
             clean(cell) !== ""
-        )
+        );
+
+
+      if (
+        usefulRow
       ) {
 
-        rows.push(row);
+        rows.push(
+          row
+        );
 
       }
+
 
       row = [];
 
@@ -285,13 +368,17 @@ function parseCSV(text) {
 
 
   if (
-    value.length ||
+    value !== "" ||
     row.length
   ) {
 
-    row.push(value);
+    row.push(
+      value
+    );
 
-    rows.push(row);
+    rows.push(
+      row
+    );
 
   }
 
@@ -303,26 +390,31 @@ function parseCSV(text) {
 
 
 /* =========================================================
-   4. IDENTIFY HEADER ROW
+   5. FIND CSV HEADER ROW
 ========================================================= */
 
 function findHeaderRow(rows) {
 
   for (
     let i = 0;
-    i < Math.min(rows.length, 6);
+    i < Math.min(
+      rows.length,
+      10
+    );
     i++
   ) {
 
-    const normalized =
-      rows[i].map(
-        x =>
-          clean(x).toLowerCase()
-      );
+    const normalised =
+      rows[i]
+        .map(
+          cell =>
+            clean(cell)
+              .toLowerCase()
+        );
 
 
     if (
-      normalized.includes(
+      normalised.includes(
         "initiative"
       )
     ) {
@@ -341,26 +433,35 @@ function findHeaderRow(rows) {
 
 
 /* =========================================================
-   5. TURN CSV ROW INTO OBJECT
+   6. CSV ROWS -> OBJECTS
 ========================================================= */
 
 function rowsToObjects(rows) {
 
-  if (!rows.length) {
+  if (
+    !rows.length
+  ) {
+
     return [];
+
   }
 
 
   const headerIndex =
-    findHeaderRow(rows);
+    findHeaderRow(
+      rows
+    );
 
 
   const headers =
-    rows[headerIndex]
-      .map(clean);
+    rows[
+      headerIndex
+    ].map(
+      clean
+    );
 
 
-  const result = [];
+  const objects = [];
 
 
   for (
@@ -372,16 +473,26 @@ function rowsToObjects(rows) {
     i++
   ) {
 
-    const item = {};
+    const object = {};
+
 
     headers.forEach(
-      (header, index) => {
+      (
+        header,
+        columnIndex
+      ) => {
 
-        if (header) {
+        if (
+          header
+        ) {
 
-          item[header] =
+          object[
+            header
+          ] =
             clean(
-              rows[i][index]
+              rows[i][
+                columnIndex
+              ]
             );
 
         }
@@ -390,9 +501,9 @@ function rowsToObjects(rows) {
     );
 
 
-    const initiativeName =
+    const initiative =
       firstValue(
-        item,
+        object,
         [
           "Initiative",
           "initiative"
@@ -400,23 +511,27 @@ function rowsToObjects(rows) {
       );
 
 
-    if (initiativeName) {
+    if (
+      initiative
+    ) {
 
-      result.push(item);
+      objects.push(
+        object
+      );
 
     }
 
   }
 
 
-  return result;
+  return objects;
 
 }
 
 
 
 /* =========================================================
-   6. NORMALISE DIFFERENT CSV FORMATS
+   7. NORMALISE DIFFERENT CSV FORMATS
 ========================================================= */
 
 function normalizeInitiative(
@@ -457,11 +572,36 @@ function normalizeInitiative(
     );
 
 
-  if (!topic) {
+  if (
+    !topic
+  ) {
 
-    topic = sourceName;
+    topic =
+      sourceName;
 
   }
+
+
+  const sector =
+    firstValue(
+      row,
+      [
+        "Sub-Sector included",
+        "Sector Included",
+        "Sector included"
+      ]
+    );
+
+
+  const excluded =
+    firstValue(
+      row,
+      [
+        "Sub-Sector Excluded",
+        "Sector not included",
+        "Sector Not Included"
+      ]
+    );
 
 
   const description =
@@ -532,43 +672,12 @@ function normalizeInitiative(
     );
 
 
-  const sector =
-    firstValue(
-      row,
-      [
-        "Sub-Sector included",
-        "Sector Included",
-        "Sector included"
-      ]
-    );
-
-
-  const excluded =
-    firstValue(
-      row,
-      [
-        "Sub-Sector Excluded",
-        "Sector not included",
-        "Sector Not Included"
-      ]
-    );
-
-
-  const oldInitiative =
-    firstValue(
-      row,
-      [
-        "Old Initiative",
-        "Old Initiatve"
-      ]
-    );
-
-
   const cost =
     firstValue(
       row,
       [
         "Cost Saving/Cost ",
+        "Cost Saving/Cost",
         "Cost - Interface Language",
         "Cost - Factor Value"
       ]
@@ -617,15 +726,37 @@ function normalizeInitiative(
     );
 
 
+  const oldInitiative =
+    firstValue(
+      row,
+      [
+        "Old Initiative",
+        "Old Initiatve"
+      ]
+    );
+
+
+  const rawID =
+    [
+      sourceName,
+      initiative
+    ]
+      .join("-")
+      .toLowerCase()
+      .replace(
+        /[^a-z0-9]+/g,
+        "-"
+      )
+      .replace(
+        /^-|-$/g,
+        ""
+      );
+
+
   return {
 
     id:
-      `${sourceName}-${initiative}`
-        .toLowerCase()
-        .replace(
-          /[^a-z0-9]+/g,
-          "-"
-        ),
+      rawID,
 
     sourceName,
 
@@ -672,57 +803,113 @@ function normalizeInitiative(
 
 
 /* =========================================================
-   7. LOAD DATA
+   8. TRY MULTIPLE POSSIBLE FILENAMES
 ========================================================= */
 
-async function loadData() {
-
-  initiatives = [];
-
-  updateDataStatus(
-    "loading"
-  );
-
-
-  const errors = [];
-
+async function fetchFirstAvailableFile(
+  candidates
+) {
 
   for (
-    const source of DATA_FILES
+    const filename of candidates
   ) {
 
     try {
 
-      const url =
-        encodeURI(
-          source.file
-        );
-
-
       const response =
         await fetch(
-          url,
+          encodeURI(
+            filename
+          ),
           {
             cache: "no-store"
           }
         );
 
 
-      if (!response.ok) {
+      if (
+        response.ok
+      ) {
 
-        throw new Error(
-          `${response.status}`
-        );
+        return {
+
+          filename,
+
+          text:
+            await response.text()
+
+        };
 
       }
 
+    }
 
-      const text =
-        await response.text();
 
+    catch (error) {
+
+      console.log(
+        "Could not load:",
+        filename
+      );
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+
+/* =========================================================
+   9. LOAD ALL INITIATIVE LIBRARIES
+========================================================= */
+
+async function loadData() {
+
+  initiatives = [];
+
+  filteredInitiatives = [];
+
+  updateDataStatus(
+    "loading"
+  );
+
+
+  const missingFiles = [];
+
+
+  for (
+    const source of DATA_FILES
+  ) {
+
+    const file =
+      await fetchFirstAvailableFile(
+        source.files
+      );
+
+
+    if (
+      !file
+    ) {
+
+      missingFiles.push(
+        source.name
+      );
+
+      continue;
+
+    }
+
+
+    try {
 
       const csvRows =
-        parseCSV(text);
+        parseCSV(
+          file.text
+        );
 
 
       const objects =
@@ -734,15 +921,23 @@ async function loadData() {
       objects.forEach(
         row => {
 
-          initiatives.push(
-
+          const normalised =
             normalizeInitiative(
               row,
               source.name,
-              source.file
-            )
+              file.filename
+            );
 
-          );
+
+          if (
+            normalised.initiative
+          ) {
+
+            initiatives.push(
+              normalised
+            );
+
+          }
 
         }
       );
@@ -753,14 +948,14 @@ async function loadData() {
     catch (error) {
 
       console.error(
-        "Could not load:",
-        source.file,
+        "Error processing:",
+        source.name,
         error
       );
 
 
-      errors.push(
-        source.file
+      missingFiles.push(
+        source.name
       );
 
     }
@@ -772,39 +967,58 @@ async function loadData() {
 
 
   filteredInitiatives =
-    [...initiatives];
+    [
+      ...initiatives
+    ];
 
 
   if (
-    initiatives.length
+    initiatives.length === 0
   ) {
-
-    updateDataStatus(
-      errors.length
-        ? "partial"
-        : "ready",
-      errors.length
-    );
-
-
-    initialiseInterface();
-
-  }
-
-  else {
 
     updateDataStatus(
       "error"
     );
 
+    return;
+
   }
+
+
+  if (
+    missingFiles.length
+  ) {
+
+    updateDataStatus(
+      "partial",
+      missingFiles.length
+    );
+
+    console.warn(
+      "Missing sources:",
+      missingFiles
+    );
+
+  }
+
+
+  else {
+
+    updateDataStatus(
+      "ready"
+    );
+
+  }
+
+
+  initialiseInterface();
 
 }
 
 
 
 /* =========================================================
-   8. REMOVE EXACT DUPLICATE INITIATIVES
+   10. REMOVE DUPLICATE INITIATIVES
 ========================================================= */
 
 function removeDuplicates() {
@@ -828,7 +1042,9 @@ function removeDuplicates() {
 
 
         if (
-          seen.has(key)
+          seen.has(
+            key
+          )
         ) {
 
           return false;
@@ -836,7 +1052,10 @@ function removeDuplicates() {
         }
 
 
-        seen.add(key);
+        seen.add(
+          key
+        );
+
 
         return true;
 
@@ -848,12 +1067,12 @@ function removeDuplicates() {
 
 
 /* =========================================================
-   9. STATUS
+   11. TOP-RIGHT DATA STATUS
 ========================================================= */
 
 function updateDataStatus(
   state,
-  errorCount = 0
+  missingCount = 0
 ) {
 
   const dot =
@@ -866,6 +1085,16 @@ function updateDataStatus(
     document.getElementById(
       "dataStatusText"
     );
+
+
+  if (
+    !dot ||
+    !text
+  ) {
+
+    return;
+
+  }
 
 
   dot.classList.remove(
@@ -909,7 +1138,7 @@ function updateDataStatus(
 
 
     text.textContent =
-      `${initiatives.length} loaded · ${errorCount} file(s) missing`;
+      `${initiatives.length} loaded · ${missingCount} file(s) missing`;
 
   }
 
@@ -922,7 +1151,7 @@ function updateDataStatus(
 
 
     text.textContent =
-      "CSV files not found";
+      "Initiative library could not be loaded";
 
   }
 
@@ -931,7 +1160,7 @@ function updateDataStatus(
 
 
 /* =========================================================
-   10. INITIALISE UI
+   12. INITIALISE
 ========================================================= */
 
 function initialiseInterface() {
@@ -951,48 +1180,78 @@ function initialiseInterface() {
 
 
 /* =========================================================
-   11. NAVIGATION
+   13. PAGE NAVIGATION
 ========================================================= */
 
 const PAGE_CONFIG = {
 
   dashboard: {
-    title: "Dashboard",
+
+    title:
+      "Dashboard",
+
     subtitle:
       "Climate Action Plan management overview"
+
   },
+
 
   initiatives: {
-    title: "Initiatives",
+
+    title:
+      "Initiatives",
+
     subtitle:
       "Review and manage the refreshed initiative library"
+
   },
+
 
   evidence: {
-    title: "Evidence",
+
+    title:
+      "Evidence",
+
     subtitle:
       "Supporting evidence, case studies and references"
+
   },
+
 
   questionnaire: {
-    title: "Questionnaires",
+
+    title:
+      "Questionnaires",
+
     subtitle:
       "Sector and operating-model routing prototype"
+
   },
+
 
   benchmarking: {
-    title: "Benchmarking",
+
+    title:
+      "Benchmarking",
+
     subtitle:
       "Peer, hybrid and action-based comparison framework"
+
   },
 
+
   preview: {
-    title: "Preview Output",
+
+    title:
+      "Preview Output",
+
     subtitle:
       "Illustrative member-facing Climate Action Plan"
+
   }
 
 };
+
 
 
 function switchView(view) {
@@ -1002,10 +1261,13 @@ function switchView(view) {
       ".view"
     )
     .forEach(
-      el =>
-        el.classList.remove(
+      element => {
+
+        element.classList.remove(
           "active-view"
-        )
+        );
+
+      }
     );
 
 
@@ -1014,10 +1276,13 @@ function switchView(view) {
       ".nav-item"
     )
     .forEach(
-      el =>
-        el.classList.remove(
+      element => {
+
+        element.classList.remove(
           "active"
-        )
+        );
+
+      }
     );
 
 
@@ -1027,7 +1292,9 @@ function switchView(view) {
     );
 
 
-  if (target) {
+  if (
+    target
+  ) {
 
     target.classList.add(
       "active-view"
@@ -1042,7 +1309,9 @@ function switchView(view) {
     );
 
 
-  if (nav) {
+  if (
+    nav
+  ) {
 
     nav.classList.add(
       "active"
@@ -1051,16 +1320,28 @@ function switchView(view) {
   }
 
 
-  document.getElementById(
-    "pageTitle"
-  ).textContent =
-    PAGE_CONFIG[view].title;
+  const config =
+    PAGE_CONFIG[
+      view
+    ];
 
 
-  document.getElementById(
-    "pageSubtitle"
-  ).textContent =
-    PAGE_CONFIG[view].subtitle;
+  if (
+    config
+  ) {
+
+    document.getElementById(
+      "pageTitle"
+    ).textContent =
+      config.title;
+
+
+    document.getElementById(
+      "pageSubtitle"
+    ).textContent =
+      config.subtitle;
+
+  }
 
 
   window.scrollTo(
@@ -1069,6 +1350,7 @@ function switchView(view) {
   );
 
 }
+
 
 
 document
@@ -1099,10 +1381,12 @@ window.switchView =
 
 
 /* =========================================================
-   12. DASHBOARD
+   14. COVERAGE CALCULATION
 ========================================================= */
 
-function calculateCoverage(field) {
+function calculateCoverage(
+  field
+) {
 
   const covered =
     initiatives.filter(
@@ -1113,13 +1397,18 @@ function calculateCoverage(field) {
     ).length;
 
 
-  return percent(
+  return percentage(
     covered,
     initiatives.length
   );
 
 }
 
+
+
+/* =========================================================
+   15. DASHBOARD
+========================================================= */
 
 function updateDashboard() {
 
@@ -1219,20 +1508,21 @@ function updateDashboard() {
 }
 
 
+
 function setProgress(
-  barId,
-  textId,
+  barID,
+  textID,
   value
 ) {
 
   document.getElementById(
-    barId
+    barID
   ).style.width =
     `${value}%`;
 
 
   document.getElementById(
-    textId
+    textID
   ).textContent =
     `${value}%`;
 
@@ -1241,7 +1531,7 @@ function setProgress(
 
 
 /* =========================================================
-   13. TOPIC BARS
+   16. TOPIC BAR CHART
 ========================================================= */
 
 function renderTopicBars() {
@@ -1257,8 +1547,15 @@ function renderTopicBars() {
         "Uncategorised";
 
 
-      counts[topic] =
-        (counts[topic] || 0) + 1;
+      counts[
+        topic
+      ] =
+        (
+          counts[
+            topic
+          ] ||
+          0
+        ) + 1;
 
     }
   );
@@ -1269,17 +1566,30 @@ function renderTopicBars() {
       counts
     )
       .sort(
-        (a, b) =>
-          b[1] - a[1]
+        (
+          a,
+          b
+        ) =>
+          b[1] -
+          a[1]
       );
+
+
+  if (
+    !entries.length
+  ) {
+
+    return;
+
+  }
 
 
   const max =
     Math.max(
       ...entries.map(
-        x => x[1]
-      ),
-      1
+        entry =>
+          entry[1]
+      )
     );
 
 
@@ -1288,28 +1598,43 @@ function renderTopicBars() {
   ).innerHTML =
 
     entries
-      .slice(0, 8)
+      .slice(
+        0,
+        10
+      )
       .map(
-        ([topic, count]) => `
+        (
+          [
+            topic,
+            count
+          ]
+        ) => `
 
           <div class="topic-bar-row">
 
-            <div class="topic-bar-name"
-                 title="${escapeHTML(topic)}">
+            <div
+              class="topic-bar-name"
+              title="${escapeHTML(topic)}">
+
               ${escapeHTML(topic)}
+
             </div>
+
 
             <div class="topic-track">
 
               <div
                 class="topic-fill"
-                style="width:${(count / max) * 100}%">
+                style="width:${count / max * 100}%">
               </div>
 
             </div>
 
+
             <div class="topic-count">
+
               ${count}
+
             </div>
 
           </div>
@@ -1323,7 +1648,7 @@ function renderTopicBars() {
 
 
 /* =========================================================
-   14. DASHBOARD SAMPLE TABLE
+   17. DASHBOARD SAMPLE TABLE
 ========================================================= */
 
 function renderDashboardTable() {
@@ -1331,7 +1656,7 @@ function renderDashboardTable() {
   const sample =
     initiatives.slice(
       0,
-      7
+      8
     );
 
 
@@ -1346,39 +1671,57 @@ function renderDashboardTable() {
           <tr>
 
             <td class="initiative-name-cell">
+
               ${escapeHTML(
                 item.initiative
               )}
+
             </td>
 
+
             <td>
+
               <span class="topic-pill">
+
                 ${escapeHTML(
                   item.topic
                 )}
+
               </span>
+
             </td>
 
+
             <td>
+
               ${escapeHTML(
                 item.subTopic ||
                 "—"
               )}
+
             </td>
 
+
             <td class="sector-cell">
+
               <div class="clamp-text">
+
                 ${escapeHTML(
                   item.sector ||
                   "—"
                 )}
+
               </div>
+
             </td>
 
+
             <td>
+
               ${evidenceStatusPill(
                 item
               )}
+
             </td>
 
           </tr>
@@ -1392,46 +1735,36 @@ function renderDashboardTable() {
 
 
 /* =========================================================
-   15. FILTERS
+   18. FILTER OPTIONS
 ========================================================= */
 
 function populateFilters() {
 
   populateSelect(
+
     "topicFilter",
+
     initiatives.map(
-      x => x.topic
+      item =>
+        item.topic
     )
+
   );
 
 
   populateSelect(
+
     "subTopicFilter",
+
     initiatives.map(
-      x => x.subTopic
+      item =>
+        item.subTopic
     )
-  );
 
-
-  const sectors =
-    [
-      "All",
-      "Restaurants",
-      "QSR",
-      "QSRs",
-      "Pubs",
-      "Hotels",
-      "Contract Caterers",
-      "Experiential Leisure"
-    ];
-
-
-  populateSelect(
-    "sectorFilter",
-    sectors
   );
 
 }
+
 
 
 function populateSelect(
@@ -1445,8 +1778,19 @@ function populateSelect(
     );
 
 
-  const currentFirst =
-    select.options[0];
+  if (
+    !select
+  ) {
+
+    return;
+
+  }
+
+
+  const firstOption =
+    select.options[
+      0
+    ];
 
 
   const unique =
@@ -1456,13 +1800,16 @@ function populateSelect(
           .map(clean)
           .filter(Boolean)
       )
-    ].sort();
+    ]
+      .sort();
 
 
-  select.innerHTML = "";
+  select.innerHTML =
+    "";
+
 
   select.appendChild(
-    currentFirst
+    firstOption
   );
 
 
@@ -1495,7 +1842,7 @@ function populateSelect(
 
 
 /* =========================================================
-   16. INITIATIVE FILTERING
+   19. INITIATIVE FILTERING
 ========================================================= */
 
 function applyInitiativeFilters() {
@@ -1505,7 +1852,8 @@ function applyInitiativeFilters() {
       document.getElementById(
         "initiativeSearch"
       ).value
-    ).toLowerCase();
+    )
+      .toLowerCase();
 
 
   const topic =
@@ -1531,44 +1879,47 @@ function applyInitiativeFilters() {
       item => {
 
         const searchable =
-          Object.values(item)
+          Object.values(
+            item
+          )
             .join(" ")
             .toLowerCase();
 
 
-        const matchSearch =
+        const matchesSearch =
           !search ||
           searchable.includes(
             search
           );
 
 
-        const matchTopic =
+        const matchesTopic =
           !topic ||
           item.topic === topic;
 
 
-        const matchSubTopic =
+        const matchesSubTopic =
           !subTopic ||
-          item.subTopic === subTopic;
+          item.subTopic ===
+          subTopic;
 
 
-        const matchSector =
+        const matchesSector =
           !sector ||
-          (
-            item.sector
-              .toLowerCase()
-              .includes(
-                sector.toLowerCase()
-              )
-          );
+          item.sector
+            .toLowerCase()
+            .includes(
+              sector.toLowerCase()
+            );
 
 
         return (
-          matchSearch &&
-          matchTopic &&
-          matchSubTopic &&
-          matchSector
+
+          matchesSearch &&
+          matchesTopic &&
+          matchesSubTopic &&
+          matchesSector
+
         );
 
       }
@@ -1582,21 +1933,185 @@ function applyInitiativeFilters() {
 
 
 /* =========================================================
-   17. INITIATIVE TABLE
+   20. INITIATIVE READINESS
+========================================================= */
+
+function readinessScore(
+  item
+) {
+
+  const fields = [
+
+    "description",
+    "why",
+    "how",
+    "kpi",
+    "evidence",
+    "cost",
+    "carbon"
+
+  ];
+
+
+  const completed =
+    fields.filter(
+      field =>
+        isMeaningful(
+          item[
+            field
+          ]
+        )
+    ).length;
+
+
+  return (
+    completed /
+    fields.length
+  );
+
+}
+
+
+
+function readinessPill(
+  item
+) {
+
+  const score =
+    readinessScore(
+      item
+    );
+
+
+  if (
+    score >= 0.75
+  ) {
+
+    return `
+
+      <span
+        class="status-pill status-ready">
+
+        Ready
+
+      </span>
+
+    `;
+
+  }
+
+
+  if (
+    score >= 0.4
+  ) {
+
+    return `
+
+      <span
+        class="status-pill status-partial">
+
+        Partial
+
+      </span>
+
+    `;
+
+  }
+
+
+  return `
+
+    <span
+      class="status-pill status-missing">
+
+      Needs review
+
+    </span>
+
+  `;
+
+}
+
+
+
+/* =========================================================
+   21. EVIDENCE STATUS
+========================================================= */
+
+function evidenceStatusPill(
+  item
+) {
+
+  if (
+    isMeaningful(
+      item.evidence
+    )
+  ) {
+
+    return `
+
+      <span
+        class="status-pill status-ready">
+
+        Available
+
+      </span>
+
+    `;
+
+  }
+
+
+  return `
+
+    <span
+      class="status-pill status-missing">
+
+      Missing
+
+    </span>
+
+  `;
+
+}
+
+
+
+/* =========================================================
+   22. INITIATIVE TABLE
 ========================================================= */
 
 function renderInitiatives() {
 
-  document.getElementById(
-    "initiativeCount"
-  ).textContent =
-    `${filteredInitiatives.length} initiatives`;
+  const count =
+    document.getElementById(
+      "initiativeCount"
+    );
+
+
+  if (
+    count
+  ) {
+
+    count.textContent =
+      `${filteredInitiatives.length} initiatives`;
+
+  }
 
 
   const body =
     document.getElementById(
       "initiativesTableBody"
     );
+
+
+  if (
+    !body
+  ) {
+
+    return;
+
+  }
 
 
   if (
@@ -1609,7 +2124,11 @@ function renderInitiatives() {
 
         <td
           colspan="8"
-          style="text-align:center;padding:45px;color:#758494">
+          style="
+            text-align:center;
+            padding:45px;
+            color:#758494;
+          ">
 
           No initiatives match the current filters.
 
@@ -1628,32 +2147,41 @@ function renderInitiatives() {
 
     filteredInitiatives
       .map(
-        (item) => `
+        item => `
 
           <tr>
 
             <td class="initiative-name-cell">
+
               ${escapeHTML(
                 item.initiative
               )}
+
             </td>
+
 
             <td class="topic-cell">
 
               <span class="topic-pill">
+
                 ${escapeHTML(
                   item.topic
                 )}
+
               </span>
 
             </td>
 
+
             <td>
+
               ${escapeHTML(
                 item.subTopic ||
                 "—"
               )}
+
             </td>
+
 
             <td class="sector-cell">
 
@@ -1672,38 +2200,52 @@ function renderInitiatives() {
 
             </td>
 
+
             <td>
+
               ${escapeHTML(
                 truncate(
                   item.cost ||
                   "—",
-                  40
+                  45
                 )
               )}
+
             </td>
 
+
             <td>
+
               ${escapeHTML(
                 truncate(
                   item.carbon ||
                   "—",
-                  40
+                  45
                 )
               )}
+
             </td>
 
+
             <td>
+
               ${readinessPill(
                 item
               )}
+
             </td>
+
 
             <td>
 
               <button
                 class="table-action"
-                title="View initiative"
-                onclick="openInitiativeDrawer('${item.id}')">
+                title="View initiative details"
+                onclick="
+                  openInitiativeDrawer(
+                    '${item.id}'
+                  )
+                ">
 
                 ⋯
 
@@ -1722,125 +2264,26 @@ function renderInitiatives() {
 
 
 /* =========================================================
-   18. READINESS
+   23. DETAIL DRAWER
 ========================================================= */
 
-function readinessScore(item) {
-
-  const fields =
-    [
-      "description",
-      "why",
-      "how",
-      "kpi",
-      "evidence",
-      "cost",
-      "carbon"
-    ];
-
-
-  const complete =
-    fields.filter(
-      field =>
-        isMeaningful(
-          item[field]
-        )
-    ).length;
-
-
-  return (
-    complete /
-    fields.length
-  );
-
-}
-
-
-function readinessPill(item) {
-
-  const score =
-    readinessScore(
-      item
-    );
-
-
-  if (
-    score >= .75
-  ) {
-
-    return `
-      <span class="status-pill status-ready">
-        Ready
-      </span>
-    `;
-
-  }
-
-
-  if (
-    score >= .4
-  ) {
-
-    return `
-      <span class="status-pill status-partial">
-        Partial
-      </span>
-    `;
-
-  }
-
-
-  return `
-    <span class="status-pill status-missing">
-      Needs review
-    </span>
-  `;
-
-}
-
-
-function evidenceStatusPill(item) {
-
-  if (
-    isMeaningful(
-      item.evidence
-    )
-  ) {
-
-    return `
-      <span class="status-pill status-ready">
-        Available
-      </span>
-    `;
-
-  }
-
-
-  return `
-    <span class="status-pill status-missing">
-      Missing
-    </span>
-  `;
-
-}
-
-
-
-/* =========================================================
-   19. DRAWER
-========================================================= */
-
-function openInitiativeDrawer(id) {
+function openInitiativeDrawer(
+  id
+) {
 
   const item =
     initiatives.find(
-      x =>
-        x.id === id
+      initiative =>
+        initiative.id === id
     );
 
 
-  if (!item) {
+  if (
+    !item
+  ) {
+
     return;
+
   }
 
 
@@ -1856,7 +2299,7 @@ function openInitiativeDrawer(id) {
     item.initiative;
 
 
-  const blocks = [
+  const fields = [
 
     [
       "Description",
@@ -1935,26 +2378,43 @@ function openInitiativeDrawer(id) {
     "drawerContent"
   ).innerHTML =
 
-    blocks
+    fields
       .filter(
-        ([, value]) =>
+        (
+          [
+            title,
+            value
+          ]
+        ) =>
           isMeaningful(
             value
           )
       )
       .map(
-        ([title, value]) => `
+        (
+          [
+            title,
+            value
+          ]
+        ) => `
 
           <div class="drawer-block">
 
             <h4>
-              ${escapeHTML(title)}
+
+              ${escapeHTML(
+                title
+              )}
+
             </h4>
 
+
             <p>
+
               ${linkify(
                 value
               )}
+
             </p>
 
           </div>
@@ -1980,8 +2440,10 @@ function openInitiativeDrawer(id) {
 }
 
 
+
 window.openInitiativeDrawer =
   openInitiativeDrawer;
+
 
 
 function closeDrawer() {
@@ -2002,15 +2464,21 @@ function closeDrawer() {
 }
 
 
+
 function linkify(value) {
 
   const escaped =
-    escapeHTML(value);
+    escapeHTML(
+      value
+    );
 
 
   return escaped.replace(
+
     /(https?:\/\/[^\s]+)/g,
-    '<a class="reference-link" href="$1" target="_blank" rel="noopener">$1</a>'
+
+    '<a class="reference-link" href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+
   );
 
 }
@@ -2018,17 +2486,25 @@ function linkify(value) {
 
 
 /* =========================================================
-   20. EVIDENCE TABLE
+   24. EVIDENCE PAGE
 ========================================================= */
 
 function renderEvidence() {
 
+  const searchElement =
+    document.getElementById(
+      "evidenceSearch"
+    );
+
+
   const query =
-    clean(
-      document.getElementById(
-        "evidenceSearch"
-      )?.value || ""
-    ).toLowerCase();
+    searchElement
+
+      ? clean(
+          searchElement.value
+        ).toLowerCase()
+
+      : "";
 
 
   const list =
@@ -2036,9 +2512,13 @@ function renderEvidence() {
       item => {
 
         const searchable =
-          `${item.initiative}
-           ${item.evidence}
-           ${item.reference}`
+          [
+            item.initiative,
+            item.topic,
+            item.evidence,
+            item.reference
+          ]
+            .join(" ")
             .toLowerCase();
 
 
@@ -2070,41 +2550,55 @@ function renderEvidence() {
           <tr>
 
             <td class="initiative-name-cell">
+
               ${escapeHTML(
                 item.initiative
               )}
+
             </td>
+
 
             <td>
 
               <span class="topic-pill">
+
                 ${escapeHTML(
                   item.topic
                 )}
+
               </span>
 
             </td>
 
+
             <td>
+
               ${escapeHTML(
                 truncate(
                   item.evidence ||
                   "No evidence recorded",
-                  150
+                  160
                 )
               )}
+
             </td>
 
+
             <td>
+
               ${renderReference(
                 item.reference
               )}
+
             </td>
 
+
             <td>
+
               ${evidenceStatusPill(
                 item
               )}
+
             </td>
 
           </tr>
@@ -2116,10 +2610,15 @@ function renderEvidence() {
 }
 
 
-function renderReference(value) {
+
+function renderReference(
+  value
+) {
 
   if (
-    !isMeaningful(value)
+    !isMeaningful(
+      value
+    )
   ) {
 
     return "—";
@@ -2128,22 +2627,31 @@ function renderReference(value) {
 
 
   const url =
-    clean(value)
-      .match(
-        /https?:\/\/[^\s;]+/
-      );
+    clean(
+      value
+    ).match(
+      /https?:\/\/[^\s;]+/
+    );
 
 
-  if (url) {
+  if (
+    url
+  ) {
 
     return `
+
       <a
         class="reference-link"
-        href="${escapeHTML(url[0])}"
+        href="${escapeHTML(
+          url[0]
+        )}"
         target="_blank"
-        rel="noopener">
+        rel="noopener noreferrer">
+
         Open source ↗
+
       </a>
+
     `;
 
   }
@@ -2152,7 +2660,7 @@ function renderReference(value) {
   return escapeHTML(
     truncate(
       value,
-      70
+      75
     )
   );
 
@@ -2161,7 +2669,7 @@ function renderReference(value) {
 
 
 /* =========================================================
-   21. QUESTIONNAIRE RECOMMENDATIONS
+   25. QUESTIONNAIRE
 ========================================================= */
 
 function generateQuestionnaireRecommendations() {
@@ -2203,46 +2711,48 @@ function generateQuestionnaireRecommendations() {
 
 
   let candidates =
-    initiatives.filter(
-      item => {
+    initiatives
+      .filter(
+        item => {
 
-        const sectorMatch =
-          sector === "All" ||
-          item.sector
-            .toLowerCase()
-            .includes(
+          const sectorText =
+            item.sector
+              .toLowerCase();
+
+
+          const sectorMatch =
+            sector === "All" ||
+            sectorText.includes(
               sector.toLowerCase()
             ) ||
-          item.sector
-            .toLowerCase()
-            .includes("all");
-
-
-        const priorityMatch =
-          !priority ||
-          item.topic
-            .toLowerCase()
-            .includes(
-              priority.toLowerCase()
-            ) ||
-          item.subTopic
-            .toLowerCase()
-            .includes(
-              priority.toLowerCase()
+            sectorText.includes(
+              "all"
             );
 
 
-        return (
-          sectorMatch &&
-          priorityMatch
-        );
+          const priorityMatch =
+            !priority ||
 
-      }
-    );
+            item.topic
+              .toLowerCase()
+              .includes(
+                priority.toLowerCase()
+              ) ||
+
+            item.subTopic
+              .toLowerCase()
+              .includes(
+                priority.toLowerCase()
+              );
 
 
-  candidates =
-    candidates
+          return (
+            sectorMatch &&
+            priorityMatch
+          );
+
+        }
+      )
       .map(
         item => {
 
@@ -2253,25 +2763,33 @@ function generateQuestionnaireRecommendations() {
 
 
           const text =
-            (
-              item.initiative +
-              " " +
-              item.description +
-              " " +
-              item.subTopic
-            ).toLowerCase();
+            [
+              item.initiative,
+              item.description,
+              item.subTopic,
+              item.topic
+            ]
+              .join(" ")
+              .toLowerCase();
 
 
           if (
             !hasScope3 &&
             (
-              text.includes("scope 3") ||
-              text.includes("supplier") ||
-              text.includes("value chain")
+              text.includes(
+                "scope 3"
+              ) ||
+              text.includes(
+                "supplier"
+              ) ||
+              text.includes(
+                "value chain"
+              )
             )
           ) {
 
-            score += .35;
+            score +=
+              0.35;
 
           }
 
@@ -2279,13 +2797,20 @@ function generateQuestionnaireRecommendations() {
           if (
             !hasEnergyData &&
             (
-              text.includes("energy") ||
-              text.includes("meter") ||
-              text.includes("baseline")
+              text.includes(
+                "energy"
+              ) ||
+              text.includes(
+                "meter"
+              ) ||
+              text.includes(
+                "baseline"
+              )
             )
           ) {
 
-            score += .25;
+            score +=
+              0.25;
 
           }
 
@@ -2293,27 +2818,40 @@ function generateQuestionnaireRecommendations() {
           if (
             !hasBoardOversight &&
             (
-              text.includes("board") ||
-              text.includes("governance")
+              text.includes(
+                "board"
+              ) ||
+              text.includes(
+                "governance"
+              )
             )
           ) {
 
-            score += .35;
+            score +=
+              0.35;
 
           }
 
 
           if (
-            maturity === "early"
+            maturity ===
+            "early"
           ) {
 
             if (
-              text.includes("baseline") ||
-              text.includes("policy") ||
-              text.includes("governance")
+              text.includes(
+                "baseline"
+              ) ||
+              text.includes(
+                "policy"
+              ) ||
+              text.includes(
+                "governance"
+              )
             ) {
 
-              score += .15;
+              score +=
+                0.15;
 
             }
 
@@ -2321,15 +2859,22 @@ function generateQuestionnaireRecommendations() {
 
 
           return {
+
             item,
+
             score
+
           };
 
         }
       )
       .sort(
-        (a, b) =>
-          b.score - a.score
+        (
+          a,
+          b
+        ) =>
+          b.score -
+          a.score
       )
       .slice(
         0,
@@ -2339,11 +2884,13 @@ function generateQuestionnaireRecommendations() {
 
   currentQuestionRecommendations =
     candidates.map(
-      x => x.item
+      candidate =>
+        candidate.item
     );
 
 
   renderQuestionnaireRecommendations();
+
 
   updatePreview(
     currentQuestionRecommendations
@@ -2354,7 +2901,7 @@ function generateQuestionnaireRecommendations() {
 
 
 /* =========================================================
-   22. QUESTIONNAIRE UI
+   26. QUESTIONNAIRE RESULTS
 ========================================================= */
 
 function renderQuestionnaireRecommendations() {
@@ -2388,28 +2935,39 @@ function renderQuestionnaireRecommendations() {
 
     currentQuestionRecommendations
       .map(
-        (item, index) => `
+        (
+          item,
+          index
+        ) => `
 
           <div class="recommendation-item">
 
             <div class="rec-number">
+
               PRIORITY ${index + 1}
+
             </div>
 
+
             <strong>
+
               ${escapeHTML(
                 item.initiative
               )}
+
             </strong>
 
+
             <p>
+
               ${escapeHTML(
                 truncate(
                   item.why ||
                   item.description,
-                  150
+                  160
                 )
               )}
+
             </p>
 
           </div>
@@ -2423,20 +2981,27 @@ function renderQuestionnaireRecommendations() {
 
 
 /* =========================================================
-   23. PREVIEW
+   27. PREVIEW OUTPUT
 ========================================================= */
 
 function updatePreview(
-  list = null
+  customList = null
 ) {
 
   const previewItems =
-    (
-      list &&
-      list.length
-    )
-      ? list.slice(0, 5)
-      : initiatives.slice(0, 5);
+
+    customList &&
+    customList.length
+
+      ? customList.slice(
+          0,
+          5
+        )
+
+      : initiatives.slice(
+          0,
+          5
+        );
 
 
   document.getElementById(
@@ -2451,44 +3016,67 @@ function updatePreview(
 
     previewItems
       .map(
-        (item, index) => `
+        (
+          item,
+          index
+        ) => `
 
           <div class="preview-action">
 
             <div class="preview-action-number">
+
               ${index + 1}
+
             </div>
+
 
             <div>
 
               <strong>
+
                 ${escapeHTML(
                   item.initiative
                 )}
+
               </strong>
 
+
               <p>
+
                 ${escapeHTML(
                   item.topic
                 )}
+
                 ·
+
                 ${escapeHTML(
                   item.subTopic ||
                   "General"
                 )}
+
               </p>
 
             </div>
 
-            <span class="status-pill ${
-              readinessScore(item) >= .75
-                ? "status-ready"
-                : "status-partial"
-            }">
+
+            <span
+              class="status-pill ${
+                readinessScore(
+                  item
+                ) >= 0.75
+
+                  ? "status-ready"
+
+                  : "status-partial"
+              }">
 
               ${
-                readinessScore(item) >= .75
+                readinessScore(
+                  item
+                ) >= 0.75
+
                   ? "Ready"
+
                   : "Review"
               }
 
@@ -2505,7 +3093,7 @@ function updatePreview(
 
 
 /* =========================================================
-   24. ADD INITIATIVE — SESSION ONLY
+   28. SESSION-ONLY ADD INITIATIVE
 ========================================================= */
 
 function openModal() {
@@ -2519,6 +3107,7 @@ function openModal() {
 }
 
 
+
 function closeModal() {
 
   document.getElementById(
@@ -2528,6 +3117,7 @@ function closeModal() {
   );
 
 }
+
 
 
 function saveSessionInitiative() {
@@ -2556,7 +3146,9 @@ function saveSessionInitiative() {
     );
 
 
-  if (!initiative) {
+  if (
+    !initiative
+  ) {
 
     alert(
       "Please enter an initiative name."
@@ -2632,10 +3224,13 @@ function saveSessionInitiative() {
 
 
   filteredInitiatives =
-    [...initiatives];
+    [
+      ...initiatives
+    ];
 
 
   initialiseInterface();
+
 
   closeModal();
 
@@ -2644,135 +3239,143 @@ function saveSessionInitiative() {
 
 
 /* =========================================================
-   25. EVENTS
+   29. EVENT LISTENERS
 ========================================================= */
 
-[
-  "initiativeSearch",
-  "topicFilter",
-  "subTopicFilter",
-  "sectorFilter"
-]
-.forEach(
-  id => {
+const initiativeSearch =
+  document.getElementById(
+    "initiativeSearch"
+  );
 
-    document
-      .getElementById(id)
-      .addEventListener(
-        id === "initiativeSearch"
-          ? "input"
-          : "change",
-        applyInitiativeFilters
-      );
+
+const topicFilter =
+  document.getElementById(
+    "topicFilter"
+  );
+
+
+const subTopicFilter =
+  document.getElementById(
+    "subTopicFilter"
+  );
+
+
+const sectorFilter =
+  document.getElementById(
+    "sectorFilter"
+  );
+
+
+initiativeSearch.addEventListener(
+  "input",
+  applyInitiativeFilters
+);
+
+
+topicFilter.addEventListener(
+  "change",
+  applyInitiativeFilters
+);
+
+
+subTopicFilter.addEventListener(
+  "change",
+  applyInitiativeFilters
+);
+
+
+sectorFilter.addEventListener(
+  "change",
+  applyInitiativeFilters
+);
+
+
+document.getElementById(
+  "evidenceSearch"
+).addEventListener(
+  "input",
+  renderEvidence
+);
+
+
+document.getElementById(
+  "generateRecommendations"
+).addEventListener(
+  "click",
+  generateQuestionnaireRecommendations
+);
+
+
+document.getElementById(
+  "refreshButton"
+).addEventListener(
+  "click",
+  loadData
+);
+
+
+document.getElementById(
+  "closeDrawer"
+).addEventListener(
+  "click",
+  closeDrawer
+);
+
+
+document.getElementById(
+  "drawerOverlay"
+).addEventListener(
+  "click",
+  closeDrawer
+);
+
+
+document.getElementById(
+  "addInitiativeButton"
+).addEventListener(
+  "click",
+  openModal
+);
+
+
+document.getElementById(
+  "closeModal"
+).addEventListener(
+  "click",
+  closeModal
+);
+
+
+document.getElementById(
+  "saveInitiative"
+).addEventListener(
+  "click",
+  saveSessionInitiative
+);
+
+
+document.getElementById(
+  "modalOverlay"
+).addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target.id ===
+      "modalOverlay"
+    ) {
+
+      closeModal();
+
+    }
 
   }
 );
 
 
-document
-  .getElementById(
-    "evidenceSearch"
-  )
-  .addEventListener(
-    "input",
-    renderEvidence
-  );
-
-
-document
-  .getElementById(
-    "generateRecommendations"
-  )
-  .addEventListener(
-    "click",
-    generateQuestionnaireRecommendations
-  );
-
-
-document
-  .getElementById(
-    "refreshButton"
-  )
-  .addEventListener(
-    "click",
-    loadData
-  );
-
-
-document
-  .getElementById(
-    "closeDrawer"
-  )
-  .addEventListener(
-    "click",
-    closeDrawer
-  );
-
-
-document
-  .getElementById(
-    "drawerOverlay"
-  )
-  .addEventListener(
-    "click",
-    closeDrawer
-  );
-
-
-document
-  .getElementById(
-    "addInitiativeButton"
-  )
-  .addEventListener(
-    "click",
-    openModal
-  );
-
-
-document
-  .getElementById(
-    "closeModal"
-  )
-  .addEventListener(
-    "click",
-    closeModal
-  );
-
-
-document
-  .getElementById(
-    "saveInitiative"
-  )
-  .addEventListener(
-    "click",
-    saveSessionInitiative
-  );
-
-
-document
-  .getElementById(
-    "modalOverlay"
-  )
-  .addEventListener(
-    "click",
-    event => {
-
-      if (
-        event.target.id ===
-        "modalOverlay"
-      ) {
-
-        closeModal();
-
-      }
-
-    }
-  );
-
-
 
 /* =========================================================
-   26. START
+   30. START PLATFORM
 ========================================================= */
 
 loadData();
