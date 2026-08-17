@@ -16,7 +16,7 @@ const DATA_FILES = [
   {
     name: "Governance & Strategy",
     file:
-      "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece))(2).csv"
+      "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece)).csv"
   },
 
   {
