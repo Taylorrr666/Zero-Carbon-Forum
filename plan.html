@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>
+  Plan · ZCF CAP
+</title>
+
+<link
+  rel="stylesheet"
+  href="style.css"
+>
+
+</head>
+
+
+<body data-page="plan">
+
+
+<header class="topbar">
+
+  <a
+    class="brand"
+    href="index.html"
+  >
+
+    <span class="brand-mark">
+      <i></i>
+      <b></b>
+    </span>
+
+    <span class="brand-copy">
+
+      <strong>
+        ZERO CARBON FORUM
+      </strong>
+
+      <small>
+        CAP
+        <em>Governance</em>
+      </small>
+
+    </span>
+
+  </a>
+
+
+  <nav class="main-nav">
+
+    <a href="index.html" data-page="dashboard">
+      Dashboard
+    </a>
+
+    <a href="plan.html" data-page="plan">
+      Plan
+    </a>
+
+    <a href="progress.html" data-page="progress">
+      Progress
+    </a>
+
+    <a href="initiatives.html" data-page="initiatives">
+      Initiatives
+    </a>
+
+    <a href="factors.html" data-page="factors">
+      Factors
+    </a>
+
+    <a href="evidence.html" data-page="evidence">
+      Evidence
+    </a>
+
+    <a href="questionnaires.html" data-page="questionnaires">
+      Questionnaires
+    </a>
+
+    <a href="member-plan.html" class="member-link">
+      Member plan
+    </a>
+
+  </nav>
+
+
+  <div class="top-actions">
+
+    <button
+      id="refreshData"
+      class="text-btn"
+    >
+      Refresh
+    </button>
+
+    <span id="dataStatus">
+      Loading…
+    </span>
+
+  </div>
+
+</header>
+
+
+<main class="page-shell">
+
+
+<section class="heading">
+
+  <p class="eyebrow">
+    QUESTIONNAIRE
+  </p>
+
+  <h1>
+    Climate action plan questionnaire
+  </h1>
+
+  <p>
+    Six steps across organisation, site control, assets and workstream progress.
+  </p>
+
+</section>
+
+
+<div class="question-shell">
+
+
+  <div class="step-pills">
+
+    <button
+      class="active"
+      data-qstep="1"
+    >
+      1. Organisation
+    </button>
+
+    <button data-qstep="2">
+      2. Sites and control
+    </button>
+
+    <button data-qstep="3">
+      3. What you operate
+    </button>
+
+    <button data-qstep="4">
+      4. Energy and buildings
+    </button>
+
+    <button data-qstep="5">
+      5. Food, water and waste
+    </button>
+
+    <button data-qstep="6">
+      6. Governance and value chain
+    </button>
+
+  </div>
+
+
+  <form id="planForm">
+
+
+    <section
+      class="qpanel active"
+      data-qpanel="1"
+    >
+
+      <p class="step-caption">
+        STEP 1 OF 6
+      </p>
+
+      <h2>
+        Organisation
+      </h2>
+
+      <p>
+        Who this plan is for, and which operating model it should use.
+      </p>
+
+
+      <label class="question">
+
+        <span>
+          1. What is the organisation name for this plan? *
+        </span>
+
+        <small>
+          Use the legal or reporting entity that owns or operates the sites in scope.
+        </small>
+
+        <input
+          name="organisation"
+          placeholder="Organisation name"
+        >
+
+      </label>
+
+
+      <div class="question">
+
+        <span>
+          2. Which sector best describes the organisation? *
+        </span>
+
+
+        <div class="radio-grid">
+
+          <label>
+            <input
+              type="radio"
+              name="sector"
+              value="Hotels"
+            >
+            Hotels
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="sector"
+              value="Restaurants"
+            >
+            Restaurants
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="sector"
+              value="Pubs / bars"
+            >
+            Pubs / bars
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="sector"
+              value="Quick-service restaurants"
+            >
+            Quick-service restaurants
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="sector"
+              value="Contract catering"
+            >
+            Contract catering
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="sector"
+              value="Experiential leisure"
+            >
+            Experiential leisure
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="sector"
+              value="Breweries"
+            >
+            Breweries
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <div class="question">
+
+        <span>
+          3. Where is the main operating portfolio? *
+        </span>
+
+
+        <div class="radio-grid">
+
+          <label>
+            <input
+              type="radio"
+              name="country"
+              value="United Kingdom"
+            >
+            United Kingdom
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="country"
+              value="Ireland"
+            >
+            Ireland
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="country"
+              value="Other"
+            >
+            Other
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <div class="question">
+
+        <span>
+          4. How many operating sites are in this boundary? *
+        </span>
+
+
+        <div class="radio-grid">
+
+          <label>
+            <input
+              type="radio"
+              name="sites"
+              value="1 site"
+            >
+            1 site
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="sites"
+              value="2–10 sites"
+            >
+            2–10 sites
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="sites"
+              value="11–50 sites"
+            >
+            11–50 sites
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="sites"
+              value="51 or more sites"
+            >
+            51 or more sites
+          </label>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section
+      class="qpanel"
+      data-qpanel="2"
+    >
+
+      <p class="step-caption">
+        STEP 2 OF 6
+      </p>
+
+      <h2>
+        Sites and control
+      </h2>
+
+      <div class="placeholder-box">
+        Awaiting your questionnaire source file
+      </div>
+
+    </section>
+
+
+    <section
+      class="qpanel"
+      data-qpanel="3"
+    >
+
+      <p class="step-caption">
+        STEP 3 OF 6
+      </p>
+
+      <h2>
+        What you operate
+      </h2>
+
+      <div class="placeholder-box">
+        Awaiting your questionnaire source file
+      </div>
+
+    </section>
+
+
+    <section
+      class="qpanel"
+      data-qpanel="4"
+    >
+
+      <p class="step-caption">
+        STEP 4 OF 6
+      </p>
+
+      <h2>
+        Energy and buildings
+      </h2>
+
+      <div class="placeholder-box">
+        Awaiting your questionnaire source file
+      </div>
+
+    </section>
+
+
+    <section
+      class="qpanel"
+      data-qpanel="5"
+    >
+
+      <p class="step-caption">
+        STEP 5 OF 6
+      </p>
+
+      <h2>
+        Food, water and waste
+      </h2>
+
+      <div class="placeholder-box">
+        Awaiting your questionnaire source file
+      </div>
+
+    </section>
+
+
+    <section
+      class="qpanel"
+      data-qpanel="6"
+    >
+
+      <p class="step-caption">
+        STEP 6 OF 6
+      </p>
+
+      <h2>
+        Governance and value chain
+      </h2>
+
+      <div class="placeholder-box">
+        Awaiting your questionnaire source file
+      </div>
+
+    </section>
+
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        id="prevStep"
+        class="btn secondary"
+      >
+        Back
+      </button>
+
+
+      <div>
+
+        <button
+          type="button"
+          id="saveDraft"
+          class="text-action"
+        >
+          Save draft
+        </button>
+
+        <button
+          type="button"
+          id="nextStep"
+          class="btn primary"
+        >
+          Continue
+        </button>
+
+      </div>
+
+
+      <button
+        type="button"
+        id="clearPlan"
+        class="text-action muted"
+      >
+        Clear answers
+      </button>
+
+    </div>
+
+
+  </form>
+
+</div>
+
+
+</main>
+
+
+<footer class="footer">
+
+  <p>
+    © 2026 Zero Carbon Forum · Climate Action Plan Governance prototype.
+  </p>
+
+</footer>
+
+
+<script src="app.js"></script>
+
+
+</body>
+
+</html>
