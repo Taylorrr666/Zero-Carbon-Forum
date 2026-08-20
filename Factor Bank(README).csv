@@ -1,0 +1,18 @@
+﻿Section,Content
+Title,CAP Catalog Factor Bank
+Version,1.0
+Export_Date,2026-08-18
+Source_Workbook,Consolidate.xlsx
+Source_Sheet,工作表1
+What this is,"Product-library factor bank for the new CAP catalog. One factor per value-card slot (cost, carbon, timing, efficiency). Values, calculation methods, evidence URLs, and cases are taken only from Consolidate.xlsx."
+What this is not,Not a copy of the old UCF/IPF Low–Base–High bank. Not a site-quantity (L3) calculator. Not extra research beyond Consolidate.
+Why it is not a wide-table dump,"Consolidate is one fat row per initiative. This workbook normalises that row into initiatives, four factor banks, evidence, factor↔evidence map, initiative↔factor map, calculation methods, cases, case sources, coverage, and a gap register — the same shape as the previous factor-bank pack."
+Initiative_IDs,INIT-#### — same sequence as catalog import / Admin.
+Card_IDs,CARD-#### — same sequence as catalog_value_cards.
+Factor_IDs,"CCF-#### cost, CPF-#### carbon, CTF-#### timing, CEF-#### efficiency."
+Evidence_IDs,"CEVID-#### — unique URL+locator pairs, same sequence as catalog import."
+Case_IDs,CASE-#### — same sequence as catalog import.
+Numeric columns,Value_Low / Value_Base / Value_High are parsed from the published display string only. A range fills Low and High. A single number fills Base. No midpoint is invented. Unparseable text stays blank.
+Empty cells,"Empty published figures stay empty. Missing methods and missing evidence are listed in Factor Gap Register, not filled."
+Calc_Readiness,display_only for every row. L3 executable rules are out of scope for this bank.
+Regenerate,cd web && npx tsx scripts/export_catalog_factor_bank.ts
