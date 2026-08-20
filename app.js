@@ -1,87 +1,114 @@
-/* =========================================================
+/* ==========================================================
    ZERO CARBON FORUM
-   CAP MANAGEMENT PLATFORM
+   CLIMATE ACTION PLAN GOVERNANCE PLATFORM
 
-   GitHub Pages Prototype
-========================================================= */
+   Static GitHub Pages prototype
+========================================================== */
 
 
-/* =========================================================
-   1. DATA SOURCES
-========================================================= */
 
-const DATA_FILES = [
+/* ==========================================================
+   DATA SOURCES
+========================================================== */
+
+const DATA_SOURCES = [
 
   {
-    name: "Governance & Strategy",
+    name:
+      "Governance & Strategy",
 
     files: [
+
       "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece)).csv",
+
       "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece))(1).csv",
+
       "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece))(2).csv"
+
     ]
   },
 
 
   {
-    name: "Energy & Buildings",
+    name:
+      "Energy & Buildings",
 
     files: [
+
       "Refreshed Initiative Library_FINAL(Energy&Building (Siyuan)).csv"
+
     ]
   },
 
 
   {
-    name: "Energy Management Supplement",
+    name:
+      "Energy & Buildings",
 
     files: [
+
       "Refreshed Initiative Library_FINAL(Energy and Buildings (Adam&AY)).csv"
+
     ]
   },
 
 
   {
-    name: "F&B Procurement & Menu",
+    name:
+      "F&B Procurement & Menu",
 
     files: [
+
       "Refreshed Initiative Library_FINAL(F&B Procurement & Menu (Taylor)).csv"
+
     ]
   },
 
 
   {
-    name: "Packaging & Procurement",
+    name:
+      "Packaging & Procurement",
 
     files: [
+
       "Refreshed Initiative Library_FINAL(Packaging&Procurement(Ece)).csv"
+
     ]
   },
 
 
   {
-    name: "Supplier & Value Chain",
+    name:
+      "Supplier & Value Chain",
 
     files: [
+
       "Refreshed Initiative Library_FINAL(Supplier & Value Chain (Taylor)).csv"
+
     ]
   },
 
 
   {
-    name: "Transport & Distribution",
+    name:
+      "Transport & Distribution",
 
     files: [
+
       "Refreshed Initiative Library_FINAL(Transport & Distribution (Vani)).csv"
+
     ]
   },
 
 
   {
-    name: "Nature & Resources",
+    name:
+      "Nature & Resources",
 
     files: [
+
       "Refreshed Initiative Library_FINAL(Nature & Resources (Atharva)).csv"
+
     ]
   }
 
@@ -89,21 +116,27 @@ const DATA_FILES = [
 
 
 
-/* =========================================================
-   2. GLOBAL DATA
-========================================================= */
+/* ==========================================================
+   GLOBAL STATE
+========================================================== */
 
 let initiatives = [];
 
 let filteredInitiatives = [];
 
-let currentQuestionRecommendations = [];
+let factorRecords = [];
+
+let evidenceRecords = [];
+
+let loadedSources = 0;
+
+let duplicatesRemoved = 0;
 
 
 
-/* =========================================================
-   3. BASIC HELPERS
-========================================================= */
+/* ==========================================================
+   BASIC HELPERS
+========================================================== */
 
 function clean(value) {
 
@@ -116,26 +149,39 @@ function clean(value) {
 
   }
 
-  return String(value).trim();
+
+  return String(
+    value
+  ).trim();
 
 }
 
 
 
-function firstValue(row, keys) {
+function firstValue(
+  row,
+  keys
+) {
 
-  for (const key of keys) {
+  for (
+    const key of keys
+  ) {
 
     if (
       row[key] !== undefined &&
-      clean(row[key]) !== ""
+      clean(
+        row[key]
+      ) !== ""
     ) {
 
-      return clean(row[key]);
+      return clean(
+        row[key]
+      );
 
     }
 
   }
+
 
   return "";
 
@@ -145,17 +191,34 @@ function firstValue(row, keys) {
 
 function escapeHTML(value) {
 
-  return String(value || "")
+  return String(
+    value || ""
+  )
 
-    .replaceAll("&", "&amp;")
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
 
-    .replaceAll("<", "&lt;")
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
 
-    .replaceAll(">", "&gt;")
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
 
-    .replaceAll('"', "&quot;")
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
 
-    .replaceAll("'", "&#039;");
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 
 }
 
@@ -163,39 +226,45 @@ function escapeHTML(value) {
 
 function truncate(
   value,
-  limit = 100
+  length = 90
 ) {
 
   const text =
     clean(value);
 
+
   if (
-    text.length <= limit
+    text.length <=
+    length
   ) {
 
     return text;
 
   }
 
+
   return (
     text.slice(
       0,
-      limit
-    ) + "…"
+      length
+    ) +
+    "…"
   );
 
 }
 
 
 
-function isMeaningful(value) {
+function meaningful(
+  value
+) {
 
   const text =
     clean(value)
       .toLowerCase();
 
-  const emptyValues = [
 
+  return ![
     "",
     "-",
     ".",
@@ -206,30 +275,31 @@ function isMeaningful(value) {
     "not available",
     "not found",
     "not specified"
-
-  ];
-
-  return !emptyValues.includes(
-    text
-  );
+  ]
+    .includes(
+      text
+    );
 
 }
 
 
 
 function percentage(
-  part,
+  value,
   total
 ) {
 
-  if (!total) {
+  if (
+    !total
+  ) {
 
     return 0;
 
   }
 
+
   return Math.round(
-    part /
+    value /
     total *
     100
   );
@@ -238,16 +308,13 @@ function percentage(
 
 
 
-/* =========================================================
-   4. CSV PARSER
+/* ==========================================================
+   CSV PARSER
+========================================================== */
 
-   Supports:
-   - quoted commas
-   - quoted line breaks
-   - escaped quotation marks
-========================================================= */
-
-function parseCSV(text) {
+function parseCSV(
+  text
+) {
 
   const rows = [];
 
@@ -255,20 +322,26 @@ function parseCSV(text) {
 
   let value = "";
 
-  let inQuotes = false;
+  let quoted = false;
 
 
   for (
     let i = 0;
-    i < text.length;
+
+    i <
+    text.length;
+
     i++
   ) {
 
     const char =
       text[i];
 
+
     const next =
-      text[i + 1];
+      text[
+        i + 1
+      ];
 
 
     if (
@@ -276,7 +349,7 @@ function parseCSV(text) {
     ) {
 
       if (
-        inQuotes &&
+        quoted &&
         next === '"'
       ) {
 
@@ -288,8 +361,8 @@ function parseCSV(text) {
 
       else {
 
-        inQuotes =
-          !inQuotes;
+        quoted =
+          !quoted;
 
       }
 
@@ -298,7 +371,7 @@ function parseCSV(text) {
 
     else if (
       char === "," &&
-      !inQuotes
+      !quoted
     ) {
 
       row.push(
@@ -315,7 +388,7 @@ function parseCSV(text) {
         char === "\n" ||
         char === "\r"
       ) &&
-      !inQuotes
+      !quoted
     ) {
 
       if (
@@ -332,18 +405,17 @@ function parseCSV(text) {
         value
       );
 
+
       value = "";
 
 
-      const usefulRow =
+      if (
         row.some(
           cell =>
-            clean(cell) !== ""
-        );
-
-
-      if (
-        usefulRow
+            clean(
+              cell
+            )
+        )
       ) {
 
         rows.push(
@@ -360,7 +432,8 @@ function parseCSV(text) {
 
     else {
 
-      value += char;
+      value +=
+        char;
 
     }
 
@@ -368,7 +441,7 @@ function parseCSV(text) {
 
 
   if (
-    value !== "" ||
+    value ||
     row.length
   ) {
 
@@ -389,22 +462,27 @@ function parseCSV(text) {
 
 
 
-/* =========================================================
-   5. FIND CSV HEADER ROW
-========================================================= */
+/* ==========================================================
+   FIND HEADERS
+========================================================== */
 
-function findHeaderRow(rows) {
+function findHeaderRow(
+  rows
+) {
 
   for (
     let i = 0;
-    i < Math.min(
+
+    i <
+    Math.min(
       rows.length,
-      10
+      12
     );
+
     i++
   ) {
 
-    const normalised =
+    const row =
       rows[i]
         .map(
           cell =>
@@ -414,7 +492,7 @@ function findHeaderRow(rows) {
 
 
     if (
-      normalised.includes(
+      row.includes(
         "initiative"
       )
     ) {
@@ -432,11 +510,13 @@ function findHeaderRow(rows) {
 
 
 
-/* =========================================================
-   6. CSV ROWS -> OBJECTS
-========================================================= */
+/* ==========================================================
+   ROWS -> OBJECTS
+========================================================== */
 
-function rowsToObjects(rows) {
+function rowsToObjects(
+  rows
+) {
 
   if (
     !rows.length
@@ -447,7 +527,7 @@ function rowsToObjects(rows) {
   }
 
 
-  const headerIndex =
+  const headerRow =
     findHeaderRow(
       rows
     );
@@ -455,20 +535,22 @@ function rowsToObjects(rows) {
 
   const headers =
     rows[
-      headerIndex
-    ].map(
-      clean
-    );
+      headerRow
+    ]
+      .map(
+        clean
+      );
 
 
-  const objects = [];
+  const output = [];
 
 
   for (
     let i =
-      headerIndex + 1;
+      headerRow + 1;
 
-    i < rows.length;
+    i <
+    rows.length;
 
     i++
   ) {
@@ -479,7 +561,7 @@ function rowsToObjects(rows) {
     headers.forEach(
       (
         header,
-        columnIndex
+        index
       ) => {
 
         if (
@@ -491,7 +573,7 @@ function rowsToObjects(rows) {
           ] =
             clean(
               rows[i][
-                columnIndex
+                index
               ]
             );
 
@@ -515,7 +597,7 @@ function rowsToObjects(rows) {
       initiative
     ) {
 
-      objects.push(
+      output.push(
         object
       );
 
@@ -524,20 +606,19 @@ function rowsToObjects(rows) {
   }
 
 
-  return objects;
+  return output;
 
 }
 
 
 
-/* =========================================================
-   7. NORMALISE DIFFERENT CSV FORMATS
-========================================================= */
+/* ==========================================================
+   NORMALISE INITIATIVE
+========================================================== */
 
-function normalizeInitiative(
+function normaliseInitiative(
   row,
-  sourceName,
-  sourceFile
+  source
 ) {
 
   const initiative =
@@ -550,17 +631,17 @@ function normalizeInitiative(
     );
 
 
-  let topic =
+  const topic =
     firstValue(
       row,
       [
-        "Topic",
-        "topic"
+        "Topic"
       ]
-    );
+    ) ||
+    source;
 
 
-  let subTopic =
+  const subTopic =
     firstValue(
       row,
       [
@@ -572,14 +653,33 @@ function normalizeInitiative(
     );
 
 
-  if (
-    !topic
-  ) {
+  const description =
+    firstValue(
+      row,
+      [
+        "Description"
+      ]
+    );
 
-    topic =
-      sourceName;
 
-  }
+  const why =
+    firstValue(
+      row,
+      [
+        "Why/Benefit",
+        "Benefits"
+      ]
+    );
+
+
+  const how =
+    firstValue(
+      row,
+      [
+        "How to achieve this",
+        "How (Implementation Steps)"
+      ]
+    );
 
 
   const sector =
@@ -604,45 +704,13 @@ function normalizeInitiative(
     );
 
 
-  const description =
-    firstValue(
-      row,
-      [
-        "Description"
-      ]
-    );
-
-
-  const why =
-    firstValue(
-      row,
-      [
-        "Why/Benefit",
-        "WHY/BENEFIT",
-        "Benefits"
-      ]
-    );
-
-
-  const how =
-    firstValue(
-      row,
-      [
-        "How to achieve this",
-        "How (Implementation Steps)",
-        "Case Execution"
-      ]
-    );
-
-
   const kpi =
     firstValue(
       row,
       [
         "KPI (Measurable Objective)",
         "KPI",
-        "KPI ",
-        "KPI Justification"
+        "KPI "
       ]
     );
 
@@ -652,7 +720,6 @@ function normalizeInitiative(
       row,
       [
         "Evidence/Case Study",
-        "Evidence/Case Study （explain to others)",
         "Evidence",
         "Case Studies & Benchmarks",
         "Case Impact"
@@ -736,49 +803,36 @@ function normalizeInitiative(
     );
 
 
-  const rawID =
-    [
-      sourceName,
-      initiative
-    ]
-      .join("-")
-      .toLowerCase()
-      .replace(
-        /[^a-z0-9]+/g,
-        "-"
-      )
-      .replace(
-        /^-|-$/g,
-        ""
-      );
-
-
   return {
 
     id:
-      rawID,
+      (
+        source +
+        "-" +
+        initiative
+      )
+        .toLowerCase()
+        .replace(
+          /[^a-z0-9]+/g,
+          "-"
+        ),
 
-    sourceName,
 
-    sourceFile,
+    initiative,
 
     topic,
 
     subTopic,
-
-    initiative,
-
-    oldInitiative,
-
-    sector,
-
-    excluded,
 
     description,
 
     why,
 
     how,
+
+    sector,
+
+    excluded,
 
     kpi,
 
@@ -794,7 +848,11 @@ function normalizeInitiative(
 
     impact,
 
-    tools
+    tools,
+
+    oldInitiative,
+
+    source
 
   };
 
@@ -802,16 +860,16 @@ function normalizeInitiative(
 
 
 
-/* =========================================================
-   8. TRY MULTIPLE POSSIBLE FILENAMES
-========================================================= */
+/* ==========================================================
+   LOAD FIRST AVAILABLE FILE
+========================================================== */
 
-async function fetchFirstAvailableFile(
-  candidates
+async function fetchFirstAvailable(
+  files
 ) {
 
   for (
-    const filename of candidates
+    const file of files
   ) {
 
     try {
@@ -819,10 +877,11 @@ async function fetchFirstAvailableFile(
       const response =
         await fetch(
           encodeURI(
-            filename
+            file
           ),
           {
-            cache: "no-store"
+            cache:
+              "no-store"
           }
         );
 
@@ -832,12 +891,9 @@ async function fetchFirstAvailableFile(
       ) {
 
         return {
-
-          filename,
-
+          file,
           text:
             await response.text()
-
         };
 
       }
@@ -845,11 +901,13 @@ async function fetchFirstAvailableFile(
     }
 
 
-    catch (error) {
+    catch (
+      error
+    ) {
 
       console.log(
-        "Could not load:",
-        filename
+        "Unable to load",
+        file
       );
 
     }
@@ -863,30 +921,31 @@ async function fetchFirstAvailableFile(
 
 
 
-/* =========================================================
-   9. LOAD ALL INITIATIVE LIBRARIES
-========================================================= */
+/* ==========================================================
+   LOAD LIBRARY
+========================================================== */
 
 async function loadData() {
 
   initiatives = [];
 
-  filteredInitiatives = [];
+  loadedSources = 0;
 
-  updateDataStatus(
-    "loading"
+  duplicatesRemoved = 0;
+
+
+  setDataStatus(
+    "Loading data…"
   );
 
 
-  const missingFiles = [];
-
-
   for (
-    const source of DATA_FILES
+    const source
+    of DATA_SOURCES
   ) {
 
     const file =
-      await fetchFirstAvailableFile(
+      await fetchFirstAvailable(
         source.files
       );
 
@@ -895,70 +954,40 @@ async function loadData() {
       !file
     ) {
 
-      missingFiles.push(
-        source.name
-      );
-
       continue;
 
     }
 
 
-    try {
+    loadedSources++;
 
-      const csvRows =
-        parseCSV(
-          file.text
+
+    const rows =
+      parseCSV(
+        file.text
+      );
+
+
+    const objects =
+      rowsToObjects(
+        rows
+      );
+
+
+    objects.forEach(
+      row => {
+
+        initiatives.push(
+
+          normaliseInitiative(
+            row,
+            source.name
+          )
+
         );
 
-
-      const objects =
-        rowsToObjects(
-          csvRows
-        );
-
-
-      objects.forEach(
-        row => {
-
-          const normalised =
-            normalizeInitiative(
-              row,
-              source.name,
-              file.filename
-            );
-
-
-          if (
-            normalised.initiative
-          ) {
-
-            initiatives.push(
-              normalised
-            );
-
-          }
-
-        }
-      );
-
-    }
-
-
-    catch (error) {
-
-      console.error(
-        "Error processing:",
-        source.name,
-        error
-      );
-
-
-      missingFiles.push(
-        source.name
-      );
-
-    }
+      }
+    );
 
   }
 
@@ -972,59 +1001,42 @@ async function loadData() {
     ];
 
 
-  if (
-    initiatives.length === 0
-  ) {
+  buildFactorRecords();
 
-    updateDataStatus(
-      "error"
-    );
-
-    return;
-
-  }
+  buildEvidenceRecords();
 
 
-  if (
-    missingFiles.length
-  ) {
-
-    updateDataStatus(
-      "partial",
-      missingFiles.length
-    );
-
-    console.warn(
-      "Missing sources:",
-      missingFiles
-    );
-
-  }
+  updateEverything();
 
 
-  else {
-
-    updateDataStatus(
-      "ready"
-    );
-
-  }
+  setDataStatus(
+    `${initiatives.length} initiatives loaded`
+  );
 
 
-  initialiseInterface();
+  logActivity(
+    "Library",
+    "REFRESH",
+    `${initiatives.length} initiative records loaded`,
+    "admin"
+  );
 
 }
 
 
 
-/* =========================================================
-   10. REMOVE DUPLICATE INITIATIVES
-========================================================= */
+/* ==========================================================
+   DUPLICATES
+========================================================== */
 
 function removeDuplicates() {
 
   const seen =
     new Set();
+
+
+  const before =
+    initiatives.length;
 
 
   initiatives =
@@ -1062,199 +1074,184 @@ function removeDuplicates() {
       }
     );
 
+
+  duplicatesRemoved =
+    before -
+    initiatives.length;
+
 }
 
 
 
-/* =========================================================
-   11. TOP-RIGHT DATA STATUS
-========================================================= */
+/* ==========================================================
+   FACTOR RECORDS
+========================================================== */
 
-function updateDataStatus(
-  state,
-  missingCount = 0
-) {
+function buildFactorRecords() {
 
-  const dot =
-    document.querySelector(
-      ".status-dot"
-    );
+  factorRecords = [];
 
 
-  const text =
-    document.getElementById(
-      "dataStatusText"
-    );
+  initiatives.forEach(
+    (
+      item,
+      initiativeIndex
+    ) => {
 
 
-  if (
-    !dot ||
-    !text
-  ) {
+      const values = [
 
-    return;
+        [
+          "Cost",
+          item.cost
+        ],
 
-  }
+        [
+          "Carbon",
+          item.carbon
+        ],
+
+        [
+          "Timing",
+          item.roi
+        ],
+
+        [
+          "KPI",
+          item.kpi
+        ]
+
+      ];
 
 
-  dot.classList.remove(
-    "ready",
-    "error"
+      values.forEach(
+        (
+          [
+            type,
+            value
+          ],
+          factorIndex
+        ) => {
+
+          if (
+            meaningful(
+              value
+            )
+          ) {
+
+            factorRecords.push({
+
+              id:
+                `FAC-${String(
+                  initiativeIndex + 1
+                ).padStart(
+                  4,
+                  "0"
+                )}-${factorIndex + 1}`,
+
+              type,
+
+              initiative:
+                item.initiative,
+
+              value,
+
+              topic:
+                item.topic
+
+            });
+
+          }
+
+        }
+      );
+
+    }
   );
 
-
-  if (
-    state === "loading"
-  ) {
-
-    text.textContent =
-      "Loading initiative library...";
-
-  }
+}
 
 
-  else if (
-    state === "ready"
-  ) {
 
-    dot.classList.add(
-      "ready"
-    );
+/* ==========================================================
+   EVIDENCE RECORDS
+========================================================== */
 
+function buildEvidenceRecords() {
 
-    text.textContent =
-      `${initiatives.length} initiatives loaded`;
+  evidenceRecords =
+    initiatives
+      .map(
+        (
+          item,
+          index
+        ) => ({
 
-  }
+          id:
+            `EVID-${String(
+              index + 1
+            ).padStart(
+              4,
+              "0"
+            )}`,
 
+          initiative:
+            item.initiative,
 
-  else if (
-    state === "partial"
-  ) {
+          evidence:
+            item.evidence,
 
-    dot.classList.add(
-      "ready"
-    );
+          reference:
+            item.reference,
 
+          topic:
+            item.topic
 
-    text.textContent =
-      `${initiatives.length} loaded · ${missingCount} file(s) missing`;
-
-  }
-
-
-  else {
-
-    dot.classList.add(
-      "error"
-    );
-
-
-    text.textContent =
-      "Initiative library could not be loaded";
-
-  }
+        })
+      );
 
 }
 
 
 
-/* =========================================================
-   12. INITIALISE
-========================================================= */
+/* ==========================================================
+   DATA STATUS
+========================================================== */
 
-function initialiseInterface() {
+function setDataStatus(
+  message
+) {
 
-  populateFilters();
-
-  updateDashboard();
-
-  renderInitiatives();
-
-  renderEvidence();
-
-  updatePreview();
+  document.getElementById(
+    "dataStatus"
+  ).textContent =
+    message;
 
 }
 
 
 
-/* =========================================================
-   13. PAGE NAVIGATION
-========================================================= */
+/* ==========================================================
+   PAGE NAVIGATION
+========================================================== */
 
-const PAGE_CONFIG = {
+const viewNames = [
 
-  dashboard: {
+  "dashboard",
+  "plan",
+  "progress",
+  "initiatives",
+  "factors",
+  "evidence",
+  "questionnaires"
 
-    title:
-      "Dashboard",
-
-    subtitle:
-      "Climate Action Plan management overview"
-
-  },
-
-
-  initiatives: {
-
-    title:
-      "Initiatives",
-
-    subtitle:
-      "Review and manage the refreshed initiative library"
-
-  },
-
-
-  evidence: {
-
-    title:
-      "Evidence",
-
-    subtitle:
-      "Supporting evidence, case studies and references"
-
-  },
-
-
-  questionnaire: {
-
-    title:
-      "Questionnaires",
-
-    subtitle:
-      "Sector and operating-model routing prototype"
-
-  },
-
-
-  benchmarking: {
-
-    title:
-      "Benchmarking",
-
-    subtitle:
-      "Peer, hybrid and action-based comparison framework"
-
-  },
-
-
-  preview: {
-
-    title:
-      "Preview Output",
-
-    subtitle:
-      "Illustrative member-facing Climate Action Plan"
-
-  }
-
-};
+];
 
 
 
-function switchView(view) {
+function switchView(
+  view
+) {
 
   document
     .querySelectorAll(
@@ -1263,9 +1260,11 @@ function switchView(view) {
     .forEach(
       element => {
 
-        element.classList.remove(
-          "active-view"
-        );
+        element
+          .classList
+          .remove(
+            "active-view"
+          );
 
       }
     );
@@ -1273,14 +1272,16 @@ function switchView(view) {
 
   document
     .querySelectorAll(
-      ".nav-item"
+      ".nav-link[data-view]"
     )
     .forEach(
       element => {
 
-        element.classList.remove(
-          "active"
-        );
+        element
+          .classList
+          .remove(
+            "active"
+          );
 
       }
     );
@@ -1305,7 +1306,7 @@ function switchView(view) {
 
   const nav =
     document.querySelector(
-      `.nav-item[data-view="${view}"]`
+      `.nav-link[data-view="${view}"]`
     );
 
 
@@ -1320,33 +1321,17 @@ function switchView(view) {
   }
 
 
-  const config =
-    PAGE_CONFIG[
-      view
-    ];
-
-
-  if (
-    config
-  ) {
-
-    document.getElementById(
-      "pageTitle"
-    ).textContent =
-      config.title;
-
-
-    document.getElementById(
-      "pageSubtitle"
-    ).textContent =
-      config.subtitle;
-
-  }
-
-
   window.scrollTo(
     0,
     0
+  );
+
+
+  logActivity(
+    "Navigation",
+    "VIEW",
+    view,
+    "admin"
   );
 
 }
@@ -1355,7 +1340,7 @@ function switchView(view) {
 
 document
   .querySelectorAll(
-    ".nav-item"
+    ".nav-link[data-view]"
   )
   .forEach(
     button => {
@@ -1375,168 +1360,262 @@ document
   );
 
 
-window.switchView =
-  switchView;
 
+document
+  .querySelectorAll(
+    ".manage-card"
+  )
+  .forEach(
+    card => {
 
+      card.addEventListener(
+        "click",
+        () => {
 
-/* =========================================================
-   14. COVERAGE CALCULATION
-========================================================= */
+          switchView(
+            card.dataset.open
+          );
 
-function calculateCoverage(
-  field
-) {
+        }
+      );
 
-  const covered =
-    initiatives.filter(
-      item =>
-        isMeaningful(
-          item[field]
-        )
-    ).length;
-
-
-  return percentage(
-    covered,
-    initiatives.length
+    }
   );
+
+
+
+/* ==========================================================
+   UPDATE EVERYTHING
+========================================================== */
+
+function updateEverything() {
+
+  updateDashboard();
+
+  updateProgress();
+
+  populateFilters();
+
+  renderInitiatives();
+
+  renderFactors();
+
+  renderEvidence();
+
+  updateHealth();
 
 }
 
 
 
-/* =========================================================
-   15. DASHBOARD
-========================================================= */
+/* ==========================================================
+   DASHBOARD
+========================================================== */
 
 function updateDashboard() {
 
-  const topics =
-    [
-      ...new Set(
-        initiatives
-          .map(
-            item =>
-              item.topic
+  const missingFigures =
+    initiatives
+      .filter(
+        item =>
+          !meaningful(
+            item.cost
+          ) ||
+          !meaningful(
+            item.carbon
           )
-          .filter(Boolean)
       )
-    ];
+      .length;
 
 
-  const evidenceCoverage =
-    calculateCoverage(
-      "evidence"
-    );
+  const missingEvidence =
+    initiatives
+      .filter(
+        item =>
+          !meaningful(
+            item.evidence
+          )
+      )
+      .length;
 
 
-  const kpiCoverage =
-    calculateCoverage(
-      "kpi"
-    );
+  const missingKpi =
+    initiatives
+      .filter(
+        item =>
+          !meaningful(
+            item.kpi
+          )
+      )
+      .length;
 
 
-  const costCoverage =
-    calculateCoverage(
-      "cost"
-    );
+  const evidenceCount =
+    initiatives.length -
+    missingEvidence;
 
 
-  const carbonCoverage =
-    calculateCoverage(
-      "carbon"
+  const topics =
+    new Set(
+
+      initiatives
+        .map(
+          item =>
+            item.topic
+        )
+        .filter(
+          Boolean
+        )
+
     );
 
 
   document.getElementById(
-    "metricInitiatives"
+    "missingFiguresMetric"
+  ).textContent =
+    missingFigures;
+
+
+  document.getElementById(
+    "missingEvidenceMetric"
+  ).textContent =
+    missingEvidence;
+
+
+  document.getElementById(
+    "missingKpiMetric"
+  ).textContent =
+    missingKpi;
+
+
+  document.getElementById(
+    "evidenceLibraryMetric"
+  ).textContent =
+    evidenceCount;
+
+
+  document.getElementById(
+    "totalInitiativesMetric"
   ).textContent =
     initiatives.length;
 
 
   document.getElementById(
-    "metricTopics"
+    "totalFactorsMetric"
   ).textContent =
-    topics.length;
+    factorRecords.length;
 
 
   document.getElementById(
-    "metricEvidence"
+    "totalEvidenceMetric"
   ).textContent =
-    `${evidenceCoverage}%`;
+    evidenceCount;
 
 
   document.getElementById(
-    "metricKpi"
+    "totalTopicsMetric"
   ).textContent =
-    `${kpiCoverage}%`;
+    topics.size;
 
 
-  setProgress(
-    "evidenceProgress",
-    "evidenceProgressText",
-    evidenceCoverage
-  );
-
-
-  setProgress(
-    "kpiProgress",
-    "kpiProgressText",
-    kpiCoverage
-  );
-
-
-  setProgress(
-    "costProgress",
-    "costProgressText",
-    costCoverage
-  );
-
-
-  setProgress(
-    "carbonProgress",
-    "carbonProgressText",
-    carbonCoverage
-  );
-
-
-  renderTopicBars();
-
-  renderDashboardTable();
+  renderActivity();
 
 }
 
 
 
-function setProgress(
-  barID,
-  textID,
-  value
+/* ==========================================================
+   COVERAGE
+========================================================== */
+
+function coverage(
+  field
 ) {
 
-  document.getElementById(
-    barID
-  ).style.width =
-    `${value}%`;
+  return percentage(
 
+    initiatives.filter(
+      item =>
+        meaningful(
+          item[field]
+        )
+    ).length,
 
-  document.getElementById(
-    textID
-  ).textContent =
-    `${value}%`;
+    initiatives.length
+
+  );
 
 }
 
 
 
-/* =========================================================
-   16. TOPIC BAR CHART
-========================================================= */
+/* ==========================================================
+   PROGRESS
+========================================================== */
 
-function renderTopicBars() {
+function updateProgress() {
 
-  const counts = {};
+  const evidence =
+    coverage(
+      "evidence"
+    );
+
+
+  const kpi =
+    coverage(
+      "kpi"
+    );
+
+
+  const cost =
+    coverage(
+      "cost"
+    );
+
+
+  const carbon =
+    coverage(
+      "carbon"
+    );
+
+
+  document.getElementById(
+    "progressEvidence"
+  ).textContent =
+    `${evidence}%`;
+
+
+  document.getElementById(
+    "progressKpi"
+  ).textContent =
+    `${kpi}%`;
+
+
+  document.getElementById(
+    "progressCost"
+  ).textContent =
+    `${cost}%`;
+
+
+  document.getElementById(
+    "progressCarbon"
+  ).textContent =
+    `${carbon}%`;
+
+
+  renderTopicProgress();
+
+}
+
+
+
+/* ==========================================================
+   TOPIC PROGRESS
+========================================================== */
+
+function renderTopicProgress() {
+
+  const groups = {};
 
 
   initiatives.forEach(
@@ -1547,99 +1626,136 @@ function renderTopicBars() {
         "Uncategorised";
 
 
-      counts[
+      if (
+        !groups[
+          topic
+        ]
+      ) {
+
+        groups[
+          topic
+        ] = [];
+
+      }
+
+
+      groups[
         topic
-      ] =
-        (
-          counts[
-            topic
-          ] ||
-          0
-        ) + 1;
+      ].push(
+        item
+      );
 
     }
   );
 
 
-  const entries =
+  document.getElementById(
+    "topicProgress"
+  ).innerHTML =
+
     Object.entries(
-      counts
+      groups
     )
+
       .sort(
         (
           a,
           b
         ) =>
-          b[1] -
-          a[1]
-      );
-
-
-  if (
-    !entries.length
-  ) {
-
-    return;
-
-  }
-
-
-  const max =
-    Math.max(
-      ...entries.map(
-        entry =>
-          entry[1]
+          b[1].length -
+          a[1].length
       )
-    );
 
-
-  document.getElementById(
-    "topicBars"
-  ).innerHTML =
-
-    entries
-      .slice(
-        0,
-        10
-      )
       .map(
         (
           [
             topic,
-            count
+            items
           ]
-        ) => `
+        ) => {
 
-          <div class="topic-bar-row">
+
+          const score =
+            Math.round(
+
+              items.reduce(
+                (
+                  total,
+                  item
+                ) => {
+
+                  const complete = [
+
+                    item.description,
+                    item.kpi,
+                    item.evidence,
+                    item.cost,
+                    item.carbon
+
+                  ]
+                    .filter(
+                      meaningful
+                    )
+                    .length;
+
+
+                  return (
+                    total +
+                    complete / 5
+                  );
+
+                },
+                0
+              )
+
+              /
+              items.length
+
+              *
+              100
+
+            );
+
+
+          return `
 
             <div
-              class="topic-bar-name"
-              title="${escapeHTML(topic)}">
-
-              ${escapeHTML(topic)}
-
-            </div>
-
-
-            <div class="topic-track">
+              class="topic-progress-row"
+            >
 
               <div
-                class="topic-fill"
-                style="width:${count / max * 100}%">
+                class="topic-progress-name"
+              >
+                ${escapeHTML(topic)}
+              </div>
+
+
+              <div
+                class="progress-track"
+              >
+
+                <div
+                  class="progress-fill"
+                  style="
+                    width:${score}%
+                  "
+                >
+                </div>
+
+              </div>
+
+
+              <div
+                class="topic-progress-percent"
+              >
+                ${score}%
               </div>
 
             </div>
 
+          `;
 
-            <div class="topic-count">
-
-              ${count}
-
-            </div>
-
-          </div>
-
-        `
+        }
       )
       .join("");
 
@@ -1647,96 +1763,9 @@ function renderTopicBars() {
 
 
 
-/* =========================================================
-   17. DASHBOARD SAMPLE TABLE
-========================================================= */
-
-function renderDashboardTable() {
-
-  const sample =
-    initiatives.slice(
-      0,
-      8
-    );
-
-
-  document.getElementById(
-    "dashboardTableBody"
-  ).innerHTML =
-
-    sample
-      .map(
-        item => `
-
-          <tr>
-
-            <td class="initiative-name-cell">
-
-              ${escapeHTML(
-                item.initiative
-              )}
-
-            </td>
-
-
-            <td>
-
-              <span class="topic-pill">
-
-                ${escapeHTML(
-                  item.topic
-                )}
-
-              </span>
-
-            </td>
-
-
-            <td>
-
-              ${escapeHTML(
-                item.subTopic ||
-                "—"
-              )}
-
-            </td>
-
-
-            <td class="sector-cell">
-
-              <div class="clamp-text">
-
-                ${escapeHTML(
-                  item.sector ||
-                  "—"
-                )}
-
-              </div>
-
-            </td>
-
-
-            <td>
-
-              ${evidenceStatusPill(
-                item
-              )}
-
-            </td>
-
-          </tr>
-
-        `
-      )
-      .join("");
-
-}
-
-
-
-/* =========================================================
-   18. FILTER OPTIONS
-========================================================= */
+/* ==========================================================
+   FILTER OPTIONS
+========================================================== */
 
 function populateFilters() {
 
@@ -1787,29 +1816,33 @@ function populateSelect(
   }
 
 
-  const firstOption =
-    select.options[
-      0
-    ];
+  const first =
+    select.options[0];
 
 
-  const unique =
-    [
-      ...new Set(
-        values
-          .map(clean)
-          .filter(Boolean)
-      )
-    ]
-      .sort();
+  const unique = [
+
+    ...new Set(
+
+      values
+        .map(
+          clean
+        )
+        .filter(
+          Boolean
+        )
+
+    )
+
+  ]
+    .sort();
 
 
-  select.innerHTML =
-    "";
+  select.innerHTML = "";
 
 
   select.appendChild(
-    firstOption
+    first
   );
 
 
@@ -1841,11 +1874,90 @@ function populateSelect(
 
 
 
-/* =========================================================
-   19. INITIATIVE FILTERING
-========================================================= */
+/* ==========================================================
+   READINESS
+========================================================== */
 
-function applyInitiativeFilters() {
+function readiness(
+  item
+) {
+
+  const fields = [
+
+    item.description,
+    item.why,
+    item.kpi,
+    item.evidence,
+    item.cost,
+    item.carbon
+
+  ];
+
+
+  const score =
+    fields.filter(
+      meaningful
+    ).length /
+    fields.length;
+
+
+  if (
+    score >= 0.75
+  ) {
+
+    return "ready";
+
+  }
+
+
+  if (
+    score >= 0.4
+  ) {
+
+    return "partial";
+
+  }
+
+
+  return "review";
+
+}
+
+
+
+function readinessLabel(
+  value
+) {
+
+  if (
+    value === "ready"
+  ) {
+
+    return "Ready";
+
+  }
+
+
+  if (
+    value === "partial"
+  ) {
+
+    return "Partial";
+
+  }
+
+
+  return "Needs review";
+
+}
+
+
+
+/* ==========================================================
+   INITIATIVE FILTER
+========================================================== */
+
+function filterInitiatives() {
 
   const search =
     clean(
@@ -1874,28 +1986,38 @@ function applyInitiativeFilters() {
     ).value;
 
 
+  const ready =
+    document.getElementById(
+      "readinessFilter"
+    ).value;
+
+
   filteredInitiatives =
     initiatives.filter(
       item => {
 
-        const searchable =
+
+        const text =
           Object.values(
             item
           )
-            .join(" ")
+            .join(
+              " "
+            )
             .toLowerCase();
 
 
         const matchesSearch =
           !search ||
-          searchable.includes(
+          text.includes(
             search
           );
 
 
         const matchesTopic =
           !topic ||
-          item.topic === topic;
+          item.topic ===
+          topic;
 
 
         const matchesSubTopic =
@@ -1909,17 +2031,27 @@ function applyInitiativeFilters() {
           item.sector
             .toLowerCase()
             .includes(
-              sector.toLowerCase()
+              sector
+                .toLowerCase()
+                .split(
+                  "/"
+                )[0]
             );
 
 
-        return (
+        const matchesReadiness =
+          !ready ||
+          readiness(
+            item
+          ) === ready;
 
+
+        return (
           matchesSearch &&
           matchesTopic &&
           matchesSubTopic &&
-          matchesSector
-
+          matchesSector &&
+          matchesReadiness
         );
 
       }
@@ -1932,193 +2064,29 @@ function applyInitiativeFilters() {
 
 
 
-/* =========================================================
-   20. INITIATIVE READINESS
-========================================================= */
-
-function readinessScore(
-  item
-) {
-
-  const fields = [
-
-    "description",
-    "why",
-    "how",
-    "kpi",
-    "evidence",
-    "cost",
-    "carbon"
-
-  ];
-
-
-  const completed =
-    fields.filter(
-      field =>
-        isMeaningful(
-          item[
-            field
-          ]
-        )
-    ).length;
-
-
-  return (
-    completed /
-    fields.length
-  );
-
-}
-
-
-
-function readinessPill(
-  item
-) {
-
-  const score =
-    readinessScore(
-      item
-    );
-
-
-  if (
-    score >= 0.75
-  ) {
-
-    return `
-
-      <span
-        class="status-pill status-ready">
-
-        Ready
-
-      </span>
-
-    `;
-
-  }
-
-
-  if (
-    score >= 0.4
-  ) {
-
-    return `
-
-      <span
-        class="status-pill status-partial">
-
-        Partial
-
-      </span>
-
-    `;
-
-  }
-
-
-  return `
-
-    <span
-      class="status-pill status-missing">
-
-      Needs review
-
-    </span>
-
-  `;
-
-}
-
-
-
-/* =========================================================
-   21. EVIDENCE STATUS
-========================================================= */
-
-function evidenceStatusPill(
-  item
-) {
-
-  if (
-    isMeaningful(
-      item.evidence
-    )
-  ) {
-
-    return `
-
-      <span
-        class="status-pill status-ready">
-
-        Available
-
-      </span>
-
-    `;
-
-  }
-
-
-  return `
-
-    <span
-      class="status-pill status-missing">
-
-      Missing
-
-    </span>
-
-  `;
-
-}
-
-
-
-/* =========================================================
-   22. INITIATIVE TABLE
-========================================================= */
+/* ==========================================================
+   INITIATIVE TABLE
+========================================================== */
 
 function renderInitiatives() {
 
-  const count =
+  document.getElementById(
+    "initiativeResultCount"
+  ).textContent =
+    `${filteredInitiatives.length} shown`;
+
+
+  const table =
     document.getElementById(
-      "initiativeCount"
+      "initiativesTable"
     );
-
-
-  if (
-    count
-  ) {
-
-    count.textContent =
-      `${filteredInitiatives.length} initiatives`;
-
-  }
-
-
-  const body =
-    document.getElementById(
-      "initiativesTableBody"
-    );
-
-
-  if (
-    !body
-  ) {
-
-    return;
-
-  }
 
 
   if (
     !filteredInitiatives.length
   ) {
 
-    body.innerHTML = `
+    table.innerHTML = `
 
       <tr>
 
@@ -2126,12 +2094,10 @@ function renderInitiatives() {
           colspan="8"
           style="
             text-align:center;
-            padding:45px;
-            color:#758494;
-          ">
-
-          No initiatives match the current filters.
-
+            padding:35px;
+          "
+        >
+          No initiatives found.
         </td>
 
       </tr>
@@ -2143,113 +2109,297 @@ function renderInitiatives() {
   }
 
 
-  body.innerHTML =
+  table.innerHTML =
 
     filteredInitiatives
       .map(
-        item => `
-
-          <tr>
-
-            <td class="initiative-name-cell">
-
-              ${escapeHTML(
-                item.initiative
-              )}
-
-            </td>
+        (
+          item,
+          index
+        ) => {
 
 
-            <td class="topic-cell">
+          const status =
+            readiness(
+              item
+            );
 
-              <span class="topic-pill">
+
+          return `
+
+            <tr>
+
+
+              <td
+                class="initiative-cell"
+              >
+
+                <strong
+                  onclick="
+                    openDrawer(
+                      '${item.id}'
+                    )
+                  "
+                >
+
+                  ${escapeHTML(
+                    item.initiative
+                  )}
+
+                </strong>
+
+                <span>
+                  INIT-${String(
+                    index + 1
+                  )
+                    .padStart(
+                      4,
+                      "0"
+                    )}
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <span
+                  class="topic-badge"
+                >
+
+                  ${escapeHTML(
+                    item.topic
+                  )}
+
+                </span>
+
+              </td>
+
+
+              <td
+                class="wrap-cell"
+              >
 
                 ${escapeHTML(
-                  item.topic
-                )}
-
-              </span>
-
-            </td>
-
-
-            <td>
-
-              ${escapeHTML(
-                item.subTopic ||
-                "—"
-              )}
-
-            </td>
-
-
-            <td class="sector-cell">
-
-              <div
-                class="clamp-text"
-                title="${escapeHTML(
-                  item.sector
-                )}">
-
-                ${escapeHTML(
-                  item.sector ||
+                  item.subTopic ||
                   "—"
                 )}
 
-              </div>
-
-            </td>
+              </td>
 
 
-            <td>
+              <td
+                class="wrap-cell small-text"
+              >
 
-              ${escapeHTML(
-                truncate(
-                  item.cost ||
-                  "—",
-                  45
-                )
-              )}
-
-            </td>
-
-
-            <td>
-
-              ${escapeHTML(
-                truncate(
-                  item.carbon ||
-                  "—",
-                  45
-                )
-              )}
-
-            </td>
-
-
-            <td>
-
-              ${readinessPill(
-                item
-              )}
-
-            </td>
-
-
-            <td>
-
-              <button
-                class="table-action"
-                title="View initiative details"
-                onclick="
-                  openInitiativeDrawer(
-                    '${item.id}'
+                ${escapeHTML(
+                  truncate(
+                    item.sector ||
+                    "—",
+                    85
                   )
-                ">
+                )}
 
-                ⋯
+              </td>
 
-              </button>
+
+              <td
+                class="wrap-cell small-text"
+              >
+
+                ${escapeHTML(
+                  truncate(
+                    item.cost ||
+                    "—",
+                    65
+                  )
+                )}
+
+              </td>
+
+
+              <td
+                class="wrap-cell small-text"
+              >
+
+                ${escapeHTML(
+                  truncate(
+                    item.carbon ||
+                    "—",
+                    65
+                  )
+                )}
+
+              </td>
+
+
+              <td
+                class="wrap-cell small-text"
+              >
+
+                ${escapeHTML(
+                  truncate(
+                    item.kpi ||
+                    item.roi ||
+                    "—",
+                    75
+                  )
+                )}
+
+              </td>
+
+
+              <td>
+
+                <span
+                  class="
+                    status-pill
+                    ${status}
+                  "
+                >
+
+                  ${readinessLabel(
+                    status
+                  )}
+
+                </span>
+
+              </td>
+
+
+            </tr>
+
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+
+/* ==========================================================
+   FACTORS
+========================================================== */
+
+function renderFactors() {
+
+  const search =
+    clean(
+      document.getElementById(
+        "factorSearch"
+      )?.value || ""
+    )
+      .toLowerCase();
+
+
+  const type =
+    document.getElementById(
+      "factorTypeFilter"
+    )?.value || "";
+
+
+  const list =
+    factorRecords.filter(
+      factor => {
+
+
+        const matchesType =
+          !type ||
+          factor.type ===
+          type;
+
+
+        const matchesSearch =
+          !search ||
+
+          (
+            factor.initiative +
+            " " +
+            factor.value +
+            " " +
+            factor.topic
+          )
+            .toLowerCase()
+            .includes(
+              search
+            );
+
+
+        return (
+          matchesType &&
+          matchesSearch
+        );
+
+      }
+    );
+
+
+  document.getElementById(
+    "factorCount"
+  ).textContent =
+    `${list.length} factor records`;
+
+
+  document.getElementById(
+    "factorsTable"
+  ).innerHTML =
+
+    list
+      .map(
+        factor => `
+
+          <tr>
+
+            <td>
+              ${escapeHTML(
+                factor.id
+              )}
+            </td>
+
+            <td>
+              ${escapeHTML(
+                factor.type
+              )}
+            </td>
+
+            <td
+              class="initiative-cell"
+            >
+
+              <strong>
+                ${escapeHTML(
+                  factor.initiative
+                )}
+              </strong>
+
+            </td>
+
+            <td
+              class="wrap-cell"
+            >
+
+              ${escapeHTML(
+                truncate(
+                  factor.value,
+                  150
+                )
+              )}
+
+            </td>
+
+            <td>
+
+              <span
+                class="topic-badge"
+              >
+
+                ${escapeHTML(
+                  factor.topic
+                )}
+
+              </span>
 
             </td>
 
@@ -2263,18 +2413,244 @@ function renderInitiatives() {
 
 
 
-/* =========================================================
-   23. DETAIL DRAWER
-========================================================= */
+/* ==========================================================
+   EVIDENCE
+========================================================== */
 
-function openInitiativeDrawer(
+function renderEvidence() {
+
+  const query =
+    clean(
+      document.getElementById(
+        "evidenceSearch"
+      )?.value ||
+      ""
+    )
+      .toLowerCase();
+
+
+  const list =
+    evidenceRecords
+      .filter(
+        record => {
+
+
+          const text =
+            (
+              record.initiative +
+              " " +
+              record.evidence +
+              " " +
+              record.reference +
+              " " +
+              record.topic
+            )
+              .toLowerCase();
+
+
+          return (
+            !query ||
+            text.includes(
+              query
+            )
+          );
+
+        }
+      );
+
+
+  document.getElementById(
+    "evidenceResultCount"
+  ).textContent =
+    `${list.length} records`;
+
+
+  document.getElementById(
+    "evidenceTable"
+  ).innerHTML =
+
+    list
+      .map(
+        record => {
+
+
+          const hasEvidence =
+            meaningful(
+              record.evidence
+            );
+
+
+          return `
+
+            <tr>
+
+
+              <td>
+                ${escapeHTML(
+                  record.id
+                )}
+              </td>
+
+
+              <td
+                class="initiative-cell"
+              >
+
+                <strong>
+                  ${escapeHTML(
+                    record.initiative
+                  )}
+                </strong>
+
+              </td>
+
+
+              <td
+                class="wrap-cell"
+              >
+
+                ${escapeHTML(
+                  truncate(
+                    record.evidence ||
+                    "No evidence recorded",
+                    160
+                  )
+                )}
+
+              </td>
+
+
+              <td>
+
+                <span
+                  class="topic-badge"
+                >
+
+                  ${escapeHTML(
+                    record.topic
+                  )}
+
+                </span>
+
+              </td>
+
+
+              <td>
+
+                ${renderReference(
+                  record.reference
+                )}
+
+              </td>
+
+
+              <td>
+
+                <span
+                  class="
+                    status-pill
+                    ${
+                      hasEvidence
+                        ? "ready"
+                        : "review"
+                    }
+                  "
+                >
+
+                  ${
+                    hasEvidence
+                      ? "Complete"
+                      : "Incomplete"
+                  }
+
+                </span>
+
+              </td>
+
+
+            </tr>
+
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+
+/* ==========================================================
+   REFERENCES
+========================================================== */
+
+function renderReference(
+  value
+) {
+
+  if (
+    !meaningful(
+      value
+    )
+  ) {
+
+    return "—";
+
+  }
+
+
+  const match =
+    value.match(
+      /https?:\/\/[^\s;]+/
+    );
+
+
+  if (
+    match
+  ) {
+
+    return `
+
+      <a
+        class="source-link"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="${escapeHTML(
+          match[0]
+        )}"
+      >
+        Open source
+      </a>
+
+    `;
+
+  }
+
+
+  return escapeHTML(
+    truncate(
+      value,
+      70
+    )
+  );
+
+}
+
+
+
+/* ==========================================================
+   DRAWER
+========================================================== */
+
+function openDrawer(
   id
 ) {
 
   const item =
     initiatives.find(
       initiative =>
-        initiative.id === id
+        initiative.id ===
+        id
     );
 
 
@@ -2299,7 +2675,7 @@ function openInitiativeDrawer(
     item.initiative;
 
 
-  const fields = [
+  const sections = [
 
     [
       "Description",
@@ -2312,8 +2688,18 @@ function openInitiativeDrawer(
     ],
 
     [
-      "How to achieve this",
+      "How to achieve",
       item.how
+    ],
+
+    [
+      "Sector included",
+      item.sector
+    ],
+
+    [
+      "Sector excluded",
+      item.excluded
     ],
 
     [
@@ -2322,32 +2708,17 @@ function openInitiativeDrawer(
     ],
 
     [
-      "Tools",
-      item.tools
-    ],
-
-    [
-      "Sector Included",
-      item.sector
-    ],
-
-    [
-      "Sector Excluded",
-      item.excluded
-    ],
-
-    [
-      "Cost / Cost Saving",
+      "Cost",
       item.cost
     ],
 
     [
-      "Carbon Abatement Potential",
+      "Carbon abatement potential",
       item.carbon
     ],
 
     [
-      "Time to Implement / ROI",
+      "Time to implement / ROI",
       item.roi
     ],
 
@@ -2367,6 +2738,11 @@ function openInitiativeDrawer(
     ],
 
     [
+      "Tools",
+      item.tools
+    ],
+
+    [
       "Old Initiative",
       item.oldInitiative
     ]
@@ -2375,46 +2751,33 @@ function openInitiativeDrawer(
 
 
   document.getElementById(
-    "drawerContent"
+    "drawerBody"
   ).innerHTML =
 
-    fields
+    sections
       .filter(
-        (
-          [
-            title,
-            value
-          ]
-        ) =>
-          isMeaningful(
-            value
+        section =>
+          meaningful(
+            section[1]
           )
       )
       .map(
-        (
-          [
-            title,
-            value
-          ]
-        ) => `
+        section => `
 
-          <div class="drawer-block">
+          <div
+            class="drawer-section"
+          >
 
-            <h4>
-
+            <h3>
               ${escapeHTML(
-                title
+                section[0]
               )}
-
-            </h4>
-
+            </h3>
 
             <p>
-
               ${linkify(
-                value
+                section[1]
               )}
-
             </p>
 
           </div>
@@ -2432,17 +2795,25 @@ function openInitiativeDrawer(
 
 
   document.getElementById(
-    "drawerOverlay"
+    "drawerBackdrop"
   ).classList.add(
     "open"
+  );
+
+
+  logActivity(
+    "Initiative",
+    "VIEW",
+    item.initiative,
+    "admin"
   );
 
 }
 
 
 
-window.openInitiativeDrawer =
-  openInitiativeDrawer;
+window.openDrawer =
+  openDrawer;
 
 
 
@@ -2456,7 +2827,7 @@ function closeDrawer() {
 
 
   document.getElementById(
-    "drawerOverlay"
+    "drawerBackdrop"
   ).classList.remove(
     "open"
   );
@@ -2465,214 +2836,32 @@ function closeDrawer() {
 
 
 
-function linkify(value) {
+/* ==========================================================
+   LINKIFY
+========================================================== */
 
-  const escaped =
-    escapeHTML(
-      value
-    );
-
-
-  return escaped.replace(
-
-    /(https?:\/\/[^\s]+)/g,
-
-    '<a class="reference-link" href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
-
-  );
-
-}
-
-
-
-/* =========================================================
-   24. EVIDENCE PAGE
-========================================================= */
-
-function renderEvidence() {
-
-  const searchElement =
-    document.getElementById(
-      "evidenceSearch"
-    );
-
-
-  const query =
-    searchElement
-
-      ? clean(
-          searchElement.value
-        ).toLowerCase()
-
-      : "";
-
-
-  const list =
-    initiatives.filter(
-      item => {
-
-        const searchable =
-          [
-            item.initiative,
-            item.topic,
-            item.evidence,
-            item.reference
-          ]
-            .join(" ")
-            .toLowerCase();
-
-
-        return (
-          !query ||
-          searchable.includes(
-            query
-          )
-        );
-
-      }
-    );
-
-
-  document.getElementById(
-    "evidenceCount"
-  ).textContent =
-    `${list.length} records`;
-
-
-  document.getElementById(
-    "evidenceTableBody"
-  ).innerHTML =
-
-    list
-      .map(
-        item => `
-
-          <tr>
-
-            <td class="initiative-name-cell">
-
-              ${escapeHTML(
-                item.initiative
-              )}
-
-            </td>
-
-
-            <td>
-
-              <span class="topic-pill">
-
-                ${escapeHTML(
-                  item.topic
-                )}
-
-              </span>
-
-            </td>
-
-
-            <td>
-
-              ${escapeHTML(
-                truncate(
-                  item.evidence ||
-                  "No evidence recorded",
-                  160
-                )
-              )}
-
-            </td>
-
-
-            <td>
-
-              ${renderReference(
-                item.reference
-              )}
-
-            </td>
-
-
-            <td>
-
-              ${evidenceStatusPill(
-                item
-              )}
-
-            </td>
-
-          </tr>
-
-        `
-      )
-      .join("");
-
-}
-
-
-
-function renderReference(
-  value
+function linkify(
+  text
 ) {
 
-  if (
-    !isMeaningful(
-      value
-    )
-  ) {
-
-    return "—";
-
-  }
-
-
-  const url =
-    clean(
-      value
-    ).match(
-      /https?:\/\/[^\s;]+/
-    );
-
-
-  if (
-    url
-  ) {
-
-    return `
-
-      <a
-        class="reference-link"
-        href="${escapeHTML(
-          url[0]
-        )}"
-        target="_blank"
-        rel="noopener noreferrer">
-
-        Open source ↗
-
-      </a>
-
-    `;
-
-  }
-
-
   return escapeHTML(
-    truncate(
-      value,
-      75
-    )
-  );
+    text
+  )
+    .replace(
+      /(https?:\/\/[^\s]+)/g,
+
+      '<a class="source-link" target="_blank" rel="noopener noreferrer" href="$1">$1</a>'
+    );
 
 }
 
 
 
-/* =========================================================
-   25. QUESTIONNAIRE
-========================================================= */
+/* ==========================================================
+   QUESTIONNAIRE
+========================================================== */
 
-function generateQuestionnaireRecommendations() {
+function runQuestionnaire() {
 
   const sector =
     document.getElementById(
@@ -2686,116 +2875,144 @@ function generateQuestionnaireRecommendations() {
     ).value;
 
 
-  const maturity =
+  const energy =
     document.getElementById(
-      "questionMaturity"
-    ).value;
-
-
-  const hasScope3 =
-    document.getElementById(
-      "hasScope3"
+      "questionEnergy"
     ).checked;
 
 
-  const hasEnergyData =
+  const scope3 =
     document.getElementById(
-      "hasEnergyData"
+      "questionScope3"
     ).checked;
 
 
-  const hasBoardOversight =
+  const board =
     document.getElementById(
-      "hasBoardOversight"
+      "questionBoard"
     ).checked;
 
 
-  let candidates =
+  const scored =
     initiatives
-      .filter(
-        item => {
-
-          const sectorText =
-            item.sector
-              .toLowerCase();
-
-
-          const sectorMatch =
-            sector === "All" ||
-            sectorText.includes(
-              sector.toLowerCase()
-            ) ||
-            sectorText.includes(
-              "all"
-            );
-
-
-          const priorityMatch =
-            !priority ||
-
-            item.topic
-              .toLowerCase()
-              .includes(
-                priority.toLowerCase()
-              ) ||
-
-            item.subTopic
-              .toLowerCase()
-              .includes(
-                priority.toLowerCase()
-              );
-
-
-          return (
-            sectorMatch &&
-            priorityMatch
-          );
-
-        }
-      )
       .map(
         item => {
 
-          let score =
-            readinessScore(
-              item
-            );
+
+          let score = 0;
 
 
           const text =
-            [
-              item.initiative,
-              item.description,
-              item.subTopic,
-              item.topic
-            ]
-              .join(" ")
+            (
+              item.initiative +
+              " " +
+              item.description +
+              " " +
+              item.topic +
+              " " +
+              item.subTopic
+            )
               .toLowerCase();
 
 
           if (
-            !hasScope3 &&
-            (
-              text.includes(
-                "scope 3"
-              ) ||
-              text.includes(
-                "supplier"
-              ) ||
-              text.includes(
-                "value chain"
+            sector &&
+            item.sector
+              .toLowerCase()
+              .includes(
+                sector
+                  .toLowerCase()
+                  .split(
+                    "/"
+                  )[0]
               )
-            )
           ) {
 
-            score +=
-              0.35;
+            score += 2;
 
           }
 
 
           if (
-            !hasEnergyData &&
+            priority ===
+            "Governance" &&
+            (
+              text.includes(
+                "govern"
+              ) ||
+              text.includes(
+                "strategy"
+              )
+            )
+          ) {
+
+            score += 3;
+
+          }
+
+
+          if (
+            priority ===
+            "Energy" &&
+            (
+              text.includes(
+                "energy"
+              ) ||
+              text.includes(
+                "building"
+              )
+            )
+          ) {
+
+            score += 3;
+
+          }
+
+
+          if (
+            priority ===
+            "Supply" &&
+            (
+              text.includes(
+                "supply"
+              ) ||
+              text.includes(
+                "food"
+              ) ||
+              text.includes(
+                "procurement"
+              )
+            )
+          ) {
+
+            score += 3;
+
+          }
+
+
+          if (
+            priority ===
+            "Nature" &&
+            (
+              text.includes(
+                "nature"
+              ) ||
+              text.includes(
+                "water"
+              ) ||
+              text.includes(
+                "waste"
+              )
+            )
+          ) {
+
+            score += 3;
+
+          }
+
+
+          if (
+            !energy &&
             (
               text.includes(
                 "energy"
@@ -2809,14 +3026,33 @@ function generateQuestionnaireRecommendations() {
             )
           ) {
 
-            score +=
-              0.25;
+            score += 3;
 
           }
 
 
           if (
-            !hasBoardOversight &&
+            !scope3 &&
+            (
+              text.includes(
+                "scope 3"
+              ) ||
+              text.includes(
+                "supplier"
+              ) ||
+              text.includes(
+                "value chain"
+              )
+            )
+          ) {
+
+            score += 3;
+
+          }
+
+
+          if (
+            !board &&
             (
               text.includes(
                 "board"
@@ -2827,47 +3063,19 @@ function generateQuestionnaireRecommendations() {
             )
           ) {
 
-            score +=
-              0.35;
-
-          }
-
-
-          if (
-            maturity ===
-            "early"
-          ) {
-
-            if (
-              text.includes(
-                "baseline"
-              ) ||
-              text.includes(
-                "policy"
-              ) ||
-              text.includes(
-                "governance"
-              )
-            ) {
-
-              score +=
-                0.15;
-
-            }
+            score += 3;
 
           }
 
 
           return {
-
             item,
-
             score
-
           };
 
         }
       )
+
       .sort(
         (
           a,
@@ -2876,52 +3084,208 @@ function generateQuestionnaireRecommendations() {
           b.score -
           a.score
       )
+
       .slice(
         0,
-        6
+        7
       );
 
 
-  currentQuestionRecommendations =
-    candidates.map(
-      candidate =>
-        candidate.item
-    );
+  document.getElementById(
+    "questionnaireResults"
+  ).innerHTML =
+
+    scored
+      .map(
+        (
+          entry,
+          index
+        ) => `
+
+          <article
+            class="question-result"
+          >
+
+            <strong>
+
+              ${index + 1}.
+              ${escapeHTML(
+                entry.item.initiative
+              )}
+
+            </strong>
 
 
-  renderQuestionnaireRecommendations();
+            <span>
+
+              ${escapeHTML(
+                truncate(
+                  entry.item.why ||
+                  entry.item.description,
+                  150
+                )
+              )}
+
+            </span>
+
+          </article>
+
+        `
+      )
+      .join("");
 
 
-  updatePreview(
-    currentQuestionRecommendations
+  logActivity(
+    "Questionnaire",
+    "RUN",
+    "Generated recommendations",
+    "admin"
   );
 
 }
 
 
 
-/* =========================================================
-   26. QUESTIONNAIRE RESULTS
-========================================================= */
+/* ==========================================================
+   ACTIVITY LOG
+========================================================== */
 
-function renderQuestionnaireRecommendations() {
+function getActivity() {
+
+  try {
+
+    return JSON.parse(
+      localStorage.getItem(
+        "zcfActivity"
+      ) ||
+      "[]"
+    );
+
+  }
+
+
+  catch (
+    error
+  ) {
+
+    return [];
+
+  }
+
+}
+
+
+
+function logActivity(
+  category,
+  action,
+  description,
+  user
+) {
+
+  let activity =
+    getActivity();
+
+
+  const last =
+    activity[0];
+
+
+  if (
+    last &&
+    last.category ===
+    category &&
+    last.action ===
+    action &&
+    last.description ===
+    description
+  ) {
+
+    return;
+
+  }
+
+
+  activity.unshift({
+
+    timestamp:
+      new Date()
+        .toISOString(),
+
+    category,
+
+    action,
+
+    description,
+
+    user
+
+  });
+
+
+  activity =
+    activity.slice(
+      0,
+      12
+    );
+
+
+  localStorage.setItem(
+
+    "zcfActivity",
+
+    JSON.stringify(
+      activity
+    )
+
+  );
+
+
+  renderActivity();
+
+}
+
+
+
+/* ==========================================================
+   ACTIVITY UI
+========================================================== */
+
+function renderActivity() {
 
   const container =
     document.getElementById(
-      "questionRecommendations"
+      "recentActivity"
     );
 
 
   if (
-    !currentQuestionRecommendations.length
+    !container
+  ) {
+
+    return;
+
+  }
+
+
+  const activity =
+    getActivity();
+
+
+  if (
+    !activity.length
   ) {
 
     container.innerHTML = `
 
-      <div class="empty-box">
-
-        No matching initiatives were found.
-
+      <div
+        style="
+          padding:18px 0;
+          color:#788798;
+          font-size:10px;
+        "
+      >
+        No activity recorded in this browser yet.
       </div>
 
     `;
@@ -2933,158 +3297,78 @@ function renderQuestionnaireRecommendations() {
 
   container.innerHTML =
 
-    currentQuestionRecommendations
+    activity
       .map(
-        (
-          item,
-          index
-        ) => `
-
-          <div class="recommendation-item">
-
-            <div class="rec-number">
-
-              PRIORITY ${index + 1}
-
-            </div>
+        item => {
 
 
-            <strong>
-
-              ${escapeHTML(
-                item.initiative
-              )}
-
-            </strong>
+          const date =
+            new Date(
+              item.timestamp
+            );
 
 
-            <p>
+          return `
 
-              ${escapeHTML(
-                truncate(
-                  item.why ||
-                  item.description,
-                  160
-                )
-              )}
+            <div
+              class="activity-row"
+            >
 
-            </p>
+              <div
+                class="activity-date"
+              >
 
-          </div>
+                ${date.toLocaleString()}
 
-        `
-      )
-      .join("");
-
-}
+              </div>
 
 
+              <div
+                class="activity-main"
+              >
 
-/* =========================================================
-   27. PREVIEW OUTPUT
-========================================================= */
-
-function updatePreview(
-  customList = null
-) {
-
-  const previewItems =
-
-    customList &&
-    customList.length
-
-      ? customList.slice(
-          0,
-          5
-        )
-
-      : initiatives.slice(
-          0,
-          5
-        );
-
-
-  document.getElementById(
-    "previewActionCount"
-  ).textContent =
-    previewItems.length;
-
-
-  document.getElementById(
-    "previewRecommendations"
-  ).innerHTML =
-
-    previewItems
-      .map(
-        (
-          item,
-          index
-        ) => `
-
-          <div class="preview-action">
-
-            <div class="preview-action-number">
-
-              ${index + 1}
-
-            </div>
-
-
-            <div>
-
-              <strong>
-
-                ${escapeHTML(
-                  item.initiative
-                )}
-
-              </strong>
-
-
-              <p>
-
-                ${escapeHTML(
-                  item.topic
-                )}
+                <strong>
+                  ${escapeHTML(
+                    item.category
+                  )}
+                </strong>
 
                 ·
 
-                ${escapeHTML(
-                  item.subTopic ||
-                  "General"
-                )}
+                <span>
+                  ${escapeHTML(
+                    item.action
+                  )}
+                </span>
 
-              </p>
+                <div
+                  class="small-text"
+                >
+                  ${escapeHTML(
+                    truncate(
+                      item.description,
+                      100
+                    )
+                  )}
+                </div>
+
+              </div>
+
+
+              <div
+                class="activity-user"
+              >
+                ${escapeHTML(
+                  item.user
+                )}
+              </div>
+
 
             </div>
 
+          `;
 
-            <span
-              class="status-pill ${
-                readinessScore(
-                  item
-                ) >= 0.75
-
-                  ? "status-ready"
-
-                  : "status-partial"
-              }">
-
-              ${
-                readinessScore(
-                  item
-                ) >= 0.75
-
-                  ? "Ready"
-
-                  : "Review"
-              }
-
-            </span>
-
-          </div>
-
-        `
+        }
       )
       .join("");
 
@@ -3092,14 +3376,52 @@ function updatePreview(
 
 
 
-/* =========================================================
-   28. SESSION-ONLY ADD INITIATIVE
-========================================================= */
+/* ==========================================================
+   HEALTH
+========================================================== */
+
+function updateHealth() {
+
+  document.getElementById(
+    "healthSources"
+  ).textContent =
+    `${loadedSources} / ${DATA_SOURCES.length}`;
+
+
+  document.getElementById(
+    "healthRecords"
+  ).textContent =
+    initiatives.length;
+
+
+  document.getElementById(
+    "healthDuplicates"
+  ).textContent =
+    duplicatesRemoved;
+
+
+  document.getElementById(
+    "healthStatus"
+  ).textContent =
+    loadedSources ===
+    DATA_SOURCES.length
+
+      ? "Healthy"
+
+      : "Partial";
+
+}
+
+
+
+/* ==========================================================
+   ADD INITIATIVE MODAL
+========================================================== */
 
 function openModal() {
 
   document.getElementById(
-    "modalOverlay"
+    "modalBackdrop"
   ).classList.add(
     "open"
   );
@@ -3111,7 +3433,7 @@ function openModal() {
 function closeModal() {
 
   document.getElementById(
-    "modalOverlay"
+    "modalBackdrop"
   ).classList.remove(
     "open"
   );
@@ -3122,7 +3444,7 @@ function closeModal() {
 
 function saveSessionInitiative() {
 
-  const initiative =
+  const name =
     clean(
       document.getElementById(
         "newInitiativeName"
@@ -3147,7 +3469,7 @@ function saveSessionInitiative() {
 
 
   if (
-    !initiative
+    !name
   ) {
 
     alert(
@@ -3159,16 +3481,13 @@ function saveSessionInitiative() {
   }
 
 
-  initiatives.unshift({
+  const item = {
 
     id:
       `session-${Date.now()}`,
 
-    sourceName:
-      "Session entry",
-
-    sourceFile:
-      "",
+    initiative:
+      name,
 
     topic:
       topic ||
@@ -3177,23 +3496,18 @@ function saveSessionInitiative() {
     subTopic:
       "",
 
-    initiative,
-
-    oldInitiative:
-      "",
-
-    sector:
-      "All",
-
-    excluded:
-      "",
-
     description,
 
     why:
       "",
 
     how:
+      "",
+
+    sector:
+      "All",
+
+    excluded:
       "",
 
     kpi:
@@ -3218,9 +3532,20 @@ function saveSessionInitiative() {
       "",
 
     tools:
-      ""
+      "",
 
-  });
+    oldInitiative:
+      "",
+
+    source:
+      "Browser session"
+
+  };
+
+
+  initiatives.unshift(
+    item
+  );
 
 
   filteredInitiatives =
@@ -3229,7 +3554,19 @@ function saveSessionInitiative() {
     ];
 
 
-  initialiseInterface();
+  buildFactorRecords();
+
+  buildEvidenceRecords();
+
+  updateEverything();
+
+
+  logActivity(
+    "Initiative",
+    "CREATE",
+    name,
+    "admin"
+  );
 
 
   closeModal();
@@ -3238,144 +3575,203 @@ function saveSessionInitiative() {
 
 
 
-/* =========================================================
-   29. EVENT LISTENERS
-========================================================= */
+/* ==========================================================
+   EVENTS
+========================================================== */
 
-const initiativeSearch =
-  document.getElementById(
+document
+  .getElementById(
     "initiativeSearch"
+  )
+  .addEventListener(
+    "input",
+    filterInitiatives
   );
 
 
-const topicFilter =
-  document.getElementById(
+document
+  .getElementById(
     "topicFilter"
+  )
+  .addEventListener(
+    "change",
+    filterInitiatives
   );
 
 
-const subTopicFilter =
-  document.getElementById(
+document
+  .getElementById(
     "subTopicFilter"
+  )
+  .addEventListener(
+    "change",
+    filterInitiatives
   );
 
 
-const sectorFilter =
-  document.getElementById(
+document
+  .getElementById(
     "sectorFilter"
+  )
+  .addEventListener(
+    "change",
+    filterInitiatives
   );
 
 
-initiativeSearch.addEventListener(
-  "input",
-  applyInitiativeFilters
-);
+document
+  .getElementById(
+    "readinessFilter"
+  )
+  .addEventListener(
+    "change",
+    filterInitiatives
+  );
 
 
-topicFilter.addEventListener(
-  "change",
-  applyInitiativeFilters
-);
+document
+  .getElementById(
+    "factorSearch"
+  )
+  .addEventListener(
+    "input",
+    renderFactors
+  );
 
 
-subTopicFilter.addEventListener(
-  "change",
-  applyInitiativeFilters
-);
+document
+  .getElementById(
+    "factorTypeFilter"
+  )
+  .addEventListener(
+    "change",
+    renderFactors
+  );
 
 
-sectorFilter.addEventListener(
-  "change",
-  applyInitiativeFilters
-);
+document
+  .getElementById(
+    "evidenceSearch"
+  )
+  .addEventListener(
+    "input",
+    renderEvidence
+  );
 
 
-document.getElementById(
-  "evidenceSearch"
-).addEventListener(
-  "input",
-  renderEvidence
-);
+document
+  .getElementById(
+    "runQuestionnaire"
+  )
+  .addEventListener(
+    "click",
+    runQuestionnaire
+  );
 
 
-document.getElementById(
-  "generateRecommendations"
-).addEventListener(
-  "click",
-  generateQuestionnaireRecommendations
-);
+document
+  .getElementById(
+    "refreshData"
+  )
+  .addEventListener(
+    "click",
+    loadData
+  );
 
 
-document.getElementById(
-  "refreshButton"
-).addEventListener(
-  "click",
-  loadData
-);
+document
+  .getElementById(
+    "closeDrawer"
+  )
+  .addEventListener(
+    "click",
+    closeDrawer
+  );
 
 
-document.getElementById(
-  "closeDrawer"
-).addEventListener(
-  "click",
-  closeDrawer
-);
+document
+  .getElementById(
+    "drawerBackdrop"
+  )
+  .addEventListener(
+    "click",
+    closeDrawer
+  );
 
 
-document.getElementById(
-  "drawerOverlay"
-).addEventListener(
-  "click",
-  closeDrawer
-);
+document
+  .getElementById(
+    "addInitiativeButton"
+  )
+  .addEventListener(
+    "click",
+    openModal
+  );
 
 
-document.getElementById(
-  "addInitiativeButton"
-).addEventListener(
-  "click",
-  openModal
-);
+document
+  .getElementById(
+    "closeModal"
+  )
+  .addEventListener(
+    "click",
+    closeModal
+  );
 
 
-document.getElementById(
-  "closeModal"
-).addEventListener(
-  "click",
-  closeModal
-);
+document
+  .getElementById(
+    "saveNewInitiative"
+  )
+  .addEventListener(
+    "click",
+    saveSessionInitiative
+  );
 
 
-document.getElementById(
-  "saveInitiative"
-).addEventListener(
-  "click",
-  saveSessionInitiative
-);
+document
+  .getElementById(
+    "modalBackdrop"
+  )
+  .addEventListener(
+    "click",
+    event => {
 
+      if (
+        event.target.id ===
+        "modalBackdrop"
+      ) {
 
-document.getElementById(
-  "modalOverlay"
-).addEventListener(
-  "click",
-  event => {
+        closeModal();
 
-    if (
-      event.target.id ===
-      "modalOverlay"
-    ) {
-
-      closeModal();
+      }
 
     }
-
-  }
-);
+  );
 
 
+document
+  .getElementById(
+    "clearActivity"
+  )
+  .addEventListener(
+    "click",
+    () => {
 
-/* =========================================================
-   30. START PLATFORM
-========================================================= */
+      localStorage.removeItem(
+        "zcfActivity"
+      );
+
+
+      renderActivity();
+
+    }
+  );
+
+
+
+/* ==========================================================
+   START
+========================================================== */
 
 loadData();
