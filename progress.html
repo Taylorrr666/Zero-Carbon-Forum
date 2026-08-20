@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>
+  Progress · ZCF CAP
+</title>
+
+<link
+  rel="stylesheet"
+  href="style.css"
+>
+
+</head>
+
+
+<body data-page="progress">
+
+
+<header class="topbar">
+
+  <a class="brand" href="index.html">
+
+    <span class="brand-mark">
+      <i></i>
+      <b></b>
+    </span>
+
+    <span class="brand-copy">
+
+      <strong>
+        ZERO CARBON FORUM
+      </strong>
+
+      <small>
+        CAP
+        <em>Governance</em>
+      </small>
+
+    </span>
+
+  </a>
+
+
+  <nav class="main-nav">
+
+    <a href="index.html" data-page="dashboard">
+      Dashboard
+    </a>
+
+    <a href="plan.html" data-page="plan">
+      Plan
+    </a>
+
+    <a href="progress.html" data-page="progress">
+      Progress
+    </a>
+
+    <a href="initiatives.html" data-page="initiatives">
+      Initiatives
+    </a>
+
+    <a href="factors.html" data-page="factors">
+      Factors
+    </a>
+
+    <a href="evidence.html" data-page="evidence">
+      Evidence
+    </a>
+
+    <a href="questionnaires.html" data-page="questionnaires">
+      Questionnaires
+    </a>
+
+    <a href="member-plan.html" class="member-link">
+      Member plan
+    </a>
+
+  </nav>
+
+
+  <div class="top-actions">
+
+    <button id="refreshData" class="text-btn">
+      Refresh
+    </button>
+
+    <span id="dataStatus">
+      Loading…
+    </span>
+
+  </div>
+
+</header>
+
+
+<main class="page-shell">
+
+
+<section class="heading">
+
+  <h1>
+    Historical progress
+  </h1>
+
+  <p>
+    Import past CAP survey exports, preview the data locally and maintain a lightweight upload record.
+  </p>
+
+</section>
+
+
+<div class="metric-grid five">
+
+
+  <article class="metric-card compact">
+
+    <span>
+      Members
+    </span>
+
+    <strong id="pMembers">
+      0
+    </strong>
+
+  </article>
+
+
+  <article class="metric-card compact">
+
+    <span>
+      Status rows
+    </span>
+
+    <strong id="pRows">
+      0
+    </strong>
+
+  </article>
+
+
+  <article class="metric-card compact">
+
+    <span>
+      Needs review
+    </span>
+
+    <strong id="pReview">
+      0
+    </strong>
+
+  </article>
+
+
+  <article class="metric-card compact">
+
+    <span>
+      Mapped
+    </span>
+
+    <strong id="pMapped">
+      0
+    </strong>
+
+  </article>
+
+
+  <article class="metric-card compact">
+
+    <span>
+      Retired
+    </span>
+
+    <strong id="pRetired">
+      0
+    </strong>
+
+  </article>
+
+
+</div>
+
+
+<div class="two-col">
+
+
+<section class="panel">
+
+  <h2>
+    Import historical workbook
+  </h2>
+
+  <p class="muted-copy">
+    This GitHub Pages prototype reads the selected CSV locally in your browser.
+  </p>
+
+
+  <label class="file-field">
+
+    Survey responses (CSV)
+
+    <input
+      id="progressFile"
+      type="file"
+      accept=".csv"
+    >
+
+  </label>
+
+
+  <div class="button-row">
+
+    <button
+      id="dryRun"
+      class="btn secondary"
+    >
+      Dry run
+    </button>
+
+    <button
+      id="importAnswers"
+      class="btn primary"
+    >
+      Import answers
+    </button>
+
+  </div>
+
+</section>
+
+
+<section class="panel green-panel">
+
+  <h2>
+    Returning-member demo
+  </h2>
+
+  <p>
+    Demo Company ID:
+    <strong>
+      9990000001
+    </strong>
+  </p>
+
+  <p class="muted-copy">
+    Historical member matching will be connected when you upload the real progress/history file.
+  </p>
+
+</section>
+
+
+</div>
+
+
+<section class="panel">
+
+  <div class="panel-head">
+
+    <h2>
+      Upload record
+    </h2>
+
+  </div>
+
+
+  <div class="table-wrap">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>
+            When
+          </th>
+
+          <th>
+            Kind
+          </th>
+
+          <th>
+            File
+          </th>
+
+          <th>
+            Rows
+          </th>
+
+          <th>
+            Columns
+          </th>
+
+          <th>
+            Notes
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody id="uploadRecord">
+
+        <tr>
+
+          <td
+            colspan="6"
+            class="empty-cell"
+          >
+            No imports yet.
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+
+<section class="panel narrow-panel">
+
+  <h2>
+    Clear historical data
+  </h2>
+
+  <p class="muted-copy">
+    Type CLEAR to confirm.
+  </p>
+
+
+  <input
+    id="clearConfirm"
+    placeholder="CLEAR"
+  >
+
+
+  <button
+    id="clearHistory"
+    class="btn danger"
+  >
+    Clear history
+  </button>
+
+</section>
+
+
+</main>
+
+
+<footer class="footer">
+
+  <p>
+    © 2026 Zero Carbon Forum · Climate Action Plan Governance prototype.
+  </p>
+
+</footer>
+
+
+<script src="app.js"></script>
+
+
+</body>
+
+</html>
