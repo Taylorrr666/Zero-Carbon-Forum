@@ -1,0 +1,182 @@
+﻿Legacy_Initiative_Name,New_Initiative_ID,New_Initiative_Name,Topic,Sub_Topic,Source_Row
+Adopt a net-zero buildings plan,INIT-0001,Adopt a net-zero buildings plan,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,2
+,INIT-0002,Measure and verify building energy performance,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,3
+Install energy efficient HVAC systems,INIT-0003,Optimise and upgrade HVAC systems and controls,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,4
+Implement Smart Dispense Systems,INIT-0004,Install smart draught beverage dispense systems,Energy & Buildings,Energy Management,5
+"Install timer controls on domestic hot-water boilers; Roll out equipment timers across boilers, refrigeration and kitchen equipment",INIT-0005,Install timer controls across eligible equipment,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,6
+Use intelligent kitchen extract systems,INIT-0006,"Optimise fans and pumps with variable-speed drives, efficient motors and demand controls",Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,7
+Recover and reuse commercial heat,INIT-0007,"Recover and reuse waste heat from refrigeration, cooking or wastewater",Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,8
+Use gas boiler additives,INIT-0008,Upgrade boiler burner controls and balance heat-distribution systems,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,9
+,INIT-0009,"Upgrade domestic hot-water generation, storage and circulation controls",Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,10
+Install equipment timers,INIT-0010,"Automate shutdown of non-HVAC, non-lighting equipment outside operating hours",Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,11
+,INIT-0011,"Implement power management for small-power, IT and server-room equipment",Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,12
+,INIT-0012,Upgrade lift and escalator drives and controls,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,13
+,INIT-0013,"Optimise swimming-pool circulation, heating, covers and backwashing",Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,14
+,INIT-0014,Replace high-GWP refrigerants with lower-GWP alternatives during planned plant intervention,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,15
+,INIT-0015,Install refrigerant leak detection and implement rapid repair,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,16
+,INIT-0016,Maintain a governed refrigerant inventory and leakage record,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,17
+,INIT-0017,Recover refrigerants at equipment end of life and document transfer,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,18
+,INIT-0018,"Upgrade refrigeration equipment, doors, seals, fans and controls",Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,19
+Switch freezer temperatures to -15.,INIT-0019,Adopt a validated warmer freezer setpoint where product and food-safety rules allow,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,20
+"Avoid outdoor patio heaters, or if you must use them, use infra-red electric heaters",INIT-0020,Phase out fossil-fuelled patio heaters and avoid unnecessary outdoor heating,Energy & Buildings,Buildings & Refrigerants & Fugitive Emissions,21
+,INIT-0021,Conduct whole-life carbon assessments for major capital projects,Energy & Buildings,Capital Goods (sub group supply chain),22
+"When undertaking new construction projects, design for performance and set embodied carbon targets",INIT-0022,Set operational-energy and embodied-carbon targets for new construction and major refurbishment,Energy & Buildings,Capital Goods (sub group supply chain),23
+,INIT-0023,Apply carbon criteria at capital-project investment and design gates,Energy & Buildings,Capital Goods (sub group supply chain),24
+,INIT-0024,Require EPDs or product-specific carbon data for priority materials and equipment,Energy & Buildings,Capital Goods (sub group supply chain),25
+,INIT-0025,"Prioritise refurbishment, reuse and adaptation before new construction",Energy & Buildings,Capital Goods (sub group supply chain),26
+Adopt reuse and recycling practices in buildings and fitouts,INIT-0026,Require component reuse and material recovery in building and fit-out projects,Energy & Buildings,Capital Goods (sub group supply chain),27
+Use sustainable and locally-sourced materials in construction and maintenance,INIT-0027,Specify lower-carbon and responsibly sourced construction materials,Energy & Buildings,Capital Goods (sub group supply chain),28
+,INIT-0028,"Specify durability, repairability, modularity and supplier take-back for capital equipment",Energy & Buildings,Capital Goods (sub group supply chain),29
+,INIT-0029,"Design buildings and fit-outs for adaptability, disassembly and material recovery",Energy & Buildings,Capital Goods (sub group supply chain),30
+,INIT-0030,Commission new buildings and major refurbishments against designed operational performance,Energy & Buildings,Capital Goods (sub group supply chain),31
+Replace old kitchen equipment with energy efficient alternatives,INIT-0031,Apply verified energy-efficiency criteria when replacing kitchen equipment,Energy & Buildings,Capital Goods (sub group supply chain),32
+Explore installation of hydrogen-ready kitchen equipment,INIT-0032,Assess the feasibility of hydrogen-ready kitchen equipment,Energy & Buildings,Capital Goods (sub group supply chain),33
+Lease locations in low impact buildings.,INIT-0033,Apply environmental-performance criteria when selecting leased sites,Energy & Buildings,"Leased, Tenanted & Franchised Sites",34
+,INIT-0034,Apply energy and carbon criteria to lease renewals and franchise onboarding,Energy & Buildings,"Leased, Tenanted & Franchised Sites",35
+,INIT-0035,"Include green performance, data and cooperation clauses in leases and franchise agreements",Energy & Buildings,"Leased, Tenanted & Franchised Sites",36
+,INIT-0036,"Collect and quality-check energy and emissions data from leased, tenanted and franchised sites",Energy & Buildings,"Leased, Tenanted & Franchised Sites",37
+,INIT-0037,Secure rights and approval routes for environmental improvements in leased sites,Energy & Buildings,"Leased, Tenanted & Franchised Sites",38
+,INIT-0038,Enable renewable electricity procurement under lease and franchise arrangements,Energy & Buildings,"Leased, Tenanted & Franchised Sites",39
+Engage with landlord to reduce emissions from leased facilities,INIT-0039,"Agree landlord-tenant decarbonisation plans with actions, funding and accountability",Energy & Buildings,"Leased, Tenanted & Franchised Sites",40
+,INIT-0040,Set and monitor energy-performance standards for franchisees,Energy & Buildings,"Leased, Tenanted & Franchised Sites",41
+"Complete an Energy Health Check, and identify opportunites for energy savings through behavioural change campaigns",INIT-0041,Complete an Energy Health Check,Energy & Buildings,Energy Management,42
+,INIT-0042,Install battery storage (BESS),Energy & Buildings,Energy Procurement & Renewables,43
+Switch to LED lights,INIT-0043,Upgrade to LED lighting with optimised design and controls,Energy & Buildings,Energy Management,44
+Install Heat Recovery Ventilation Units,INIT-0044,Install heat/energy recovery ventilation units,Energy & Buildings,Energy Management,45
+Use gas boiler additives,INIT-0045,Deploy gas boiler additives,Energy & Buildings,Energy Management,46
+Install air source or ground source heat pumps,INIT-0046,Install air or ground source heat pumps,Energy & Buildings,Energy Procurement & Renewables,47
+Utilise Cellar Cooling,INIT-0047,Utilise cellar cooling across estates,Energy & Buildings,Energy Management,48
+Transition from gas to electricity,INIT-0048,Replace gas-fired heating and catering equipment with electric alternatives,Energy & Buildings,Energy Management,49
+,INIT-0049,Invest in energy-efficiency and renewables infrastructure,Energy & Buildings,Energy Procurement & Renewables,50
+Improve building insulation,INIT-0050,"Upgrade building-fabric thermal performance (insulation, glazing, draught-proofing)",Energy & Buildings,Energy Management,51
+Install smart meters,INIT-0051,Install smart sub-metering and a building management system (BMS),Energy & Buildings,Energy Management,52
+Install solar panels,INIT-0052,Install on-site solar PV,Energy & Buildings,Energy Procurement & Renewables,53
+Install voltage optimisation,INIT-0053,Install voltage optimisation equipment,Energy & Buildings,Energy Management,54
+Buy renewable electricity,INIT-0054,Procure renewable electricity via PPAs or green tariffs,Energy & Buildings,Energy Procurement & Renewables,55
+,INIT-0055,Enroll sites in demand-side response and flexibility schemes,Energy & Buildings,Energy Procurement & Renewables,56
+Train staff on energy saving,INIT-0056,Run staff energy-engagement programmes,Energy & Buildings,Energy Management,57
+Improve heating controls,INIT-0057,Optimise heating controls,Energy & Buildings,Energy Management,58
+Improve building energy ratings,INIT-0058,Improve building EPC ratings to B or above,Energy & Buildings,Energy Management,59
+Connect to low-carbon heating,INIT-0059,Connect sites to low-carbon heat networks or solar thermal,Energy & Buildings,Energy Procurement & Renewables,60
+Buy green gas,INIT-0060,Procure certified green gas or biomethane,Energy & Buildings,Energy Procurement & Renewables,61
+,INIT-0061,Certify sites to ISO 50001 energy management,Energy & Buildings,Energy Management,62
+Install power factor correction,INIT-0062,Install power factor correction,Energy & Buildings,Energy Management,63
+Build to green building standards,INIT-0063,Build to BREEAM 'Very Good' or above,Energy & Buildings,Energy Management,64
+Allocate responsibility at Board level,INIT-0064,Allocate responsibility at Board level,Governance,General,65
+New initiative,INIT-0065,Appoint a sustainability lead or assign executive responsibility for sustainability,Governance,General,66
+Establish a Sustainability Committee,INIT-0066,Establish a Sustainability Committee,Governance,General,67
+Link Exec incentives to successfully delivering climate action,INIT-0067,Link executive remuneration to sustainability and climate performance,Governance,General,68
+Engage your shareholders around climate risks and opportunities,INIT-0068,Engage your shareholders around climate risks and opportunities,Governance,General,69
+"Introduce a performance, tracking and reporting mechanism for your Net Zero Strategy",INIT-0069,Regularly review sustainability performance at senior management and Board level.,Governance,General,70
+Clearly define your sustainability ambitions and social purpose. + Completed double materiality assessment,INIT-0070,Develop a sustainability strategy informed by a double materiality assessment.,Governance,Strategy,71
+Calculate your baseline GHG footprint across all 3 scopes,INIT-0071,Calculate your baseline GHG footprint.,Governance,Strategy,72
+Use the TCFD framework to review and disclose your climate-related risks and opportunities.,INIT-0072,Use the TCFD framework to review and disclose your climate-related risks and opportunities.,Governance,Strategy,73
+"Set a Net Zero target (If so, provide Net zero by X year information)",INIT-0073,Develop a Net Zero Strategy.,Governance,Strategy,74
+Set a Net Zero Strategy,INIT-0074,Set a Net Zero target.,Governance,Strategy,75
+Have targets approved by the Science Based Targets Initiative,INIT-0075,Validate targets through SBTi.,Governance,Strategy,76
+Connect sustainability goals and link sustainability KPIs to your annual operating plan.,INIT-0076,Integrate sustainability objectives and KPIs into business planning.,Governance,Strategy,77
+Establish a long-term decarbonisation funding plan,INIT-0077,Develop a long-term decarbonisation funding plan.,Governance,Strategy,78
+New initiative,INIT-0078,"Explore external grants, funding and incentives.",Governance,Strategy,79
+"Prioritise activity to reduce or remove carbon within your own value chain (""insetting"")",INIT-0079,Develop a carbon removals strategy and quality criteria.,Governance,Strategy,80
+New Initiaitve,INIT-0080,Involve your guests in sustainability initiatives- offer discounts for opting out of daily cleaning of the room-- ask them to give feedback on your activities,Governance,Strategy,81
+"Provide sustainability training for your leadership team, operations and functional central support teams.",INIT-0081,"Provide sustainability training for your leadership team, operations and functional central support teams.",Governance,Staff,82
+Offer a sustainable pension to employees (Ideally make it the default choice),INIT-0082,Offer a sustainable pension to employees (Ideally make it the default choice),Governance,Staff,83
+Understand the shifting customer expectations of business and opportunities to build brand on sustainability credentials,INIT-0083,Understand employee sustainability expectations and strengthen engagement,Governance,Staff,84
+New Initiaitve,INIT-0084,Embed sustainability into employee roles and responsibilities,Governance,Staff,85
+New Initiaitve,INIT-0085,Recognizing and rewarding employees for their contributions to sustainability efforts can boost morale and motivation,Governance,Staff,86
+New Initiaitve,INIT-0086,Develop and maintain a Climate Transition Plan.,Governance,Regulation,87
+New initiative,INIT-0087,"Disclose climate-related information using recognised reporting frameworks (e.g. UK SRS, IFRS S2 and TCFD).",Governance,Regulation,88
+New initiative,INIT-0088,"Ensure compliance with applicable environmental legislation and reporting requirements (e.g. SECR, ESOS, Simpler Recycling, EPR and the Green Claims Code, where applicable).",Governance,Regulation,89
+New initiative,INIT-0089,Implement an Environmental Management System (e.g. ISO 14001).,Governance,Regulation,90
+New initiative,INIT-0090,"Pursue recognised sustainability certifications and voluntary commitments (e.g. Green Key, Green Tourism, B Corp, Race to Zero or The Climate Pledge)",Governance,Regulation,91
+New initiative,INIT-0091,Establish a Management Information System to Track Sustainability KPIs Monthly,Governance,Regulation,92
+"Optimise packaging materials - Reduce packaging materials used, and waste generated",INIT-0092,Reduce the volume and impact of packaging materials used.,Supply Chain,Packaging,93
+Engage and work with current suppliers to reduce the impact of packaging,INIT-0093,Collaborate with suppliers to reduce packaging impacts across the supply chain,Supply Chain,Packaging,94
+Use dispense options for drinks where possible,INIT-0094,Use dispense or refill systems for drinks rather than single-use packaging,Supply Chain,Packaging,95
+Life cycle analysis (LCA) on packaging,INIT-0095,Undertake life cycle assessment (LCA) of packaging to understand its full environmental impact,Supply Chain,Packaging,96
+New Initiative,INIT-0096,Eliminate single-use plastic items from operations,Supply Chain,Packaging,97
+New initiative,INIT-0097,Increase recycled content in packaging materials,Supply Chain,Packaging,98
+Consider the full lifecycle costs and impacts of equipment at purchase,INIT-0098,Evaluate equipment purchases based on full life-cycle cost and environmental impact,Supply Chain,Capital Goods,99
+Switch from ownership to service leasing model,INIT-0099,Shift from equipment ownership to service or leasing models,Supply Chain,Capital Goods,100
+Responsibly source furniture and fittings,INIT-0100,"Prioritise reused, refurbished and responsibly sourced furniture and fittings",Supply Chain,Capital Goods,101
+Adopt a Circular approach for Waste Electrical and Electronic Equipment (WEEE),INIT-0101,"Extend equipment life and manage WEEE through repair, refurbishment, reuse and responsible recycling",Supply Chain,Capital Goods,102
+Opt for sustainably produced products made using eco-conscious methods and reclaimed materials,INIT-0102,Set responsible sourcing standards for packaging procurement,Supply Chain,Procurement,103
+New Initiative,INIT-0103,Procure lower-impact staff uniforms and operational textiles,Supply Chain,procurement,104
+New initiative,INIT-0104,Procure environmentally preferable cleaning products,Supply Chain,procurement,105
+New initiative,INIT-0105,Reduce office paper use and office consumables,Supply Chain,procurement,106
+Review the impact of emissions associated with the other goods and services that you purchase,INIT-0106,Measure and reduce emissions from purchased goods and services,Supply Chain,procurement,107
+Introduce certification to demonstrate responsible sourcing and deforestation avoidance,INIT-0107,Adopt recognised certifications for key categories,F&B Procurement & Menu design,Procurement,108
+Prefer seasonal and local ingredients,INIT-0108,Set targets to increase local/regional and seasonal sourcing to reduce transport emissions and support UK producers,F&B Procurement & Menu design,Procurement,109
+New initiative,INIT-0109,Pilot new sourcing models with innovative/smaller suppliers to diversify supply and de-risk from commodity volatility,F&B Procurement & Menu design,Procurement,110
+Increase proportion of plant-based dishes on the menu,INIT-0110,Proportion of plant-based dishes on the menu,F&B Procurement & Menu design,Menu Design,111
+Introduce menu items sourced from ingredients grown using regenerative practices,INIT-0111,Procure items sourced from ingredients grown using regenerative practices,F&B Procurement & Menu design,Menu Design,112
+"Design your menu to promote, highlight and encourage low carbon choices",INIT-0112,Design the menu to highlight and nudge customers toward lower-carbon choices,F&B Procurement & Menu design,Menu Design,113
+Reformulate recipes to reduce footprint,INIT-0113,Swap high-impact ingredients for lower-impact equivalents where they don't compromise the dish,F&B Procurement & Menu design,Menu Design,114
+New initiative,INIT-0114,Use nose-to-tail cooking to reduce waste from higher-impact proteins,F&B Procurement & Menu design,Menu Design,115
+Optimise portion sizes to reduce plate waste,INIT-0115,Adjust portion sizes and prep quantities based on waste data,F&B Procurement & Menu design,Menu Design,116
+Undertake a comprehensive review of your emissions in your supply chain and make a plan to reduce them.,INIT-0116,Undertake a comprehensive review of emissions and sustainability risk across the supply chain (baseline assessment),Supplier & Value Chain Engagement,Strategy,117
+"Set strategic Scope 3 goals, embedded within wider functional team goals, with clear metrics for tracking progress.",INIT-0117,Set a Scope 3 emissions reduction target (e.g. aligned to SBTi),Supplier & Value Chain Engagement,Strategy,118
+New initiative,INIT-0118,"Establish a sustainable procurement policy, approved and sponsored at Board/ExCo level",Supplier & Value Chain Engagement,Strategy,119
+New initiative,INIT-0119,"Implement a regular cadence of touchpoints between procurement, sustainability, and category teams to drive Responsible Procurement priorities",Supplier & Value Chain Engagement,Strategy,120
+Hire specialist sustainability resource inside your procurement team.,INIT-0120,Build sustainable procurement training and capability into the wider procurement team's professional development,Supplier & Value Chain Engagement,Strategy,121
+"Introduce a supplier engagement platform, with a system for monitoring, accountability and support for suppliers.",INIT-0121,Collect sustainability data from suppliers,Supplier & Value Chain Engagement,Engagement,122
+Conduct LCAs on specific commodities to understand your emissions at ingredient level.,INIT-0122,Conduct lifecycle assessments (LCA) and collect product carbon footprints on key commodities to understand emissions at ingredient level,Supplier & Value Chain Engagement,Engagement,123
+Build carbon reduction and sustainability challenges into supplier contracts.; Communicate your Scope 3 goals to suppliers and set them goals.,INIT-0123,Set supplier-facing requirements (Supplier codes of conduct) and communicate shared targets,Supplier & Value Chain Engagement,Engagement,124
+"Introduce a supplier engagement platform, with a system for monitoring, accountability and support for suppliers.",INIT-0124,Use a supplier scorecard to track performance and prioritise engagement with material suppliers,Supplier & Value Chain Engagement,Engagement,125
+Map your key suppliers with key commodities and identify which suppliers need help.; Work with suppliers to understand your emissions and identify opportunities for emissions reductions.,INIT-0125,"Provide a tailored supplier engagement strategy for material/priority suppliers (segmented by spend, risk, and emissions contribution)",Supplier & Value Chain Engagement,Engagement,126
+Incentivise suppliers to encourage emission reductions.,INIT-0126,"Incentivise supplier progress (e.g. preferred status, longer contracts)",Supplier & Value Chain Engagement,Engagement,127
+Support on-farm GHG mitigation and sustainable farming techniques such as regenerative agriculture in your supply chain.,INIT-0127,Co-invest with suppliers in decarbonisation or regenerative agriculture projects (e.g. insetting programmes),Supplier & Value Chain Engagement,Engagement,128
+Map your key suppliers with key commodities and identify which suppliers need help.,INIT-0128,"Map supply chains beyond Tier 1 (Tier 2/3, down to farm/origin level) for material (High-spend, high-carbon and/or high-risk commodities)",Supplier & Value Chain Engagement,Risk Anaysis,129
+New initiative,INIT-0129,"Map exposure to forest-risk commodities (soy, palm oil, cocoa, coffee, beef/leather, rubber, timber/paper & packaging)",Supplier & Value Chain Engagement,Deforestation,130
+Commit to zero deforestation in your supply chain.; Adopt strategies to promote deforestation free value chain.,INIT-0130,Set a deforestation-free sourcing commitment and require traceability to origin,Supplier & Value Chain Engagement,Deforestation,131
+Introduce certification to demonstrate responsible sourcing and deforestation avoidance,INIT-0131,"Source certified sustainable commodities (e.g. RSPO for palm oil, Rainforest Alliance/UTZ or 4C for coffee and cocoa, FSC/PEFC for timber and paper-based packaging)",Supplier & Value Chain Engagement,Deforestation,132
+Optimise company travel practices and policies,INIT-0132,Establish corporate travel policies that prioritise lower carbon transport,Supply Chain,Transport and Distribution,133
+"Encourage and enable lower-emission guest travel (e.g. EV charge points, cycling and public transport)",INIT-0133,Provide infrastructure and incentives for low-carbon guest travel,Supply Chain,Transport and Distribution,134
+Engage third parties on biggest on-farm emissions hotspots,INIT-0134,Commission specialist assessments for on-farm emissions hotspots in the top three commodities,Nature & Resources,Nature & Biodiversity – Supplier Engagement,135
+Understand biodiversity footprint across supply chain & policies,INIT-0135,Publish a biodiversity policy with named targets and owner,Nature & Resources,Nature & Biodiversity – Biodiversity,136
+Ensure compliant with Biodiversity Net Gain (BNG),INIT-0136,Ensure compliance with Biodiversity Net Gain (BNG) requirements,Nature & Resources,Nature & Biodiversity – Biodiversity,137
+Engage suppliers to adopt biodiversity practices,INIT-0137,Engage priority suppliers by spend on biodiversity and request a formal response within 90 days,Nature & Resources,Nature & Biodiversity – Biodiversity,138
+Undertake a TNFD review,INIT-0138,Undertake a TNFD review,Nature & Resources,Nature & Biodiversity – Biodiversity,139
+Invest in protection/restoration of protected areas and green spaces,INIT-0139,Fund a named biodiversity protection or restoration programme with annual investment and independent verification,Nature & Resources,Nature & Biodiversity – Biodiversity,140
+Explore potential bathroom and kitchen water efficiencies,INIT-0140,Complete a water efficiency audit across all kitchen and bathroom fixtures and implement identified measures within 12 months,Nature & Resources,Water Management – Water,141
+Ensure water resilience by managing internal and supplier risks.,INIT-0141,"Complete a formal water risk assessment for all owned sites and top 10 suppliers by spend, with a mitigation plan for each identified risk",Nature & Resources,Water Management – Water,142
+Recycle rainwater and grey water,INIT-0142,Recycle rainwater and grey water,Nature & Resources,Water Management – Water,143
+Self-supply water direct from the wholesale water market,INIT-0143,Self-supply water direct from the wholesale water market,Nature & Resources,Water Management – Water,144
+"Understand your water footprint across your supply chain & introduce policies to reduce water consumption, particularly in water stressed regions",INIT-0144,Complete supply chain water mapping covering top 5 commodities by estimated water use,Nature & Resources,Water Management – Water,145
+Use high-efficiency shower and faucet aerators,INIT-0145,Use high-efficiency shower and faucet aerators,Nature & Resources,Water Management – Water,146
+Optimise hot liquor use,INIT-0146,Optimise hot liquor use,Nature & Resources,Water Management – Brewing,147
+Optimise CIP wash temperature,INIT-0147,Optimise CIP wash temperature,Nature & Resources,Water Management – Brewing,148
+Reduce water temp in laundry; and line dry linens where possible,INIT-0148,Reduce water temp in laundry; and line dry linens where possible,Nature & Resources,Water Management – Brewing,149
+Conduct a waste characterisation assessment,INIT-0149,Conduct a waste characterisation assessment,Nature & Resources,Waste & Circularity – Waste Management,150
+Set targets to reduce food waste.,INIT-0150,"Set a documented food waste reduction target with a baseline year, an interim milestone, and a final target date",Nature & Resources,Waste & Circularity – Waste Management,151
+Segregate food waste for composting or Anaerobic Digestion (AD),INIT-0151,Segregate food waste for composting or Anaerobic Digestion,Nature & Resources,Waste & Circularity – Waste Management,152
+Distribute surplus food,INIT-0152,Distribute Surplus Food via a credible distribution partner,Nature & Resources,Waste & Circularity – Waste Management,153
+Assess opportunities for circularity,INIT-0153,Complete a circularity audit covering the top three waste streams by volume and identify at least one viable circular option per stream within 90 days,Nature & Resources,Waste & Circularity – Waste Management,154
+Train operational teams to reduce production waste,INIT-0154,Train operational teams to reduce production waste and measure pre/post-training waste performance,Nature & Resources,Waste & Circularity – Waste Management,155
+Quantify your food waste,INIT-0155,Quantify your food waste,Nature & Resources,Waste & Circularity – Waste Management,156
+Extend the life of your cooking oil,INIT-0156,Extend the life of your cooking oil,Nature & Resources,Waste & Circularity – Waste Management,157
+Recycle your used cooking oil at end of life,INIT-0157,Recycle your used cooking oil at end of life,Nature & Resources,Waste & Circularity – Waste Management,158
+Process food waste on-site,INIT-0158,Process food waste on-site,Nature & Resources,Waste & Circularity – Waste Management,159
+Recycle and responsibly dispose of staff uniforms at end-of-life,INIT-0159,Recycle and responsibly dispose of staff uniforms at end-of-life,Nature & Resources,Waste & Circularity – Waste Management,160
+Switch to eco-friendly takeaway packaging,INIT-0160,Switch to lower-impact takeaway packaging,Nature & Resources,Waste & Circularity – Packaging,161
+"Encourage and enable lower-emission employee commuting (e.g. cycle to work, public transport)",INIT-0161,"Support and encourage employees in choosing low-carbon commuting alternatives (e.g. cycle to work, public transport)",Supply Chain,Transport and Distribution,162
+"Switch company cars to low carbon alternatives (EV, fuel efficient) at EOL",INIT-0162,Transition company owned fleet vehicles to low-carbon alternatives at end of life,Supply Chain,Transport and Distribution,163
+"Optimise routes for deliveries 
+and 
+Explore haulage aggregation opportunities",INIT-0163,Reduce emissions from delivery and distribution by improving fleet efficiency before the journey,Supply Chain,Transport and Distribution,164
+Backhaul recycling waste,INIT-0164,Reduce emissions from delivery and distribution by improving fleet efficiency during and after the journey,Supply Chain,Transport and Distribution,165
+Choose local suppliers where possible,INIT-0165,Reduce emissions from delivery and distribution by engaging with suppliers,Supply Chain,Transport and Distribution,166
+,INIT-0166,Reduce emissions from customer delivery,Supply Chain,Transport and Distribution,167
+,INIT-0167,Install EV Charging Infrastructure at Depots and Distribution Hubs,Supply Chain,Transport and Distribution,168
+Install a filtered water system to avoid bottled water.,INIT-0168,Install a filtered water system to avoid bottled water.,Nature & Resources,Water Management – Water,169
+Procure water sustainably.,INIT-0169,Procure water sustainably.,Nature & Resources,Water Management – Water,170
+"Understand your water footprint across your supply chain & introduce policies to reduce water consumption, particularly in water stressed regions",INIT-0170,Publish a water reduction policy with targets for water-stressed regions,Nature & Resources,Water Management – Water,171
+Recycle equipment at end-of-life,INIT-0171,Recycle equipment at end-of-life,Nature & Resources,Waste & Circularity – Waste Management,172
+Promote takeaway options for unfinished food,INIT-0172,Promote takeaway options for unfinished food,Nature & Resources,Waste & Circularity – Waste Management,173
+Simplify menus to reduce waste,INIT-0173,"Reduce active menu SKU count by a defined %, and measure the impact on food waste per cover over the following 90 days",Nature & Resources,Waste & Circularity – Waste Management,174
+Responsibly dispose of or donate furniture and fittings at end-of-life,INIT-0174,Responsibly dispose off or donate furniture and fittings at end-of-life,Nature & Resources,Waste & Circularity – Waste Management,175
+Use smart equipment and IoT technology to reduce waste,INIT-0175,Deploy [named technology] to monitor [named waste stream] and use data to reduce [waste type] by [target %] within 12 months,Nature & Resources,Waste & Circularity – Waste Management,176
+Join the plastics pact,INIT-0176,Join the plastics pact,Nature & Resources,Waste & Circularity – Packaging,177
+"Design for reusability, removing single-use items and therefore reducing overall waste produced",INIT-0177,"Design for reusability, removing single-use items and therefore reducing overall waste produced",Nature & Resources,Waste & Circularity – Packaging,178
+Install an anaerobic digestion plant to recover biogas,INIT-0178,Install an anaerobic digestion plant to recover biogas,Nature & Resources,Waste & Circularity – Brewing,179
+Minimise extract losses and product wastage,INIT-0179,Minimise extract losses and product wastage,Nature & Resources,Waste & Circularity – Brewing,180
