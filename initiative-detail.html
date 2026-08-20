@@ -1,0 +1,423 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>
+  Initiative · ZCF CAP
+</title>
+
+<link
+  rel="stylesheet"
+  href="style.css"
+>
+
+</head>
+
+
+<body data-page="initiative-detail">
+
+
+<header class="topbar">
+
+  <a
+    class="brand"
+    href="index.html"
+  >
+
+    <span class="brand-mark">
+      <i></i>
+      <b></b>
+    </span>
+
+
+    <span class="brand-copy">
+
+      <strong>
+        ZERO CARBON FORUM
+      </strong>
+
+      <small>
+        CAP
+        <em>Governance</em>
+      </small>
+
+    </span>
+
+  </a>
+
+
+  <nav class="main-nav">
+
+    <a
+      href="index.html"
+      data-page="dashboard"
+    >
+      Dashboard
+    </a>
+
+    <a
+      href="plan.html"
+      data-page="plan"
+    >
+      Plan
+    </a>
+
+    <a
+      href="progress.html"
+      data-page="progress"
+    >
+      Progress
+    </a>
+
+    <a
+      href="initiatives.html"
+      data-page="initiatives"
+    >
+      Initiatives
+    </a>
+
+    <a
+      href="factors.html"
+      data-page="factors"
+    >
+      Factors
+    </a>
+
+    <a
+      href="evidence.html"
+      data-page="evidence"
+    >
+      Evidence
+    </a>
+
+    <a
+      href="questionnaires.html"
+      data-page="questionnaires"
+    >
+      Questionnaires
+    </a>
+
+    <a
+      href="member-plan.html"
+      class="member-link"
+    >
+      Member plan
+    </a>
+
+  </nav>
+
+
+  <div class="top-actions">
+
+    <button
+      id="refreshData"
+      class="text-btn"
+    >
+      Refresh
+    </button>
+
+    <span id="dataStatus">
+      Loading…
+    </span>
+
+  </div>
+
+</header>
+
+
+
+<main class="page-shell">
+
+
+<!-- BACK -->
+
+<a
+  href="initiatives.html"
+  class="detail-back-link"
+>
+  ← All initiatives
+</a>
+
+
+
+<!-- LOADING -->
+
+<div
+  id="detailLoading"
+  class="detail-loading"
+>
+
+  Loading initiative…
+
+</div>
+
+
+
+<!-- DETAIL -->
+
+<div
+  id="initiativeDetail"
+  class="hidden"
+>
+
+
+  <!-- HEADER -->
+
+  <section class="initiative-detail-header">
+
+    <h1 id="detailTitle">
+    </h1>
+
+    <div
+      id="detailId"
+      class="detail-id"
+    >
+    </div>
+
+    <div
+      id="detailTaxonomy"
+      class="detail-taxonomy"
+    >
+    </div>
+
+  </section>
+
+
+
+  <!-- CORE INFORMATION -->
+
+  <section class="initiative-info-grid">
+
+
+    <article class="initiative-info-block">
+
+      <span class="info-label">
+        DESCRIPTION
+      </span>
+
+      <p id="detailDescription">
+      </p>
+
+    </article>
+
+
+
+    <article class="initiative-info-block">
+
+      <span class="info-label">
+        WHY / BENEFIT
+      </span>
+
+      <p id="detailBenefit">
+      </p>
+
+    </article>
+
+
+
+    <article class="initiative-info-block">
+
+      <span class="info-label">
+        HOW
+      </span>
+
+      <p id="detailHow">
+      </p>
+
+    </article>
+
+
+
+    <article class="initiative-info-block">
+
+      <span class="info-label">
+        KPI
+      </span>
+
+      <p id="detailKpi">
+      </p>
+
+    </article>
+
+
+  </section>
+
+
+
+  <!-- FACTOR CARDS -->
+
+  <section class="detail-section">
+
+    <div class="detail-section-heading">
+
+      <div>
+
+        <p class="eyebrow">
+          VALUE CARDS
+        </p>
+
+        <h2>
+          Published figures
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="detailFactorCards"
+      class="detail-factor-grid"
+    >
+    </div>
+
+  </section>
+
+
+
+  <!-- CASE STUDIES -->
+
+  <section class="detail-section">
+
+    <div class="detail-section-heading">
+
+      <div>
+
+        <p class="eyebrow">
+          EVIDENCE IN PRACTICE
+        </p>
+
+        <h2>
+          Case studies
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="detailCases"
+      class="case-study-grid"
+    >
+    </div>
+
+  </section>
+
+
+
+  <!-- APPLICABILITY -->
+
+  <section class="detail-section">
+
+    <div class="detail-section-heading">
+
+      <div>
+
+        <p class="eyebrow">
+          APPLICABILITY
+        </p>
+
+        <h2>
+          Sector coverage
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div class="applicability-grid">
+
+
+      <article class="applicability-card">
+
+        <span class="info-label">
+          INCLUDED
+        </span>
+
+        <p id="detailIncluded">
+        </p>
+
+      </article>
+
+
+      <article class="applicability-card">
+
+        <span class="info-label">
+          NOT INCLUDED / CAVEAT
+        </span>
+
+        <p id="detailExcluded">
+        </p>
+
+      </article>
+
+
+    </div>
+
+  </section>
+
+
+</div>
+
+
+
+<!-- ERROR -->
+
+<section
+  id="detailError"
+  class="panel hidden"
+>
+
+  <h2>
+    Initiative not found
+  </h2>
+
+  <p class="muted-copy">
+    The requested Initiative ID could not be found in the current Factor Bank.
+  </p>
+
+  <a
+    href="initiatives.html"
+    class="btn primary"
+  >
+    Return to initiatives
+  </a>
+
+</section>
+
+
+</main>
+
+
+
+<footer class="footer">
+
+  <p>
+    © 2026 Zero Carbon Forum · Climate Action Plan Governance prototype.
+  </p>
+
+  <p>
+    <strong>Data notice:</strong>
+    Demonstration environment only.
+  </p>
+
+</footer>
+
+
+<script src="app.js"></script>
+
+
+</body>
+
+</html>
