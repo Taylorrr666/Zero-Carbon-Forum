@@ -1,123 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>
-    ZCF · CAP Governance
-  </title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard · ZCF CAP</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
-
-<body>
-
-
-<!-- =========================================
-     TOP NAVIGATION
-========================================= -->
+<body data-page="dashboard">
 
 <header class="topbar">
 
-  <div class="brand">
+  <a class="brand" href="index.html">
 
-    <div class="brand-logo">
+    <span class="brand-mark">
+      <i></i>
+      <b></b>
+    </span>
 
-      <span class="brand-dot blue"></span>
-
-      <span class="brand-dot red"></span>
-
-    </div>
-
-
-    <div class="brand-copy">
+    <span class="brand-copy">
 
       <strong>
         ZERO CARBON FORUM
       </strong>
 
-      <span>
+      <small>
         CAP
-        <b>Governance</b>
-      </span>
+        <em>Governance</em>
+      </small>
 
-    </div>
+    </span>
 
-  </div>
+  </a>
 
 
   <nav class="main-nav">
 
-    <button
-      class="nav-link active"
-      data-view="dashboard"
-    >
+    <a href="index.html" data-page="dashboard">
       Dashboard
-    </button>
+    </a>
 
-
-    <button
-      class="nav-link"
-      data-view="plan"
-    >
+    <a href="plan.html" data-page="plan">
       Plan
-    </button>
+    </a>
 
-
-    <button
-      class="nav-link"
-      data-view="progress"
-    >
+    <a href="progress.html" data-page="progress">
       Progress
-    </button>
+    </a>
 
-
-    <button
-      class="nav-link"
-      data-view="initiatives"
-    >
+    <a href="initiatives.html" data-page="initiatives">
       Initiatives
-    </button>
+    </a>
 
-
-    <button
-      class="nav-link"
-      data-view="factors"
-    >
+    <a href="factors.html" data-page="factors">
       Factors
-    </button>
+    </a>
 
-
-    <button
-      class="nav-link"
-      data-view="evidence"
-    >
+    <a href="evidence.html" data-page="evidence">
       Evidence
-    </button>
+    </a>
 
-
-    <button
-      class="nav-link"
-      data-view="questionnaires"
-    >
+    <a href="questionnaires.html" data-page="questionnaires">
       Questionnaires
-    </button>
+    </a>
 
-
-    <a
-      class="nav-link member-link"
-      href="member-plan.html"
-    >
+    <a href="member-plan.html" class="member-link">
       Member plan
     </a>
 
@@ -126,18 +73,11 @@
 
   <div class="top-actions">
 
-    <button
-      id="refreshData"
-      class="text-button"
-    >
+    <button id="refreshData" class="text-btn">
       Refresh
     </button>
 
-
-    <span
-      id="dataStatus"
-      class="system-status"
-    >
+    <span id="dataStatus">
       Loading…
     </span>
 
@@ -146,1442 +86,386 @@
 </header>
 
 
+<main class="page-shell">
 
-<!-- =========================================
-     MAIN APPLICATION
-========================================= -->
+<section class="heading split">
 
-<main class="app">
+  <div>
 
+    <p class="eyebrow">
+      ZERO CARBON FORUM · CLIMATE ACTION PLAN
+    </p>
 
-<!-- =========================================
-     DASHBOARD
-========================================= -->
+    <h1>
+      Governance home
+    </h1>
 
-<section
-  id="dashboardView"
-  class="view active-view"
->
-
-
-  <div class="page-heading">
-
-    <div>
-
-      <div class="eyebrow">
-        ZERO CARBON FORUM · CLIMATE ACTION PLAN
-      </div>
-
-      <h1>
-        Governance home
-      </h1>
-
-      <p>
-        Review and maintain the CAP library that powers
-        member recommendations.
-      </p>
-
-    </div>
-
-
-    <a
-      href="member-plan.html"
-      class="primary-button"
-    >
-      Member plan
-    </a>
+    <p>
+      Review and maintain the CAP library that powers member recommendations.
+    </p>
 
   </div>
 
 
-
-  <!-- NEEDS ATTENTION -->
-
-  <section class="dashboard-section">
-
-    <h2 class="section-title">
-      Needs attention
-    </h2>
-
-
-    <div class="attention-grid">
-
-
-      <article class="attention-card warning">
-
-        <span class="card-label">
-          Missing published figures
-        </span>
-
-        <strong
-          id="missingFiguresMetric"
-          class="big-number"
-        >
-          —
-        </strong>
-
-        <p>
-          Initiatives without cost or carbon information
-        </p>
-
-      </article>
-
-
-
-      <article class="attention-card warning">
-
-        <span class="card-label">
-          Published without evidence
-        </span>
-
-        <strong
-          id="missingEvidenceMetric"
-          class="big-number"
-        >
-          —
-        </strong>
-
-        <p>
-          Initiatives without supporting evidence
-        </p>
-
-      </article>
-
-
-
-      <article class="attention-card warning">
-
-        <span class="card-label">
-          Missing KPI logic
-        </span>
-
-        <strong
-          id="missingKpiMetric"
-          class="big-number"
-        >
-          —
-        </strong>
-
-        <p>
-          Initiatives without a measurable KPI
-        </p>
-
-      </article>
-
-
-
-      <article class="attention-card info">
-
-        <span class="card-label">
-          Evidence library
-        </span>
-
-        <strong
-          id="evidenceLibraryMetric"
-          class="big-number navy-number"
-        >
-          —
-        </strong>
-
-        <p>
-          Initiatives containing evidence or case studies
-        </p>
-
-      </article>
-
-
-    </div>
-
-  </section>
-
-
-
-  <!-- MANAGE LIBRARY -->
-
-  <section class="dashboard-section">
-
-    <h2 class="section-title">
-      Manage library
-    </h2>
-
-
-    <div class="manage-grid">
-
-
-      <button
-        class="manage-card"
-        data-open="plan"
-      >
-
-        <strong>
-          Build a plan
-        </strong>
-
-        <span>
-          Answer the questionnaire and open a short
-          climate action plan
-        </span>
-
-      </button>
-
-
-
-      <button
-        class="manage-card"
-        data-open="initiatives"
-      >
-
-        <strong>
-          Initiatives
-        </strong>
-
-        <span>
-          Review actions, sectors, implementation guidance
-          and KPIs
-        </span>
-
-      </button>
-
-
-
-      <button
-        class="manage-card"
-        data-open="factors"
-      >
-
-        <strong>
-          Factors
-        </strong>
-
-        <span>
-          Cost, carbon, timing and performance information
-        </span>
-
-      </button>
-
-
-
-      <button
-        class="manage-card"
-        data-open="evidence"
-      >
-
-        <strong>
-          Evidence
-        </strong>
-
-        <span>
-          Sources and case studies linked to initiatives
-        </span>
-
-      </button>
-
-
-
-      <button
-        class="manage-card"
-        data-open="questionnaires"
-      >
-
-        <strong>
-          Questionnaires
-        </strong>
-
-        <span>
-          Screening questions and initiative-routing logic
-        </span>
-
-      </button>
-
-
-    </div>
-
-  </section>
-
-
-
-  <!-- LIBRARY AT A GLANCE -->
-
-  <section class="dashboard-section">
-
-    <h2 class="section-title">
-      Library at a glance
-    </h2>
-
-
-    <div class="glance-grid">
-
-
-      <article class="glance-card">
-
-        <span>
-          Initiatives
-        </span>
-
-        <strong id="totalInitiativesMetric">
-          —
-        </strong>
-
-      </article>
-
-
-
-      <article class="glance-card">
-
-        <span>
-          Factors
-        </span>
-
-        <strong id="totalFactorsMetric">
-          —
-        </strong>
-
-      </article>
-
-
-
-      <article class="glance-card">
-
-        <span>
-          Evidence
-        </span>
-
-        <strong id="totalEvidenceMetric">
-          —
-        </strong>
-
-      </article>
-
-
-
-      <article class="glance-card">
-
-        <span>
-          Topics
-        </span>
-
-        <strong id="totalTopicsMetric">
-          —
-        </strong>
-
-      </article>
-
-
-    </div>
-
-  </section>
-
-
-
-  <!-- RECENT ACTIVITY -->
-
-  <section class="dashboard-section">
-
-    <div class="panel">
-
-
-      <div class="panel-header">
-
-        <h2>
-          Recent activity
-        </h2>
-
-
-        <button
-          id="clearActivity"
-          class="underline-button"
-        >
-          Clear demo history
-        </button>
-
-      </div>
-
-
-      <div
-        id="recentActivity"
-        class="activity-list"
-      >
-      </div>
-
-
-    </div>
-
-  </section>
-
-
-
-  <!-- TECHNICAL HEALTH -->
-
-  <details class="technical-health">
-
-    <summary>
-      Technical health
-    </summary>
-
-
-    <div class="health-grid">
-
-
-      <div>
-
-        <span>
-          Data sources
-        </span>
-
-        <strong id="healthSources">
-          —
-        </strong>
-
-      </div>
-
-
-      <div>
-
-        <span>
-          Initiative records
-        </span>
-
-        <strong id="healthRecords">
-          —
-        </strong>
-
-      </div>
-
-
-      <div>
-
-        <span>
-          Duplicate initiatives removed
-        </span>
-
-        <strong id="healthDuplicates">
-          —
-        </strong>
-
-      </div>
-
-
-      <div>
-
-        <span>
-          Data status
-        </span>
-
-        <strong id="healthStatus">
-          —
-        </strong>
-
-      </div>
-
-
-    </div>
-
-  </details>
-
+  <a class="btn primary" href="member-plan.html">
+    Member plan
+  </a>
 
 </section>
 
 
+<section>
 
-<!-- =========================================
-     PLAN
-========================================= -->
+  <h2 class="section-label">
+    Needs attention
+  </h2>
 
-<section
-  id="planView"
-  class="view"
->
 
-  <div class="page-heading">
+  <div class="metric-grid four">
 
-    <div>
 
-      <div class="eyebrow">
-        CLIMATE ACTION PLAN
-      </div>
+    <article class="metric-card warn">
 
-      <h1>
-        Build a member plan
-      </h1>
+      <span>
+        Empty published figures
+      </span>
 
-      <p>
-        Launch the member-facing questionnaire and generate
-        a prioritised climate action plan.
-      </p>
+      <strong id="metricEmpty">
+        —
+      </strong>
 
-    </div>
+      <small>
+        Factor records without a published display value
+      </small>
+
+    </article>
+
+
+    <article class="metric-card warn">
+
+      <span>
+        Published without evidence
+      </span>
+
+      <strong id="metricNoEvidence">
+        —
+      </strong>
+
+      <small>
+        Published values with no linked evidence
+      </small>
+
+    </article>
+
+
+    <article class="metric-card warn">
+
+      <span>
+        Open data gaps
+      </span>
+
+      <strong id="metricOpenGaps">
+        —
+      </strong>
+
+      <small>
+        Open gap records requiring review
+      </small>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span>
+        Evidence library
+      </span>
+
+      <strong id="metricEvidence">
+        —
+      </strong>
+
+      <small>
+        Evidence records in the bank
+      </small>
+
+    </article>
+
 
   </div>
 
+</section>
 
-  <div class="plan-launch-card">
+
+<section>
+
+  <h2 class="section-label">
+    Manage library
+  </h2>
+
+
+  <div class="manage-grid">
+
+
+    <a class="manage-card" href="plan.html">
+
+      <strong>
+        Build a plan
+      </strong>
+
+      <span>
+        Climate action plan questionnaire
+      </span>
+
+    </a>
+
+
+    <a class="manage-card" href="initiatives.html">
+
+      <strong>
+        Initiatives
+      </strong>
+
+      <span>
+        Catalog actions and value-card slots
+      </span>
+
+    </a>
+
+
+    <a class="manage-card" href="factors.html">
+
+      <strong>
+        Factors
+      </strong>
+
+      <span>
+        Cost, carbon, timing and efficiency factors
+      </span>
+
+    </a>
+
+
+    <a class="manage-card" href="evidence.html">
+
+      <strong>
+        Evidence
+      </strong>
+
+      <span>
+        Evidence sources linked to factors
+      </span>
+
+    </a>
+
+
+    <a class="manage-card" href="questionnaires.html">
+
+      <strong>
+        Questionnaires
+      </strong>
+
+      <span>
+        Versions, screening questions and routing rules
+      </span>
+
+    </a>
+
+
+  </div>
+
+</section>
+
+
+<section>
+
+  <h2 class="section-label">
+    Library at a glance
+  </h2>
+
+
+  <div class="metric-grid four">
+
+
+    <article class="metric-card compact">
+
+      <span>
+        Initiatives
+      </span>
+
+      <strong id="metricInitiatives">
+        —
+      </strong>
+
+    </article>
+
+
+    <article class="metric-card compact">
+
+      <span>
+        Factors
+      </span>
+
+      <strong id="metricFactors">
+        —
+      </strong>
+
+    </article>
+
+
+    <article class="metric-card compact">
+
+      <span>
+        Evidence
+      </span>
+
+      <strong id="metricEvidence2">
+        —
+      </strong>
+
+    </article>
+
+
+    <article class="metric-card compact">
+
+      <span>
+        Cases
+      </span>
+
+      <strong id="metricCases">
+        —
+      </strong>
+
+    </article>
+
+
+  </div>
+
+</section>
+
+
+<section class="panel">
+
+  <div class="panel-head">
 
     <div>
 
-      <div class="plan-icon">
-        CAP
-      </div>
-
-    </div>
-
-
-    <div class="plan-launch-copy">
-
       <h2>
-        Member Climate Action Plan
+        Coverage by factor type
       </h2>
 
       <p>
-        Members can confirm their organisation profile,
-        operating boundary and material topics before
-        reviewing relevant actions from the initiative
-        library.
+        Published value and evidence completeness
       </p>
-
-
-      <div class="plan-features">
-
-        <span>
-          ✓ Returning organisation flow
-        </span>
-
-        <span>
-          ✓ New organisation questionnaire
-        </span>
-
-        <span>
-          ✓ Initiative recommendation logic
-        </span>
-
-        <span>
-          ✓ Printable final plan
-        </span>
-
-      </div>
-
-
-      <a
-        href="member-plan.html"
-        class="primary-button"
-      >
-        Open member plan
-      </a>
 
     </div>
 
+  </div>
+
+
+  <div id="coverageBars" class="coverage-bars">
   </div>
 
 </section>
 
 
+<section class="panel">
 
-<!-- =========================================
-     PROGRESS
-========================================= -->
+  <div class="panel-head">
 
-<section
-  id="progressView"
-  class="view"
->
+    <h2>
+      Recent activity
+    </h2>
 
-
-  <div class="page-heading">
-
-    <div>
-
-      <div class="eyebrow">
-        LIBRARY QUALITY
-      </div>
-
-      <h1>
-        Progress
-      </h1>
-
-      <p>
-        Review completeness across the refreshed
-        Climate Action Plan library.
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <div class="progress-summary">
-
-    <article>
-
-      <span>
-        Evidence coverage
-      </span>
-
-      <strong id="progressEvidence">
-        —
-      </strong>
-
-    </article>
-
-
-    <article>
-
-      <span>
-        KPI coverage
-      </span>
-
-      <strong id="progressKpi">
-        —
-      </strong>
-
-    </article>
-
-
-    <article>
-
-      <span>
-        Cost coverage
-      </span>
-
-      <strong id="progressCost">
-        —
-      </strong>
-
-    </article>
-
-
-    <article>
-
-      <span>
-        Carbon coverage
-      </span>
-
-      <strong id="progressCarbon">
-        —
-      </strong>
-
-    </article>
-
-  </div>
-
-
-  <div class="panel">
-
-    <div class="panel-header">
-
-      <div>
-
-        <h2>
-          Topic progress
-        </h2>
-
-        <p>
-          Completeness of initiative information by topic
-        </p>
-
-      </div>
-
-    </div>
-
-
-    <div
-      id="topicProgress"
-      class="topic-progress-list"
-    >
-    </div>
-
-  </div>
-
-
-</section>
-
-
-
-<!-- =========================================
-     INITIATIVES
-========================================= -->
-
-<section
-  id="initiativesView"
-  class="view"
->
-
-
-  <div class="page-heading compact-heading">
-
-    <div>
-
-      <h1>
-        Initiatives
-      </h1>
-
-      <p>
-        Search and review the refreshed initiative library.
-      </p>
-
-    </div>
-
-
-    <button
-      id="addInitiativeButton"
-      class="primary-button"
-    >
-      Add initiative
+    <button id="clearActivity" class="underlink">
+      Clear local history
     </button>
 
   </div>
 
 
-  <div class="filter-bar">
-
-
-    <input
-      id="initiativeSearch"
-      class="search-input"
-      type="search"
-      placeholder="Search ID or name"
-    >
-
-
-    <select id="topicFilter">
-
-      <option value="">
-        All topics
-      </option>
-
-    </select>
-
-
-    <select id="subTopicFilter">
-
-      <option value="">
-        All sub-topics
-      </option>
-
-    </select>
-
-
-    <select id="sectorFilter">
-
-      <option value="">
-        All sectors
-      </option>
-
-      <option>
-        Restaurants
-      </option>
-
-      <option>
-        QSRs
-      </option>
-
-      <option>
-        Pubs/Bars/Breweries
-      </option>
-
-      <option>
-        Hotels
-      </option>
-
-      <option>
-        Contract Caterers
-      </option>
-
-      <option>
-        Experiential Leisure
-      </option>
-
-    </select>
-
-
-    <select id="readinessFilter">
-
-      <option value="">
-        All readiness
-      </option>
-
-      <option value="ready">
-        Ready
-      </option>
-
-      <option value="partial">
-        Partial
-      </option>
-
-      <option value="review">
-        Needs review
-      </option>
-
-    </select>
-
-
+  <div id="activityList" class="activity-list">
   </div>
-
-
-  <div class="table-meta">
-
-    <span id="initiativeResultCount">
-      —
-    </span>
-
-    <span>
-      Cost and carbon values are taken from the uploaded
-      initiative library where available.
-    </span>
-
-  </div>
-
-
-  <div class="table-panel">
-
-    <table class="data-table initiatives-table">
-
-      <thead>
-
-        <tr>
-
-          <th>
-            Initiative
-          </th>
-
-          <th>
-            Topic
-          </th>
-
-          <th>
-            Sub-topic
-          </th>
-
-          <th>
-            Sector
-          </th>
-
-          <th>
-            Cost
-          </th>
-
-          <th>
-            Carbon
-          </th>
-
-          <th>
-            KPI / ROI
-          </th>
-
-          <th>
-            Readiness
-          </th>
-
-        </tr>
-
-      </thead>
-
-
-      <tbody id="initiativesTable">
-      </tbody>
-
-    </table>
-
-  </div>
-
 
 </section>
 
 
+<details class="panel technical">
 
-<!-- =========================================
-     FACTORS
-========================================= -->
-
-<section
-  id="factorsView"
-  class="view"
->
+  <summary>
+    Technical health
+  </summary>
 
 
-  <div class="page-heading compact-heading">
+  <div class="technical-grid">
 
     <div>
 
-      <h1>
-        Factors
-      </h1>
+      <span>
+        Data files
+      </span>
 
-      <p id="factorCount">
+      <strong id="healthFiles">
         —
-      </p>
+      </strong>
 
     </div>
 
-  </div>
-
-
-  <div class="filter-bar">
-
-    <select id="factorTypeFilter">
-
-      <option value="">
-        All types
-      </option>
-
-      <option value="Cost">
-        Cost
-      </option>
-
-      <option value="Carbon">
-        Carbon
-      </option>
-
-      <option value="Timing">
-        Timing
-      </option>
-
-      <option value="KPI">
-        KPI
-      </option>
-
-    </select>
-
-
-    <input
-      id="factorSearch"
-      class="search-input"
-      placeholder="Filter factors"
-    >
-
-  </div>
-
-
-  <div class="table-panel">
-
-    <table class="data-table">
-
-      <thead>
-
-        <tr>
-
-          <th>
-            ID
-          </th>
-
-          <th>
-            Type
-          </th>
-
-          <th>
-            Initiative
-          </th>
-
-          <th>
-            Value
-          </th>
-
-          <th>
-            Topic
-          </th>
-
-        </tr>
-
-      </thead>
-
-
-      <tbody id="factorsTable">
-      </tbody>
-
-    </table>
-
-  </div>
-
-
-</section>
-
-
-
-<!-- =========================================
-     EVIDENCE
-========================================= -->
-
-<section
-  id="evidenceView"
-  class="view"
->
-
-
-  <div class="page-heading compact-heading">
 
     <div>
 
-      <h1>
-        Evidence
-      </h1>
+      <span>
+        Initiative records
+      </span>
 
-      <p id="evidenceResultCount">
+      <strong id="healthInitiatives">
         —
-      </p>
+      </strong>
 
     </div>
 
-  </div>
-
-
-  <div class="filter-bar">
-
-    <input
-      id="evidenceSearch"
-      class="search-input wide-search"
-      type="search"
-      placeholder="Search evidence, organisations or references"
-    >
-
-  </div>
-
-
-  <div class="table-panel">
-
-    <table class="data-table">
-
-      <thead>
-
-        <tr>
-
-          <th>
-            ID
-          </th>
-
-          <th>
-            Initiative
-          </th>
-
-          <th>
-            Evidence / Case Study
-          </th>
-
-          <th>
-            Topic
-          </th>
-
-          <th>
-            Reference
-          </th>
-
-          <th>
-            Status
-          </th>
-
-        </tr>
-
-      </thead>
-
-
-      <tbody id="evidenceTable">
-      </tbody>
-
-    </table>
-
-  </div>
-
-
-</section>
-
-
-
-<!-- =========================================
-     QUESTIONNAIRES
-========================================= -->
-
-<section
-  id="questionnairesView"
-  class="view"
->
-
-
-  <div class="page-heading">
 
     <div>
 
-      <div class="eyebrow">
-        INITIATIVE ROUTING
-      </div>
+      <span>
+        Factor records
+      </span>
 
-      <h1>
-        Questionnaires
-      </h1>
+      <strong id="healthFactors">
+        —
+      </strong>
 
-      <p>
-        Test how member responses route to relevant
-        initiative recommendations.
-      </p>
+    </div>
+
+
+    <div>
+
+      <span>
+        Status
+      </span>
+
+      <strong id="healthStatus">
+        —
+      </strong>
 
     </div>
 
   </div>
 
-
-  <div class="questionnaire-layout">
-
-
-    <div class="panel">
-
-
-      <h2>
-        Screening profile
-      </h2>
-
-
-      <div class="form-grid">
-
-
-        <label>
-
-          <span>
-            Sector
-          </span>
-
-          <select id="questionSector">
-
-            <option value="">
-              All sectors
-            </option>
-
-            <option>
-              Restaurants
-            </option>
-
-            <option>
-              QSRs
-            </option>
-
-            <option>
-              Pubs/Bars/Breweries
-            </option>
-
-            <option>
-              Hotels
-            </option>
-
-            <option>
-              Contract Caterers
-            </option>
-
-            <option>
-              Experiential Leisure
-            </option>
-
-          </select>
-
-        </label>
-
-
-
-        <label>
-
-          <span>
-            Priority
-          </span>
-
-          <select id="questionPriority">
-
-            <option value="">
-              All priorities
-            </option>
-
-            <option value="Governance">
-              Governance
-            </option>
-
-            <option value="Energy">
-              Energy
-            </option>
-
-            <option value="Supply">
-              Supply Chain
-            </option>
-
-            <option value="Nature">
-              Nature & Resources
-            </option>
-
-          </select>
-
-        </label>
-
-      </div>
-
-
-
-      <div class="question-checks">
-
-
-        <label>
-
-          <input
-            id="questionEnergy"
-            type="checkbox"
-          >
-
-          <span>
-            Reliable energy data available
-          </span>
-
-        </label>
-
-
-
-        <label>
-
-          <input
-            id="questionScope3"
-            type="checkbox"
-          >
-
-          <span>
-            Scope 3 baseline available
-          </span>
-
-        </label>
-
-
-
-        <label>
-
-          <input
-            id="questionBoard"
-            type="checkbox"
-          >
-
-          <span>
-            Board-level sustainability responsibility
-          </span>
-
-        </label>
-
-
-      </div>
-
-
-      <button
-        id="runQuestionnaire"
-        class="primary-button"
-      >
-        Generate recommendations
-      </button>
-
-
-    </div>
-
-
-
-    <div class="panel">
-
-
-      <div class="panel-header">
-
-        <div>
-
-          <h2>
-            Recommended actions
-          </h2>
-
-          <p>
-            Prototype output based on current responses
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div
-        id="questionnaireResults"
-        class="questionnaire-results"
-      >
-
-        <div class="empty-state">
-          Complete the screening profile to generate
-          recommendations.
-        </div>
-
-      </div>
-
-
-    </div>
-
-
-  </div>
-
-
-</section>
-
+</details>
 
 </main>
 
 
-
-<!-- =========================================
-     INITIATIVE DRAWER
-========================================= -->
-
-<div
-  id="drawerBackdrop"
-  class="drawer-backdrop"
->
-</div>
-
-
-<aside
-  id="initiativeDrawer"
-  class="drawer"
->
-
-
-  <div class="drawer-header">
-
-    <div>
-
-      <span
-        id="drawerTopic"
-        class="drawer-eyebrow"
-      >
-      </span>
-
-      <h2 id="drawerTitle">
-      </h2>
-
-    </div>
-
-
-    <button
-      id="closeDrawer"
-      class="close-button"
-    >
-      ×
-    </button>
-
-  </div>
-
-
-  <div
-    id="drawerBody"
-    class="drawer-body"
-  >
-  </div>
-
-
-</aside>
-
-
-
-<!-- =========================================
-     SESSION ADD MODAL
-========================================= -->
-
-<div
-  id="modalBackdrop"
-  class="modal-backdrop"
->
-
-
-  <div class="modal">
-
-
-    <div class="modal-header">
-
-      <div>
-
-        <h2>
-          Add initiative
-        </h2>
-
-        <p>
-          Demo only. The initiative is stored for this
-          browser session and does not modify the CSV.
-        </p>
-
-      </div>
-
-
-      <button
-        id="closeModal"
-        class="close-button"
-      >
-        ×
-      </button>
-
-    </div>
-
-
-    <div class="form-grid">
-
-
-      <label>
-
-        <span>
-          Initiative name
-        </span>
-
-        <input id="newInitiativeName">
-
-      </label>
-
-
-      <label>
-
-        <span>
-          Topic
-        </span>
-
-        <input id="newInitiativeTopic">
-
-      </label>
-
-
-      <label class="full-field">
-
-        <span>
-          Description
-        </span>
-
-        <textarea
-          id="newInitiativeDescription"
-        ></textarea>
-
-      </label>
-
-
-    </div>
-
-
-    <button
-      id="saveNewInitiative"
-      class="primary-button"
-    >
-      Add to this session
-    </button>
-
-
-  </div>
-
-
-</div>
-
-
-
-<footer>
+<footer class="footer">
 
   <p>
-    © 2026 Zero Carbon Forum. Climate Action Plan (CAP)
-    Governance: demonstration environment operated for
-    internal evaluation only.
+    © 2026 Zero Carbon Forum · Climate Action Plan Governance prototype.
   </p>
 
-
   <p>
-    <strong>
-      Data notice:
-    </strong>
-
-    This environment is a prototype and must not be used
-    to process live member, customer or confidential
-    production data. Information shown is derived from
-    project data or demonstration records.
+    <strong>Data notice:</strong>
+    Demonstration environment only. Do not use live member or confidential production data.
   </p>
 
 </footer>
@@ -1589,7 +473,5 @@
 
 <script src="app.js"></script>
 
-
 </body>
-
 </html>
