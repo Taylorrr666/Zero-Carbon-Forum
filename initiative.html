@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>
+  Initiatives · ZCF CAP
+</title>
+
+<link
+  rel="stylesheet"
+  href="style.css"
+>
+
+</head>
+
+
+<body data-page="initiatives">
+
+
+<header class="topbar">
+
+  <a
+    class="brand"
+    href="index.html"
+  >
+
+    <span class="brand-mark">
+
+      <i></i>
+
+      <b></b>
+
+    </span>
+
+
+    <span class="brand-copy">
+
+      <strong>
+        ZERO CARBON FORUM
+      </strong>
+
+      <small>
+        CAP
+        <em>Governance</em>
+      </small>
+
+    </span>
+
+  </a>
+
+
+  <nav class="main-nav">
+
+    <a
+      href="index.html"
+      data-page="dashboard"
+    >
+      Dashboard
+    </a>
+
+    <a
+      href="plan.html"
+      data-page="plan"
+    >
+      Plan
+    </a>
+
+    <a
+      href="progress.html"
+      data-page="progress"
+    >
+      Progress
+    </a>
+
+    <a
+      href="initiatives.html"
+      data-page="initiatives"
+    >
+      Initiatives
+    </a>
+
+    <a
+      href="factors.html"
+      data-page="factors"
+    >
+      Factors
+    </a>
+
+    <a
+      href="evidence.html"
+      data-page="evidence"
+    >
+      Evidence
+    </a>
+
+    <a
+      href="questionnaires.html"
+      data-page="questionnaires"
+    >
+      Questionnaires
+    </a>
+
+    <a
+      href="member-plan.html"
+      class="member-link"
+    >
+      Member plan
+    </a>
+
+  </nav>
+
+
+  <div class="top-actions">
+
+    <button
+      id="refreshData"
+      class="text-btn"
+    >
+      Refresh
+    </button>
+
+    <span id="dataStatus">
+      Loading…
+    </span>
+
+  </div>
+
+</header>
+
+
+<main class="page-shell">
+
+
+<section class="heading compact">
+
+  <h1>
+    Initiatives
+  </h1>
+
+  <p id="initiativeSubtitle">
+    Loading initiative catalog…
+  </p>
+
+</section>
+
+
+<div class="filter-row">
+
+  <input
+    id="initiativeSearch"
+    placeholder="Search ID or name"
+  >
+
+
+  <select id="initiativeTopic">
+
+    <option value="">
+      All topics
+    </option>
+
+  </select>
+
+
+  <select id="initiativeSubtopic">
+
+    <option value="">
+      All sub-topics
+    </option>
+
+  </select>
+
+
+  <select id="initiativeSector">
+
+    <option value="">
+      All sectors
+    </option>
+
+  </select>
+
+</div>
+
+
+<section class="panel table-panel">
+
+  <div class="table-wrap">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Initiative
+          </th>
+
+          <th>
+            Cost
+          </th>
+
+          <th>
+            Carbon abatement
+          </th>
+
+          <th>
+            ROI / Payback
+          </th>
+
+          <th>
+            Efficiency
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody id="initiativeTable">
+
+        <tr>
+
+          <td
+            colspan="5"
+            class="empty-cell"
+          >
+            Loading…
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+
+</main>
+
+
+<footer class="footer">
+
+  <p>
+    © 2026 Zero Carbon Forum · Climate Action Plan Governance prototype.
+  </p>
+
+  <p>
+    <strong>Data notice:</strong>
+    Demonstration environment only.
+  </p>
+
+</footer>
+
+
+<script src="app.js"></script>
+
+
+</body>
+
+</html>
