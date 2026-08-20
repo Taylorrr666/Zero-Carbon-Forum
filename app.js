@@ -1,316 +1,175 @@
-/* ==========================================================
-   ZERO CARBON FORUM
-   CLIMATE ACTION PLAN GOVERNANCE PLATFORM
+const FILES = {
 
-   Static GitHub Pages prototype
-========================================================== */
+  initiatives:
+    "Factor Bank(Initiatives).csv",
 
+  cost:
+    "Factor Bank(Cost Factors).csv",
 
+  carbon:
+    "Factor Bank(Carbon Factors).csv",
 
-/* ==========================================================
-   DATA SOURCES
-========================================================== */
+  timing:
+    "Factor Bank(Timing Factors).csv",
 
-const DATA_SOURCES = [
+  efficiency:
+    "Factor Bank(Efficiency Factors).csv",
 
-  {
-    name:
-      "Governance & Strategy",
+  evidence:
+    "Factor Bank(Evidence Bank).csv",
 
-    files: [
+  factorEvidenceMap:
+    "Factor Bank(Factor Evidence Map).csv",
 
-      "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece)).csv",
+  initiativeFactorMap:
+    "Factor Bank(Initiative Factor Map).csv",
 
-      "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece))(1).csv",
+  calculationMethods:
+    "Factor Bank(Calculation Methods).csv",
 
-      "Refreshed Initiative Library_FINAL(Governance and Strategy (Ece))(2).csv"
+  cases:
+    "Factor Bank(Cases).csv",
 
-    ]
-  },
+  caseSources:
+    "Factor Bank(Case Sources).csv",
 
+  gapRegister:
+    "Factor Bank(Factor Gap Register).csv",
 
-  {
-    name:
-      "Energy & Buildings",
+  openGaps:
+    "Factor Bank(Open Gaps).csv",
 
-    files: [
+  crosswalk:
+    "Factor Bank(Initiative ID Crosswalk).csv",
 
-      "Refreshed Initiative Library_FINAL(Energy&Building (Siyuan)).csv"
+  coverage:
+    "Factor Bank(Coverage Summary).csv"
 
-    ]
-  },
+};
 
 
-  {
-    name:
-      "Energy & Buildings",
 
-    files: [
+const DB = {
 
-      "Refreshed Initiative Library_FINAL(Energy and Buildings (Adam&AY)).csv"
+  initiatives:
+    [],
 
-    ]
-  },
+  factors:
+    [],
 
+  evidence:
+    [],
 
-  {
-    name:
-      "F&B Procurement & Menu",
+  factorEvidenceMap:
+    [],
 
-    files: [
+  initiativeFactorMap:
+    [],
 
-      "Refreshed Initiative Library_FINAL(F&B Procurement & Menu (Taylor)).csv"
+  calculations:
+    [],
 
-    ]
-  },
+  cases:
+    [],
 
+  caseSources:
+    [],
 
-  {
-    name:
-      "Packaging & Procurement",
+  gapRegister:
+    [],
 
-    files: [
+  openGaps:
+    [],
 
-      "Refreshed Initiative Library_FINAL(Packaging&Procurement(Ece)).csv"
+  crosswalk:
+    [],
 
-    ]
-  },
+  coverage:
+    []
 
+};
 
-  {
-    name:
-      "Supplier & Value Chain",
 
-    files: [
 
-      "Refreshed Initiative Library_FINAL(Supplier & Value Chain (Taylor)).csv"
+const $ =
+  id =>
+    document.getElementById(
+      id
+    );
 
-    ]
-  },
 
 
-  {
-    name:
-      "Transport & Distribution",
+const clean =
+  value =>
 
-    files: [
+    value == null
+      ? ""
+      : String(
+          value
+        ).trim();
 
-      "Refreshed Initiative Library_FINAL(Transport & Distribution (Vani)).csv"
 
-    ]
-  },
 
+const esc =
+  value =>
 
-  {
-    name:
-      "Nature & Resources",
+    String(
+      value ?? ""
+    )
 
-    files: [
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
 
-      "Refreshed Initiative Library_FINAL(Nature & Resources (Atharva)).csv"
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
 
-    ]
-  }
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
 
-];
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
 
-
-
-/* ==========================================================
-   GLOBAL STATE
-========================================================== */
-
-let initiatives = [];
-
-let filteredInitiatives = [];
-
-let factorRecords = [];
-
-let evidenceRecords = [];
-
-let loadedSources = 0;
-
-let duplicatesRemoved = 0;
-
-
-
-/* ==========================================================
-   BASIC HELPERS
-========================================================== */
-
-function clean(value) {
-
-  if (
-    value === null ||
-    value === undefined
-  ) {
-
-    return "";
-
-  }
-
-
-  return String(
-    value
-  ).trim();
-
-}
-
-
-
-function firstValue(
-  row,
-  keys
-) {
-
-  for (
-    const key of keys
-  ) {
-
-    if (
-      row[key] !== undefined &&
-      clean(
-        row[key]
-      ) !== ""
-    ) {
-
-      return clean(
-        row[key]
+      .replaceAll(
+        "'",
+        "&#039;"
       );
 
-    }
-
-  }
 
 
-  return "";
+const meaningful =
+  value =>
 
-}
+    ![
+      "",
+      "-",
+      ".",
+      "n/a",
+      "na",
+      "none",
+      "not available",
+      "not found"
+    ]
 
-
-
-function escapeHTML(value) {
-
-  return String(
-    value || ""
-  )
-
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
-
-}
+      .includes(
+        clean(
+          value
+        )
+          .toLowerCase()
+      );
 
 
 
-function truncate(
-  value,
-  length = 90
-) {
-
-  const text =
-    clean(value);
-
-
-  if (
-    text.length <=
-    length
-  ) {
-
-    return text;
-
-  }
-
-
-  return (
-    text.slice(
-      0,
-      length
-    ) +
-    "…"
-  );
-
-}
-
-
-
-function meaningful(
-  value
-) {
-
-  const text =
-    clean(value)
-      .toLowerCase();
-
-
-  return ![
-    "",
-    "-",
-    ".",
-    "none",
-    "no",
-    "n/a",
-    "na",
-    "not available",
-    "not found",
-    "not specified"
-  ]
-    .includes(
-      text
-    );
-
-}
-
-
-
-function percentage(
-  value,
-  total
-) {
-
-  if (
-    !total
-  ) {
-
-    return 0;
-
-  }
-
-
-  return Math.round(
-    value /
-    total *
-    100
-  );
-
-}
-
-
-
-/* ==========================================================
+/* =============================================
    CSV PARSER
-========================================================== */
+============================================= */
 
 function parseCSV(
   text
@@ -378,7 +237,8 @@ function parseCSV(
         value
       );
 
-      value = "";
+      value =
+        "";
 
     }
 
@@ -406,7 +266,8 @@ function parseCSV(
       );
 
 
-      value = "";
+      value =
+        "";
 
 
       if (
@@ -414,7 +275,7 @@ function parseCSV(
           cell =>
             clean(
               cell
-            )
+            ) !== ""
         )
       ) {
 
@@ -462,57 +323,9 @@ function parseCSV(
 
 
 
-/* ==========================================================
-   FIND HEADERS
-========================================================== */
-
-function findHeaderRow(
-  rows
-) {
-
-  for (
-    let i = 0;
-
-    i <
-    Math.min(
-      rows.length,
-      12
-    );
-
-    i++
-  ) {
-
-    const row =
-      rows[i]
-        .map(
-          cell =>
-            clean(cell)
-              .toLowerCase()
-        );
-
-
-    if (
-      row.includes(
-        "initiative"
-      )
-    ) {
-
-      return i;
-
-    }
-
-  }
-
-
-  return 0;
-
-}
-
-
-
-/* ==========================================================
-   ROWS -> OBJECTS
-========================================================== */
+/* =============================================
+   ROWS TO OBJECTS
+============================================= */
 
 function rowsToObjects(
   rows
@@ -527,54 +340,410 @@ function rowsToObjects(
   }
 
 
-  const headerRow =
-    findHeaderRow(
-      rows
-    );
-
-
   const headers =
-    rows[
-      headerRow
-    ]
+    rows[0]
       .map(
         clean
       );
 
 
-  const output = [];
+  return rows
+
+    .slice(
+      1
+    )
+
+    .filter(
+      row =>
+        row.some(
+          cell =>
+            clean(
+              cell
+            )
+        )
+    )
+
+    .map(
+      row => {
+
+        const object =
+          {};
+
+
+        headers.forEach(
+          (
+            header,
+            index
+          ) => {
+
+            if (
+              header
+            ) {
+
+              object[
+                header
+              ] =
+                clean(
+                  row[
+                    index
+                  ]
+                );
+
+            }
+
+          }
+        );
+
+
+        return object;
+
+      }
+    );
+
+}
+
+
+
+/* =============================================
+   LOAD CSV
+============================================= */
+
+async function loadCSV(
+  file
+) {
+
+  try {
+
+    const response =
+      await fetch(
+
+        encodeURI(
+          file
+        ),
+
+        {
+          cache:
+            "no-store"
+        }
+
+      );
+
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+        response.status
+      );
+
+    }
+
+
+    const text =
+      await response.text();
+
+
+    return rowsToObjects(
+
+      parseCSV(
+        text
+      )
+
+    );
+
+  }
+
+
+  catch (
+    error
+  ) {
+
+    console.warn(
+      "Missing/unreadable:",
+      file,
+      error
+    );
+
+
+    return null;
+
+  }
+
+}
+
+
+
+/* =============================================
+   LOAD EVERYTHING
+============================================= */
+
+async function loadAll() {
+
+  setStatus(
+    "Loading data…"
+  );
+
+
+  let loadedFiles =
+    0;
+
+
+  const results =
+    {};
 
 
   for (
-    let i =
-      headerRow + 1;
-
-    i <
-    rows.length;
-
-    i++
+    const [
+      key,
+      file
+    ]
+    of Object.entries(
+      FILES
+    )
   ) {
 
-    const object = {};
+    const data =
+      await loadCSV(
+        file
+      );
 
 
-    headers.forEach(
-      (
-        header,
-        index
-      ) => {
+    results[
+      key
+    ] =
+      data;
+
+
+    if (
+      data
+    ) {
+
+      loadedFiles++;
+
+    }
+
+  }
+
+
+
+  DB.initiatives =
+    results.initiatives ||
+    [];
+
+
+  DB.factors = [
+
+    ...(
+      results.cost ||
+      []
+    )
+      .map(
+        row => ({
+          ...row,
+          __type:
+            "Cost"
+        })
+      ),
+
+
+    ...(
+      results.carbon ||
+      []
+    )
+      .map(
+        row => ({
+          ...row,
+          __type:
+            "Carbon"
+        })
+      ),
+
+
+    ...(
+      results.timing ||
+      []
+    )
+      .map(
+        row => ({
+          ...row,
+          __type:
+            "Timing"
+        })
+      ),
+
+
+    ...(
+      results.efficiency ||
+      []
+    )
+      .map(
+        row => ({
+          ...row,
+          __type:
+            "Efficiency"
+        })
+      )
+
+  ];
+
+
+
+  DB.evidence =
+    results.evidence ||
+    [];
+
+
+  DB.factorEvidenceMap =
+    results.factorEvidenceMap ||
+    [];
+
+
+  DB.initiativeFactorMap =
+    results.initiativeFactorMap ||
+    [];
+
+
+  DB.calculations =
+    results.calculationMethods ||
+    [];
+
+
+  DB.cases =
+    results.cases ||
+    [];
+
+
+  DB.caseSources =
+    results.caseSources ||
+    [];
+
+
+  DB.gapRegister =
+    results.gapRegister ||
+    [];
+
+
+  DB.openGaps =
+    results.openGaps ||
+    [];
+
+
+  DB.crosswalk =
+    results.crosswalk ||
+    [];
+
+
+  DB.coverage =
+    results.coverage ||
+    [];
+
+
+
+  setStatus(
+
+    `${DB.initiatives.length} initiatives · ${DB.factors.length} factors · ${DB.evidence.length} evidence`
+
+  );
+
+
+  initPage();
+
+
+  logActivity(
+
+    "Data",
+
+    "REFRESH",
+
+    `${loadedFiles}/${Object.keys(FILES).length} files loaded`
+
+  );
+
+}
+
+
+
+/* =============================================
+   STATUS
+============================================= */
+
+function setStatus(
+  text
+) {
+
+  if (
+    $("dataStatus")
+  ) {
+
+    $("dataStatus")
+      .textContent =
+        text;
+
+  }
+
+}
+
+
+
+/* =============================================
+   ACTIVE NAV
+============================================= */
+
+function activeNav() {
+
+  const page =
+    document.body.dataset.page;
+
+
+  const map = {
+
+    dashboard:
+      "index.html",
+
+    plan:
+      "plan.html",
+
+    progress:
+      "progress.html",
+
+    initiatives:
+      "initiatives.html",
+
+    factors:
+      "factors.html",
+
+    evidence:
+      "evidence.html",
+
+    questionnaires:
+      "questionnaires.html"
+
+  };
+
+
+  document
+
+    .querySelectorAll(
+      ".main-nav a"
+    )
+
+    .forEach(
+      link => {
 
         if (
-          header
+          link.getAttribute(
+            "href"
+          ) ===
+          map[
+            page
+          ]
         ) {
 
-          object[
-            header
-          ] =
-            clean(
-              rows[i][
-                index
-              ]
+          link
+            .classList
+            .add(
+              "active"
             );
 
         }
@@ -582,940 +751,444 @@ function rowsToObjects(
       }
     );
 
-
-    const initiative =
-      firstValue(
-        object,
-        [
-          "Initiative",
-          "initiative"
-        ]
-      );
+}
 
 
-    if (
-      initiative
-    ) {
 
-      output.push(
-        object
-      );
+/* =============================================
+   INIT CURRENT PAGE
+============================================= */
 
-    }
+function initPage() {
+
+  activeNav();
+
+
+  switch (
+    document.body.dataset.page
+  ) {
+
+    case "dashboard":
+
+      renderDashboard();
+
+      break;
+
+
+    case "initiatives":
+
+      initInitiatives();
+
+      break;
+
+
+    case "factors":
+
+      initFactors();
+
+      break;
+
+
+    case "evidence":
+
+      initEvidence();
+
+      break;
+
+
+    case "plan":
+
+      initPlan();
+
+      break;
+
+
+    case "progress":
+
+      initProgress();
+
+      break;
+
+
+    case "member-plan":
+
+      initMember();
+
+      break;
 
   }
-
-
-  return output;
 
 }
 
 
 
-/* ==========================================================
-   NORMALISE INITIATIVE
-========================================================== */
+/* =============================================
+   HELPERS
+============================================= */
 
-function normaliseInitiative(
-  row,
-  source
+function percent(
+  value,
+  total
 ) {
 
-  const initiative =
-    firstValue(
-      row,
-      [
-        "Initiative",
-        "initiative"
-      ]
-    );
+  return total
 
-
-  const topic =
-    firstValue(
-      row,
-      [
-        "Topic"
-      ]
-    ) ||
-    source;
-
-
-  const subTopic =
-    firstValue(
-      row,
-      [
-        "Sub Topic",
-        "Sub-Topic",
-        "Sub Topic ",
-        "Sub-Topic "
-      ]
-    );
-
-
-  const description =
-    firstValue(
-      row,
-      [
-        "Description"
-      ]
-    );
-
-
-  const why =
-    firstValue(
-      row,
-      [
-        "Why/Benefit",
-        "Benefits"
-      ]
-    );
-
-
-  const how =
-    firstValue(
-      row,
-      [
-        "How to achieve this",
-        "How (Implementation Steps)"
-      ]
-    );
-
-
-  const sector =
-    firstValue(
-      row,
-      [
-        "Sub-Sector included",
-        "Sector Included",
-        "Sector included"
-      ]
-    );
-
-
-  const excluded =
-    firstValue(
-      row,
-      [
-        "Sub-Sector Excluded",
-        "Sector not included",
-        "Sector Not Included"
-      ]
-    );
-
-
-  const kpi =
-    firstValue(
-      row,
-      [
-        "KPI (Measurable Objective)",
-        "KPI",
-        "KPI "
-      ]
-    );
-
-
-  const evidence =
-    firstValue(
-      row,
-      [
-        "Evidence/Case Study",
-        "Evidence",
-        "Case Studies & Benchmarks",
-        "Case Impact"
-      ]
-    );
-
-
-  const reference =
-    firstValue(
-      row,
-      [
-        "Evidence Reference",
-        "Case Study Source Links",
-        "Cost  - Evidence Link / Exact Location (URL + page/sheet + before/after cells)",
-        "Carbon Abatement Potential - Evidence Link / Exact Location (URL + page/sheet + before/after cells)"
-      ]
-    );
-
-
-  const cost =
-    firstValue(
-      row,
-      [
-        "Cost Saving/Cost ",
-        "Cost Saving/Cost",
-        "Cost - Interface Language",
-        "Cost - Factor Value"
-      ]
-    );
-
-
-  const carbon =
-    firstValue(
-      row,
-      [
-        "Carbon Abatement Potential",
-        "Carbon Abatement - Interface Language",
-        "Carbon Abatement Potential - Factor Value"
-      ]
-    );
-
-
-  const roi =
-    firstValue(
-      row,
-      [
-        "Time to implement/ROI",
-        "ROI / Timing - Interface Language",
-        "ROI / Timing - Factor Value"
-      ]
-    );
-
-
-  const impact =
-    firstValue(
-      row,
-      [
-        "Efficiency/Impact measure",
-        "Efficiency / Other Impact - Interface Language",
-        "Efficiency / Other Impact - Factor Value"
-      ]
-    );
-
-
-  const tools =
-    firstValue(
-      row,
-      [
-        "Tools"
-      ]
-    );
-
-
-  const oldInitiative =
-    firstValue(
-      row,
-      [
-        "Old Initiative",
-        "Old Initiatve"
-      ]
-    );
-
-
-  return {
-
-    id:
-      (
-        source +
-        "-" +
-        initiative
+    ? Math.round(
+        value /
+        total *
+        100
       )
-        .toLowerCase()
-        .replace(
-          /[^a-z0-9]+/g,
-          "-"
-        ),
 
-
-    initiative,
-
-    topic,
-
-    subTopic,
-
-    description,
-
-    why,
-
-    how,
-
-    sector,
-
-    excluded,
-
-    kpi,
-
-    evidence,
-
-    reference,
-
-    cost,
-
-    carbon,
-
-    roi,
-
-    impact,
-
-    tools,
-
-    oldInitiative,
-
-    source
-
-  };
+    : 0;
 
 }
 
 
 
-/* ==========================================================
-   LOAD FIRST AVAILABLE FILE
-========================================================== */
-
-async function fetchFirstAvailable(
-  files
-) {
-
-  for (
-    const file of files
-  ) {
-
-    try {
-
-      const response =
-        await fetch(
-          encodeURI(
-            file
-          ),
-          {
-            cache:
-              "no-store"
-          }
-        );
-
-
-      if (
-        response.ok
-      ) {
-
-        return {
-          file,
-          text:
-            await response.text()
-        };
-
-      }
-
-    }
-
-
-    catch (
-      error
-    ) {
-
-      console.log(
-        "Unable to load",
-        file
-      );
-
-    }
-
-  }
-
-
-  return null;
-
-}
-
-
-
-/* ==========================================================
-   LOAD LIBRARY
-========================================================== */
-
-async function loadData() {
-
-  initiatives = [];
-
-  loadedSources = 0;
-
-  duplicatesRemoved = 0;
-
-
-  setDataStatus(
-    "Loading data…"
-  );
-
-
-  for (
-    const source
-    of DATA_SOURCES
-  ) {
-
-    const file =
-      await fetchFirstAvailable(
-        source.files
-      );
-
-
-    if (
-      !file
-    ) {
-
-      continue;
-
-    }
-
-
-    loadedSources++;
-
-
-    const rows =
-      parseCSV(
-        file.text
-      );
-
-
-    const objects =
-      rowsToObjects(
-        rows
-      );
-
-
-    objects.forEach(
-      row => {
-
-        initiatives.push(
-
-          normaliseInitiative(
-            row,
-            source.name
-          )
-
-        );
-
-      }
-    );
-
-  }
-
-
-  removeDuplicates();
-
-
-  filteredInitiatives =
-    [
-      ...initiatives
-    ];
-
-
-  buildFactorRecords();
-
-  buildEvidenceRecords();
-
-
-  updateEverything();
-
-
-  setDataStatus(
-    `${initiatives.length} initiatives loaded`
-  );
-
-
-  logActivity(
-    "Library",
-    "REFRESH",
-    `${initiatives.length} initiative records loaded`,
-    "admin"
-  );
-
-}
-
-
-
-/* ==========================================================
-   DUPLICATES
-========================================================== */
-
-function removeDuplicates() {
-
-  const seen =
-    new Set();
-
-
-  const before =
-    initiatives.length;
-
-
-  initiatives =
-    initiatives.filter(
-      item => {
-
-        const key =
-          item.initiative
-            .toLowerCase()
-            .replace(
-              /\s+/g,
-              " "
-            )
-            .trim();
-
-
-        if (
-          seen.has(
-            key
-          )
-        ) {
-
-          return false;
-
-        }
-
-
-        seen.add(
-          key
-        );
-
-
-        return true;
-
-      }
-    );
-
-
-  duplicatesRemoved =
-    before -
-    initiatives.length;
-
-}
-
-
-
-/* ==========================================================
-   FACTOR RECORDS
-========================================================== */
-
-function buildFactorRecords() {
-
-  factorRecords = [];
-
-
-  initiatives.forEach(
-    (
-      item,
-      initiativeIndex
-    ) => {
-
-
-      const values = [
-
-        [
-          "Cost",
-          item.cost
-        ],
-
-        [
-          "Carbon",
-          item.carbon
-        ],
-
-        [
-          "Timing",
-          item.roi
-        ],
-
-        [
-          "KPI",
-          item.kpi
-        ]
-
-      ];
-
-
-      values.forEach(
-        (
-          [
-            type,
-            value
-          ],
-          factorIndex
-        ) => {
-
-          if (
-            meaningful(
-              value
-            )
-          ) {
-
-            factorRecords.push({
-
-              id:
-                `FAC-${String(
-                  initiativeIndex + 1
-                ).padStart(
-                  4,
-                  "0"
-                )}-${factorIndex + 1}`,
-
-              type,
-
-              initiative:
-                item.initiative,
-
-              value,
-
-              topic:
-                item.topic
-
-            });
-
-          }
-
-        }
-      );
-
-    }
-  );
-
-}
-
-
-
-/* ==========================================================
-   EVIDENCE RECORDS
-========================================================== */
-
-function buildEvidenceRecords() {
-
-  evidenceRecords =
-    initiatives
-      .map(
-        (
-          item,
-          index
-        ) => ({
-
-          id:
-            `EVID-${String(
-              index + 1
-            ).padStart(
-              4,
-              "0"
-            )}`,
-
-          initiative:
-            item.initiative,
-
-          evidence:
-            item.evidence,
-
-          reference:
-            item.reference,
-
-          topic:
-            item.topic
-
-        })
-      );
-
-}
-
-
-
-/* ==========================================================
-   DATA STATUS
-========================================================== */
-
-function setDataStatus(
-  message
-) {
-
-  document.getElementById(
-    "dataStatus"
-  ).textContent =
-    message;
-
-}
-
-
-
-/* ==========================================================
-   PAGE NAVIGATION
-========================================================== */
-
-const viewNames = [
-
-  "dashboard",
-  "plan",
-  "progress",
-  "initiatives",
-  "factors",
-  "evidence",
-  "questionnaires"
-
-];
-
-
-
-function switchView(
-  view
-) {
-
-  document
-    .querySelectorAll(
-      ".view"
-    )
-    .forEach(
-      element => {
-
-        element
-          .classList
-          .remove(
-            "active-view"
-          );
-
-      }
-    );
-
-
-  document
-    .querySelectorAll(
-      ".nav-link[data-view]"
-    )
-    .forEach(
-      element => {
-
-        element
-          .classList
-          .remove(
-            "active"
-          );
-
-      }
-    );
-
-
-  const target =
-    document.getElementById(
-      `${view}View`
-    );
-
-
-  if (
-    target
-  ) {
-
-    target.classList.add(
-      "active-view"
-    );
-
-  }
-
-
-  const nav =
-    document.querySelector(
-      `.nav-link[data-view="${view}"]`
-    );
-
-
-  if (
-    nav
-  ) {
-
-    nav.classList.add(
-      "active"
-    );
-
-  }
-
-
-  window.scrollTo(
-    0,
-    0
-  );
-
-
-  logActivity(
-    "Navigation",
-    "VIEW",
-    view,
-    "admin"
-  );
-
-}
-
-
-
-document
-  .querySelectorAll(
-    ".nav-link[data-view]"
-  )
-  .forEach(
-    button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          switchView(
-            button.dataset.view
-          );
-
-        }
-      );
-
-    }
-  );
-
-
-
-document
-  .querySelectorAll(
-    ".manage-card"
-  )
-  .forEach(
-    card => {
-
-      card.addEventListener(
-        "click",
-        () => {
-
-          switchView(
-            card.dataset.open
-          );
-
-        }
-      );
-
-    }
-  );
-
-
-
-/* ==========================================================
-   UPDATE EVERYTHING
-========================================================== */
-
-function updateEverything() {
-
-  updateDashboard();
-
-  updateProgress();
-
-  populateFilters();
-
-  renderInitiatives();
-
-  renderFactors();
-
-  renderEvidence();
-
-  updateHealth();
-
-}
-
-
-
-/* ==========================================================
+/* =============================================
    DASHBOARD
-========================================================== */
+============================================= */
 
-function updateDashboard() {
+function renderDashboard() {
 
-  const missingFigures =
-    initiatives
+  const emptyPublished =
+
+    DB.factors
       .filter(
-        item =>
+        factor =>
           !meaningful(
-            item.cost
-          ) ||
-          !meaningful(
-            item.carbon
+            factor
+              .Published_Display_Value
           )
       )
       .length;
 
 
-  const missingEvidence =
-    initiatives
+
+  const publishedNoEvidence =
+
+    DB.factors
       .filter(
-        item =>
-          !meaningful(
-            item.evidence
+        factor =>
+
+          meaningful(
+            factor
+              .Published_Display_Value
           )
+
+          &&
+
+          (
+            !meaningful(
+              factor
+                .Primary_Evidence_ID
+            )
+
+            ||
+
+            Number(
+              factor
+                .Evidence_Link_Count ||
+              0
+            ) === 0
+          )
+
       )
       .length;
 
 
-  const missingKpi =
-    initiatives
+
+  const open =
+
+    DB.openGaps
       .filter(
-        item =>
-          !meaningful(
-            item.kpi
-          )
+        gap => {
+
+          const status =
+            clean(
+              gap.Gap_Status
+            )
+              .toUpperCase();
+
+
+          return ![
+            "CLOSED",
+            "RESOLVED"
+          ]
+            .includes(
+              status
+            );
+
+        }
       )
       .length;
 
 
-  const evidenceCount =
-    initiatives.length -
-    missingEvidence;
+
+  if (
+    $("metricEmpty")
+  ) {
+
+    $("metricEmpty")
+      .textContent =
+        emptyPublished;
+
+  }
 
 
-  const topics =
-    new Set(
+  if (
+    $("metricNoEvidence")
+  ) {
 
-      initiatives
-        .map(
-          item =>
-            item.topic
-        )
-        .filter(
-          Boolean
-        )
+    $("metricNoEvidence")
+      .textContent =
+        publishedNoEvidence;
 
-    );
+  }
 
 
-  document.getElementById(
-    "missingFiguresMetric"
-  ).textContent =
-    missingFigures;
+  if (
+    $("metricOpenGaps")
+  ) {
+
+    $("metricOpenGaps")
+      .textContent =
+        open;
+
+  }
 
 
-  document.getElementById(
-    "missingEvidenceMetric"
-  ).textContent =
-    missingEvidence;
+  if (
+    $("metricEvidence")
+  ) {
+
+    $("metricEvidence")
+      .textContent =
+        DB.evidence.length;
+
+  }
 
 
-  document.getElementById(
-    "missingKpiMetric"
-  ).textContent =
-    missingKpi;
+  if (
+    $("metricInitiatives")
+  ) {
+
+    $("metricInitiatives")
+      .textContent =
+        DB.initiatives.length;
+
+  }
 
 
-  document.getElementById(
-    "evidenceLibraryMetric"
-  ).textContent =
-    evidenceCount;
+  if (
+    $("metricFactors")
+  ) {
+
+    $("metricFactors")
+      .textContent =
+        DB.factors.length;
+
+  }
 
 
-  document.getElementById(
-    "totalInitiativesMetric"
-  ).textContent =
-    initiatives.length;
+  if (
+    $("metricEvidence2")
+  ) {
+
+    $("metricEvidence2")
+      .textContent =
+        DB.evidence.length;
+
+  }
 
 
-  document.getElementById(
-    "totalFactorsMetric"
-  ).textContent =
-    factorRecords.length;
+  if (
+    $("metricCases")
+  ) {
+
+    $("metricCases")
+      .textContent =
+        DB.cases.length;
+
+  }
 
 
-  document.getElementById(
-    "totalEvidenceMetric"
-  ).textContent =
-    evidenceCount;
+
+  const types = [
+
+    "Cost",
+    "Carbon",
+    "Timing",
+    "Efficiency"
+
+  ];
 
 
-  document.getElementById(
-    "totalTopicsMetric"
-  ).textContent =
-    topics.size;
+
+  if (
+    $("coverageBars")
+  ) {
+
+    $("coverageBars")
+      .innerHTML =
+
+        types
+          .map(
+            type => {
+
+              const rows =
+
+                DB.factors
+                  .filter(
+                    factor =>
+                      factor.__type ===
+                      type
+                  );
+
+
+              const published =
+
+                rows
+                  .filter(
+                    factor =>
+                      meaningful(
+                        factor
+                          .Published_Display_Value
+                      )
+                  )
+                  .length;
+
+
+              const evidence =
+
+                rows
+                  .filter(
+                    factor =>
+
+                      Number(
+                        factor
+                          .Evidence_Link_Count ||
+                        0
+                      ) >
+                      0
+
+                      ||
+
+                      meaningful(
+                        factor
+                          .Primary_Evidence_ID
+                      )
+
+                  )
+                  .length;
+
+
+              const score =
+
+                Math.round(
+
+                  (
+                    percent(
+                      published,
+                      rows.length
+                    )
+
+                    +
+
+                    percent(
+                      evidence,
+                      rows.length
+                    )
+                  )
+
+                  /
+                  2
+
+                );
+
+
+              return `
+
+                <div class="coverage-row">
+
+                  <strong>
+                    ${type}
+                  </strong>
+
+                  <div class="bar-track">
+
+                    <div
+                      class="bar-fill"
+                      style="width:${score}%"
+                    >
+                    </div>
+
+                  </div>
+
+                  <span>
+                    ${score}%
+                  </span>
+
+                </div>
+
+              `;
+
+            }
+          )
+          .join("");
+
+  }
+
+
+
+  if (
+    $("healthFiles")
+  ) {
+
+    $("healthFiles")
+      .textContent =
+        `${Object.keys(FILES).length} configured`;
+
+  }
+
+
+  if (
+    $("healthInitiatives")
+  ) {
+
+    $("healthInitiatives")
+      .textContent =
+        DB.initiatives.length;
+
+  }
+
+
+  if (
+    $("healthFactors")
+  ) {
+
+    $("healthFactors")
+      .textContent =
+        DB.factors.length;
+
+  }
+
+
+  if (
+    $("healthStatus")
+  ) {
+
+    $("healthStatus")
+      .textContent =
+
+        DB.initiatives.length &&
+        DB.factors.length
+
+          ? "Healthy"
+
+          : "Partial";
+
+  }
 
 
   renderActivity();
@@ -1524,285 +1197,239 @@ function updateDashboard() {
 
 
 
-/* ==========================================================
-   COVERAGE
-========================================================== */
+/* =============================================
+   RELATIONSHIP HELPERS
+============================================= */
 
-function coverage(
-  field
+function factorsForInitiative(
+  initiativeId
 ) {
 
-  return percentage(
+  const ids =
 
-    initiatives.filter(
-      item =>
-        meaningful(
-          item[field]
-        )
-    ).length,
+    DB.initiativeFactorMap
 
-    initiatives.length
-
-  );
-
-}
-
-
-
-/* ==========================================================
-   PROGRESS
-========================================================== */
-
-function updateProgress() {
-
-  const evidence =
-    coverage(
-      "evidence"
-    );
-
-
-  const kpi =
-    coverage(
-      "kpi"
-    );
-
-
-  const cost =
-    coverage(
-      "cost"
-    );
-
-
-  const carbon =
-    coverage(
-      "carbon"
-    );
-
-
-  document.getElementById(
-    "progressEvidence"
-  ).textContent =
-    `${evidence}%`;
-
-
-  document.getElementById(
-    "progressKpi"
-  ).textContent =
-    `${kpi}%`;
-
-
-  document.getElementById(
-    "progressCost"
-  ).textContent =
-    `${cost}%`;
-
-
-  document.getElementById(
-    "progressCarbon"
-  ).textContent =
-    `${carbon}%`;
-
-
-  renderTopicProgress();
-
-}
-
-
-
-/* ==========================================================
-   TOPIC PROGRESS
-========================================================== */
-
-function renderTopicProgress() {
-
-  const groups = {};
-
-
-  initiatives.forEach(
-    item => {
-
-      const topic =
-        item.topic ||
-        "Uncategorised";
-
-
-      if (
-        !groups[
-          topic
-        ]
-      ) {
-
-        groups[
-          topic
-        ] = [];
-
-      }
-
-
-      groups[
-        topic
-      ].push(
-        item
-      );
-
-    }
-  );
-
-
-  document.getElementById(
-    "topicProgress"
-  ).innerHTML =
-
-    Object.entries(
-      groups
-    )
-
-      .sort(
-        (
-          a,
-          b
-        ) =>
-          b[1].length -
-          a[1].length
+      .filter(
+        row =>
+          row.Initiative_ID ===
+          initiativeId
       )
 
       .map(
-        (
-          [
-            topic,
-            items
-          ]
-        ) => {
+        row =>
+          row.Factor_ID
+      );
 
 
-          const score =
-            Math.round(
+  return DB.factors
 
-              items.reduce(
-                (
-                  total,
-                  item
-                ) => {
+    .filter(
+      factor =>
+        ids.includes(
+          factor.Factor_ID
+        )
+    );
 
-                  const complete = [
-
-                    item.description,
-                    item.kpi,
-                    item.evidence,
-                    item.cost,
-                    item.carbon
-
-                  ]
-                    .filter(
-                      meaningful
-                    )
-                    .length;
+}
 
 
-                  return (
-                    total +
-                    complete / 5
-                  );
 
-                },
-                0
+function factorOfType(
+  initiativeId,
+  type
+) {
+
+  return factorsForInitiative(
+    initiativeId
+  )
+
+    .find(
+      factor =>
+        factor.__type ===
+        type
+    );
+
+}
+
+
+
+function factorEvidenceCount(
+  factorId
+) {
+
+  return DB.factorEvidenceMap
+
+    .filter(
+      row =>
+        row.Factor_ID ===
+        factorId
+    )
+
+    .length;
+
+}
+
+
+
+/* =============================================
+   INITIATIVES PAGE
+============================================= */
+
+function initInitiatives() {
+
+  const topics = [
+
+    ...new Set(
+
+      DB.initiatives
+
+        .map(
+          item =>
+            item.Topic
+        )
+
+        .filter(
+          Boolean
+        )
+
+    )
+
+  ]
+    .sort();
+
+
+
+  const subTopics = [
+
+    ...new Set(
+
+      DB.initiatives
+
+        .map(
+          item =>
+            item.Sub_Topic
+        )
+
+        .filter(
+          Boolean
+        )
+
+    )
+
+  ]
+    .sort();
+
+
+
+  const sectors = [
+
+    ...new Set(
+
+      DB.initiatives
+
+        .flatMap(
+          item =>
+
+            clean(
+              item.Sector_Included
+            )
+
+              .split(
+                /[;,]/
               )
 
-              /
-              items.length
+              .map(
+                clean
+              )
+        )
 
-              *
-              100
+        .filter(
+          Boolean
+        )
+
+    )
+
+  ]
+    .sort();
+
+
+
+  fillSelect(
+    "initiativeTopic",
+    topics
+  );
+
+
+  fillSelect(
+    "initiativeSubtopic",
+    subTopics
+  );
+
+
+  fillSelect(
+    "initiativeSector",
+    sectors
+  );
+
+
+
+  [
+    "initiativeSearch",
+    "initiativeTopic",
+    "initiativeSubtopic",
+    "initiativeSector"
+  ]
+
+    .forEach(
+      id => {
+
+        const element =
+          $(
+            id
+          );
+
+
+        if (
+          element
+        ) {
+
+          element
+            .addEventListener(
+
+              id ===
+              "initiativeSearch"
+
+                ? "input"
+
+                : "change",
+
+              renderInitiatives
 
             );
 
-
-          return `
-
-            <div
-              class="topic-progress-row"
-            >
-
-              <div
-                class="topic-progress-name"
-              >
-                ${escapeHTML(topic)}
-              </div>
-
-
-              <div
-                class="progress-track"
-              >
-
-                <div
-                  class="progress-fill"
-                  style="
-                    width:${score}%
-                  "
-                >
-                </div>
-
-              </div>
-
-
-              <div
-                class="topic-progress-percent"
-              >
-                ${score}%
-              </div>
-
-            </div>
-
-          `;
-
         }
-      )
-      .join("");
+
+      }
+    );
+
+
+  renderInitiatives();
 
 }
 
 
 
-/* ==========================================================
-   FILTER OPTIONS
-========================================================== */
+/* =============================================
+   SELECT HELPER
+============================================= */
 
-function populateFilters() {
-
-  populateSelect(
-
-    "topicFilter",
-
-    initiatives.map(
-      item =>
-        item.topic
-    )
-
-  );
-
-
-  populateSelect(
-
-    "subTopicFilter",
-
-    initiatives.map(
-      item =>
-        item.subTopic
-    )
-
-  );
-
-}
-
-
-
-function populateSelect(
+function fillSelect(
   id,
   values
 ) {
 
   const select =
-    document.getElementById(
+    $(
       id
     );
 
@@ -1820,25 +1447,8 @@ function populateSelect(
     select.options[0];
 
 
-  const unique = [
-
-    ...new Set(
-
-      values
-        .map(
-          clean
-        )
-        .filter(
-          Boolean
-        )
-
-    )
-
-  ]
-    .sort();
-
-
-  select.innerHTML = "";
+  select.innerHTML =
+    "";
 
 
   select.appendChild(
@@ -1846,7 +1456,7 @@ function populateSelect(
   );
 
 
-  unique.forEach(
+  values.forEach(
     value => {
 
       const option =
@@ -1874,788 +1484,463 @@ function populateSelect(
 
 
 
-/* ==========================================================
-   READINESS
-========================================================== */
+/* =============================================
+   RENDER INITIATIVES
+============================================= */
 
-function readiness(
-  item
-) {
+function renderInitiatives() {
 
-  const fields = [
+  const query =
 
-    item.description,
-    item.why,
-    item.kpi,
-    item.evidence,
-    item.cost,
-    item.carbon
-
-  ];
-
-
-  const score =
-    fields.filter(
-      meaningful
-    ).length /
-    fields.length;
-
-
-  if (
-    score >= 0.75
-  ) {
-
-    return "ready";
-
-  }
-
-
-  if (
-    score >= 0.4
-  ) {
-
-    return "partial";
-
-  }
-
-
-  return "review";
-
-}
-
-
-
-function readinessLabel(
-  value
-) {
-
-  if (
-    value === "ready"
-  ) {
-
-    return "Ready";
-
-  }
-
-
-  if (
-    value === "partial"
-  ) {
-
-    return "Partial";
-
-  }
-
-
-  return "Needs review";
-
-}
-
-
-
-/* ==========================================================
-   INITIATIVE FILTER
-========================================================== */
-
-function filterInitiatives() {
-
-  const search =
     clean(
-      document.getElementById(
-        "initiativeSearch"
-      ).value
+      $("initiativeSearch")
+        ?.value
     )
       .toLowerCase();
 
 
+
   const topic =
-    document.getElementById(
-      "topicFilter"
-    ).value;
+
+    $("initiativeTopic")
+      ?.value ||
+    "";
 
 
   const subTopic =
-    document.getElementById(
-      "subTopicFilter"
-    ).value;
+
+    $("initiativeSubtopic")
+      ?.value ||
+    "";
 
 
   const sector =
-    document.getElementById(
-      "sectorFilter"
-    ).value;
+
+    $("initiativeSector")
+      ?.value ||
+    "";
 
 
-  const ready =
-    document.getElementById(
-      "readinessFilter"
-    ).value;
 
+  const rows =
 
-  filteredInitiatives =
-    initiatives.filter(
-      item => {
+    DB.initiatives
 
+      .filter(
+        item => {
 
-        const text =
-          Object.values(
-            item
-          )
-            .join(
-              " "
+          const text =
+
+            Object.values(
+              item
             )
-            .toLowerCase();
+              .join(
+                " "
+              )
+              .toLowerCase();
 
 
-        const matchesSearch =
-          !search ||
-          text.includes(
-            search
+
+          return (
+
+            (
+              !query ||
+              text.includes(
+                query
+              )
+            )
+
+            &&
+
+            (
+              !topic ||
+              item.Topic ===
+              topic
+            )
+
+            &&
+
+            (
+              !subTopic ||
+              item.Sub_Topic ===
+              subTopic
+            )
+
+            &&
+
+            (
+              !sector ||
+
+              clean(
+                item.Sector_Included
+              )
+                .includes(
+                  sector
+                )
+            )
+
           );
 
+        }
+      );
 
-        const matchesTopic =
-          !topic ||
-          item.topic ===
-          topic;
-
-
-        const matchesSubTopic =
-          !subTopic ||
-          item.subTopic ===
-          subTopic;
-
-
-        const matchesSector =
-          !sector ||
-          item.sector
-            .toLowerCase()
-            .includes(
-              sector
-                .toLowerCase()
-                .split(
-                  "/"
-                )[0]
-            );
-
-
-        const matchesReadiness =
-          !ready ||
-          readiness(
-            item
-          ) === ready;
-
-
-        return (
-          matchesSearch &&
-          matchesTopic &&
-          matchesSubTopic &&
-          matchesSector &&
-          matchesReadiness
-        );
-
-      }
-    );
-
-
-  renderInitiatives();
-
-}
-
-
-
-/* ==========================================================
-   INITIATIVE TABLE
-========================================================== */
-
-function renderInitiatives() {
-
-  document.getElementById(
-    "initiativeResultCount"
-  ).textContent =
-    `${filteredInitiatives.length} shown`;
-
-
-  const table =
-    document.getElementById(
-      "initiativesTable"
-    );
 
 
   if (
-    !filteredInitiatives.length
+    $("initiativeSubtitle")
   ) {
 
-    table.innerHTML = `
+    $("initiativeSubtitle")
+      .textContent =
 
-      <tr>
+        `${rows.length} of ${DB.initiatives.length} initiatives`;
 
-        <td
-          colspan="8"
-          style="
-            text-align:center;
-            padding:35px;
-          "
-        >
-          No initiatives found.
-        </td>
+  }
 
-      </tr>
 
-    `;
+
+  if (
+    !$(
+      "initiativeTable"
+    )
+  ) {
 
     return;
 
   }
 
 
-  table.innerHTML =
 
-    filteredInitiatives
-      .map(
-        (
-          item,
-          index
-        ) => {
+  $("initiativeTable")
+    .innerHTML =
+
+      rows.length
+
+        ?
+
+        rows
+
+          .map(
+            item => {
+
+              const cost =
+                factorOfType(
+                  item.Initiative_ID,
+                  "Cost"
+                );
 
 
-          const status =
-            readiness(
-              item
-            );
+              const carbon =
+                factorOfType(
+                  item.Initiative_ID,
+                  "Carbon"
+                );
 
 
-          return `
+              const timing =
+                factorOfType(
+                  item.Initiative_ID,
+                  "Timing"
+                );
 
-            <tr>
+
+              const efficiency =
+                factorOfType(
+                  item.Initiative_ID,
+                  "Efficiency"
+                );
 
 
-              <td
-                class="initiative-cell"
-              >
+              const display =
+                factor =>
 
-                <strong
-                  onclick="
-                    openDrawer(
-                      '${item.id}'
-                    )
-                  "
-                >
-
-                  ${escapeHTML(
-                    item.initiative
-                  )}
-
-                </strong>
-
-                <span>
-                  INIT-${String(
-                    index + 1
+                  meaningful(
+                    factor
+                      ?.Published_Display_Value
                   )
-                    .padStart(
-                      4,
-                      "0"
+
+                    ?
+                    factor
+                      .Published_Display_Value
+
+                    :
+                    "—";
+
+
+              return `
+
+                <tr>
+
+                  <td class="initiative-title">
+
+                    <strong>
+                      ${esc(
+                        item.Initiative_Name
+                      )}
+                    </strong>
+
+                    <small>
+                      ${esc(
+                        item.Initiative_ID
+                      )}
+                      ·
+                      ${esc(
+                        item.Topic
+                      )}
+                      ·
+                      ${esc(
+                        item.Sub_Topic
+                      )}
+                    </small>
+
+                  </td>
+
+
+                  <td>
+                    ${esc(
+                      display(
+                        cost
+                      )
                     )}
-                </span>
-
-              </td>
+                  </td>
 
 
-              <td>
-
-                <span
-                  class="topic-badge"
-                >
-
-                  ${escapeHTML(
-                    item.topic
-                  )}
-
-                </span>
-
-              </td>
+                  <td>
+                    ${esc(
+                      display(
+                        carbon
+                      )
+                    )}
+                  </td>
 
 
-              <td
-                class="wrap-cell"
-              >
-
-                ${escapeHTML(
-                  item.subTopic ||
-                  "—"
-                )}
-
-              </td>
+                  <td>
+                    ${esc(
+                      display(
+                        timing
+                      )
+                    )}
+                  </td>
 
 
-              <td
-                class="wrap-cell small-text"
-              >
+                  <td>
+                    ${esc(
+                      display(
+                        efficiency
+                      )
+                    )}
+                  </td>
 
-                ${escapeHTML(
-                  truncate(
-                    item.sector ||
-                    "—",
-                    85
-                  )
-                )}
+                </tr>
 
-              </td>
+              `;
 
+            }
+          )
 
-              <td
-                class="wrap-cell small-text"
-              >
+          .join("")
 
-                ${escapeHTML(
-                  truncate(
-                    item.cost ||
-                    "—",
-                    65
-                  )
-                )}
+        :
 
-              </td>
+        `
 
+          <tr>
 
-              <td
-                class="wrap-cell small-text"
-              >
+            <td
+              colspan="5"
+              class="empty-cell"
+            >
+              No initiatives match the filters.
+            </td>
 
-                ${escapeHTML(
-                  truncate(
-                    item.carbon ||
-                    "—",
-                    65
-                  )
-                )}
+          </tr>
 
-              </td>
-
-
-              <td
-                class="wrap-cell small-text"
-              >
-
-                ${escapeHTML(
-                  truncate(
-                    item.kpi ||
-                    item.roi ||
-                    "—",
-                    75
-                  )
-                )}
-
-              </td>
-
-
-              <td>
-
-                <span
-                  class="
-                    status-pill
-                    ${status}
-                  "
-                >
-
-                  ${readinessLabel(
-                    status
-                  )}
-
-                </span>
-
-              </td>
-
-
-            </tr>
-
-          `;
-
-        }
-      )
-      .join("");
+        `;
 
 }
 
 
 
-/* ==========================================================
+/* =============================================
    FACTORS
-========================================================== */
+============================================= */
+
+function initFactors() {
+
+  const availability = [
+
+    ...new Set(
+
+      DB.factors
+
+        .map(
+          factor =>
+            factor
+              .Factor_Availability
+        )
+
+        .filter(
+          Boolean
+        )
+
+    )
+
+  ]
+    .sort();
+
+
+
+  fillSelect(
+    "factorAvailability",
+    availability
+  );
+
+
+
+  [
+    "factorSearch",
+    "factorType",
+    "factorAvailability"
+  ]
+
+    .forEach(
+      id => {
+
+        const element =
+          $(
+            id
+          );
+
+
+        if (
+          element
+        ) {
+
+          element
+            .addEventListener(
+
+              id ===
+              "factorSearch"
+
+                ? "input"
+
+                : "change",
+
+              renderFactors
+
+            );
+
+        }
+
+      }
+    );
+
+
+  renderFactors();
+
+}
+
+
+
+/* =============================================
+   RENDER FACTORS
+============================================= */
 
 function renderFactors() {
 
-  const search =
+  const query =
+
     clean(
-      document.getElementById(
-        "factorSearch"
-      )?.value || ""
+      $("factorSearch")
+        ?.value
     )
       .toLowerCase();
 
 
   const type =
-    document.getElementById(
-      "factorTypeFilter"
-    )?.value || "";
+
+    $("factorType")
+      ?.value ||
+    "";
 
 
-  const list =
-    factorRecords.filter(
-      factor => {
+  const availability =
 
-
-        const matchesType =
-          !type ||
-          factor.type ===
-          type;
-
-
-        const matchesSearch =
-          !search ||
-
-          (
-            factor.initiative +
-            " " +
-            factor.value +
-            " " +
-            factor.topic
-          )
-            .toLowerCase()
-            .includes(
-              search
-            );
-
-
-        return (
-          matchesType &&
-          matchesSearch
-        );
-
-      }
-    );
-
-
-  document.getElementById(
-    "factorCount"
-  ).textContent =
-    `${list.length} factor records`;
-
-
-  document.getElementById(
-    "factorsTable"
-  ).innerHTML =
-
-    list
-      .map(
-        factor => `
-
-          <tr>
-
-            <td>
-              ${escapeHTML(
-                factor.id
-              )}
-            </td>
-
-            <td>
-              ${escapeHTML(
-                factor.type
-              )}
-            </td>
-
-            <td
-              class="initiative-cell"
-            >
-
-              <strong>
-                ${escapeHTML(
-                  factor.initiative
-                )}
-              </strong>
-
-            </td>
-
-            <td
-              class="wrap-cell"
-            >
-
-              ${escapeHTML(
-                truncate(
-                  factor.value,
-                  150
-                )
-              )}
-
-            </td>
-
-            <td>
-
-              <span
-                class="topic-badge"
-              >
-
-                ${escapeHTML(
-                  factor.topic
-                )}
-
-              </span>
-
-            </td>
-
-          </tr>
-
-        `
-      )
-      .join("");
-
-}
+    $("factorAvailability")
+      ?.value ||
+    "";
 
 
 
-/* ==========================================================
-   EVIDENCE
-========================================================== */
+  const rows =
 
-function renderEvidence() {
+    DB.factors
 
-  const query =
-    clean(
-      document.getElementById(
-        "evidenceSearch"
-      )?.value ||
-      ""
-    )
-      .toLowerCase();
-
-
-  const list =
-    evidenceRecords
       .filter(
-        record => {
-
+        factor => {
 
           const text =
-            (
-              record.initiative +
-              " " +
-              record.evidence +
-              " " +
-              record.reference +
-              " " +
-              record.topic
+
+            Object.values(
+              factor
             )
+              .join(
+                " "
+              )
               .toLowerCase();
 
 
           return (
-            !query ||
-            text.includes(
-              query
+
+            (
+              !query ||
+              text.includes(
+                query
+              )
             )
+
+            &&
+
+            (
+              !type ||
+              factor.__type ===
+              type
+            )
+
+            &&
+
+            (
+              !availability ||
+
+              factor
+                .Factor_Availability ===
+              availability
+            )
+
           );
 
         }
       );
 
 
-  document.getElementById(
-    "evidenceResultCount"
-  ).textContent =
-    `${list.length} records`;
-
-
-  document.getElementById(
-    "evidenceTable"
-  ).innerHTML =
-
-    list
-      .map(
-        record => {
-
-
-          const hasEvidence =
-            meaningful(
-              record.evidence
-            );
-
-
-          return `
-
-            <tr>
-
-
-              <td>
-                ${escapeHTML(
-                  record.id
-                )}
-              </td>
-
-
-              <td
-                class="initiative-cell"
-              >
-
-                <strong>
-                  ${escapeHTML(
-                    record.initiative
-                  )}
-                </strong>
-
-              </td>
-
-
-              <td
-                class="wrap-cell"
-              >
-
-                ${escapeHTML(
-                  truncate(
-                    record.evidence ||
-                    "No evidence recorded",
-                    160
-                  )
-                )}
-
-              </td>
-
-
-              <td>
-
-                <span
-                  class="topic-badge"
-                >
-
-                  ${escapeHTML(
-                    record.topic
-                  )}
-
-                </span>
-
-              </td>
-
-
-              <td>
-
-                ${renderReference(
-                  record.reference
-                )}
-
-              </td>
-
-
-              <td>
-
-                <span
-                  class="
-                    status-pill
-                    ${
-                      hasEvidence
-                        ? "ready"
-                        : "review"
-                    }
-                  "
-                >
-
-                  ${
-                    hasEvidence
-                      ? "Complete"
-                      : "Incomplete"
-                  }
-
-                </span>
-
-              </td>
-
-
-            </tr>
-
-          `;
-
-        }
-      )
-      .join("");
-
-}
-
-
-
-/* ==========================================================
-   REFERENCES
-========================================================== */
-
-function renderReference(
-  value
-) {
 
   if (
-    !meaningful(
-      value
-    )
+    $("factorSubtitle")
   ) {
 
-    return "—";
+    $("factorSubtitle")
+      .textContent =
+
+        `${rows.length} of ${DB.factors.length} factors`;
 
   }
 
 
-  const match =
-    value.match(
-      /https?:\/\/[^\s;]+/
-    );
-
 
   if (
-    match
-  ) {
-
-    return `
-
-      <a
-        class="source-link"
-        target="_blank"
-        rel="noopener noreferrer"
-        href="${escapeHTML(
-          match[0]
-        )}"
-      >
-        Open source
-      </a>
-
-    `;
-
-  }
-
-
-  return escapeHTML(
-    truncate(
-      value,
-      70
+    !$(
+      "factorTable"
     )
-  );
-
-}
-
-
-
-/* ==========================================================
-   DRAWER
-========================================================== */
-
-function openDrawer(
-  id
-) {
-
-  const item =
-    initiatives.find(
-      initiative =>
-        initiative.id ===
-        id
-    );
-
-
-  if (
-    !item
   ) {
 
     return;
@@ -2663,510 +1948,1138 @@ function openDrawer(
   }
 
 
-  document.getElementById(
-    "drawerTopic"
-  ).textContent =
-    `${item.topic} · ${item.subTopic || "General"}`;
+
+  $("factorTable")
+    .innerHTML =
+
+      rows.length
+
+        ?
+
+        rows
+          .map(
+            factor => `
+
+              <tr>
+
+                <td>
+                  ${esc(
+                    factor.Factor_ID
+                  )}
+                </td>
 
 
-  document.getElementById(
-    "drawerTitle"
-  ).textContent =
-    item.initiative;
+                <td>
+                  ${esc(
+                    factor.Card_ID
+                  )}
+                </td>
 
 
-  const sections = [
+                <td>
 
-    [
-      "Description",
-      item.description
-    ],
+                  <span class="factor-type">
+                    ${esc(
+                      factor.__type
+                    )}
+                  </span>
 
-    [
-      "Why / Benefit",
-      item.why
-    ],
-
-    [
-      "How to achieve",
-      item.how
-    ],
-
-    [
-      "Sector included",
-      item.sector
-    ],
-
-    [
-      "Sector excluded",
-      item.excluded
-    ],
-
-    [
-      "KPI",
-      item.kpi
-    ],
-
-    [
-      "Cost",
-      item.cost
-    ],
-
-    [
-      "Carbon abatement potential",
-      item.carbon
-    ],
-
-    [
-      "Time to implement / ROI",
-      item.roi
-    ],
-
-    [
-      "Efficiency / Impact",
-      item.impact
-    ],
-
-    [
-      "Evidence / Case Study",
-      item.evidence
-    ],
-
-    [
-      "Evidence Reference",
-      item.reference
-    ],
-
-    [
-      "Tools",
-      item.tools
-    ],
-
-    [
-      "Old Initiative",
-      item.oldInitiative
-    ]
-
-  ];
+                </td>
 
 
-  document.getElementById(
-    "drawerBody"
-  ).innerHTML =
+                <td>
+                  ${esc(
+                    factor.Factor_Name
+                  )}
+                </td>
 
-    sections
-      .filter(
-        section =>
-          meaningful(
-            section[1]
+
+                <td>
+
+                  ${esc(
+
+                    meaningful(
+                      factor
+                        .Published_Display_Value
+                    )
+
+                      ?
+                      factor
+                        .Published_Display_Value
+
+                      :
+                      "—"
+
+                  )}
+
+                </td>
+
+
+                <td>
+                  ${factorEvidenceCount(
+                    factor.Factor_ID
+                  )}
+                </td>
+
+
+                <td>
+
+                  <span class="availability">
+
+                    ${esc(
+
+                      factor
+                        .Factor_Availability
+
+                      ||
+
+                      factor
+                        .Calc_Readiness
+
+                      ||
+
+                      "—"
+
+                    )}
+
+                  </span>
+
+                </td>
+
+              </tr>
+
+            `
           )
-      )
-      .map(
-        section => `
 
-          <div
-            class="drawer-section"
-          >
+          .join("")
 
-            <h3>
-              ${escapeHTML(
-                section[0]
-              )}
-            </h3>
-
-            <p>
-              ${linkify(
-                section[1]
-              )}
-            </p>
-
-          </div>
+        :
 
         `
-      )
-      .join("");
 
+          <tr>
 
-  document.getElementById(
-    "initiativeDrawer"
-  ).classList.add(
-    "open"
-  );
+            <td
+              colspan="7"
+              class="empty-cell"
+            >
+              No factors match the filters.
+            </td>
 
+          </tr>
 
-  document.getElementById(
-    "drawerBackdrop"
-  ).classList.add(
-    "open"
-  );
-
-
-  logActivity(
-    "Initiative",
-    "VIEW",
-    item.initiative,
-    "admin"
-  );
+        `;
 
 }
 
 
 
-window.openDrawer =
-  openDrawer;
+/* =============================================
+   EVIDENCE PAGE
+============================================= */
+
+function initEvidence() {
+
+  const statuses = [
+
+    ...new Set(
+
+      DB.evidence
+
+        .map(
+          evidence =>
+            evidence
+              .Evidence_Status
+        )
+
+        .filter(
+          Boolean
+        )
+
+    )
+
+  ]
+    .sort();
 
 
 
-function closeDrawer() {
-
-  document.getElementById(
-    "initiativeDrawer"
-  ).classList.remove(
-    "open"
+  fillSelect(
+    "evidenceStatus",
+    statuses
   );
 
 
-  document.getElementById(
-    "drawerBackdrop"
-  ).classList.remove(
-    "open"
-  );
 
-}
+  [
+    "evidenceSearch",
+    "evidenceStatus"
+  ]
+
+    .forEach(
+      id => {
+
+        const element =
+          $(
+            id
+          );
 
 
+        if (
+          element
+        ) {
 
-/* ==========================================================
-   LINKIFY
-========================================================== */
+          element
+            .addEventListener(
 
-function linkify(
-  text
-) {
+              id ===
+              "evidenceSearch"
 
-  return escapeHTML(
-    text
-  )
-    .replace(
-      /(https?:\/\/[^\s]+)/g,
+                ? "input"
 
-      '<a class="source-link" target="_blank" rel="noopener noreferrer" href="$1">$1</a>'
+                : "change",
+
+              renderEvidence
+
+            );
+
+        }
+
+      }
     );
 
+
+  renderEvidence();
+
 }
 
 
 
-/* ==========================================================
-   QUESTIONNAIRE
-========================================================== */
+/* =============================================
+   RENDER EVIDENCE
+============================================= */
 
-function runQuestionnaire() {
+function renderEvidence() {
 
-  const sector =
-    document.getElementById(
-      "questionSector"
-    ).value;
+  const query =
 
-
-  const priority =
-    document.getElementById(
-      "questionPriority"
-    ).value;
+    clean(
+      $("evidenceSearch")
+        ?.value
+    )
+      .toLowerCase();
 
 
-  const energy =
-    document.getElementById(
-      "questionEnergy"
-    ).checked;
+  const status =
+
+    $("evidenceStatus")
+      ?.value ||
+    "";
 
 
-  const scope3 =
-    document.getElementById(
-      "questionScope3"
-    ).checked;
 
+  const rows =
 
-  const board =
-    document.getElementById(
-      "questionBoard"
-    ).checked;
+    DB.evidence
 
-
-  const scored =
-    initiatives
-      .map(
-        item => {
-
-
-          let score = 0;
-
+      .filter(
+        evidence => {
 
           const text =
-            (
-              item.initiative +
-              " " +
-              item.description +
-              " " +
-              item.topic +
-              " " +
-              item.subTopic
+
+            Object.values(
+              evidence
             )
+              .join(
+                " "
+              )
               .toLowerCase();
 
 
-          if (
-            sector &&
-            item.sector
-              .toLowerCase()
-              .includes(
-                sector
-                  .toLowerCase()
-                  .split(
-                    "/"
-                  )[0]
-              )
-          ) {
+          return (
 
-            score += 2;
-
-          }
-
-
-          if (
-            priority ===
-            "Governance" &&
             (
+              !query ||
               text.includes(
-                "govern"
-              ) ||
-              text.includes(
-                "strategy"
+                query
               )
             )
-          ) {
 
-            score += 3;
+            &&
 
-          }
-
-
-          if (
-            priority ===
-            "Energy" &&
             (
-              text.includes(
-                "energy"
-              ) ||
-              text.includes(
-                "building"
-              )
+              !status ||
+
+              evidence
+                .Evidence_Status ===
+              status
             )
-          ) {
 
-            score += 3;
-
-          }
-
-
-          if (
-            priority ===
-            "Supply" &&
-            (
-              text.includes(
-                "supply"
-              ) ||
-              text.includes(
-                "food"
-              ) ||
-              text.includes(
-                "procurement"
-              )
-            )
-          ) {
-
-            score += 3;
-
-          }
-
-
-          if (
-            priority ===
-            "Nature" &&
-            (
-              text.includes(
-                "nature"
-              ) ||
-              text.includes(
-                "water"
-              ) ||
-              text.includes(
-                "waste"
-              )
-            )
-          ) {
-
-            score += 3;
-
-          }
-
-
-          if (
-            !energy &&
-            (
-              text.includes(
-                "energy"
-              ) ||
-              text.includes(
-                "meter"
-              ) ||
-              text.includes(
-                "baseline"
-              )
-            )
-          ) {
-
-            score += 3;
-
-          }
-
-
-          if (
-            !scope3 &&
-            (
-              text.includes(
-                "scope 3"
-              ) ||
-              text.includes(
-                "supplier"
-              ) ||
-              text.includes(
-                "value chain"
-              )
-            )
-          ) {
-
-            score += 3;
-
-          }
-
-
-          if (
-            !board &&
-            (
-              text.includes(
-                "board"
-              ) ||
-              text.includes(
-                "governance"
-              )
-            )
-          ) {
-
-            score += 3;
-
-          }
-
-
-          return {
-            item,
-            score
-          };
+          );
 
         }
-      )
-
-      .sort(
-        (
-          a,
-          b
-        ) =>
-          b.score -
-          a.score
-      )
-
-      .slice(
-        0,
-        7
       );
 
 
-  document.getElementById(
-    "questionnaireResults"
-  ).innerHTML =
 
-    scored
-      .map(
-        (
-          entry,
-          index
-        ) => `
+  if (
+    $("evidenceSubtitle")
+  ) {
 
-          <article
-            class="question-result"
-          >
+    $("evidenceSubtitle")
+      .textContent =
 
-            <strong>
+        `${rows.length} of ${DB.evidence.length} evidence records`;
 
-              ${index + 1}.
-              ${escapeHTML(
-                entry.item.initiative
-              )}
-
-            </strong>
+  }
 
 
-            <span>
 
-              ${escapeHTML(
-                truncate(
-                  entry.item.why ||
-                  entry.item.description,
-                  150
+  if (
+    !$(
+      "evidenceTable"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+
+  $("evidenceTable")
+    .innerHTML =
+
+      rows.length
+
+        ?
+
+        rows
+          .map(
+            evidence => {
+
+              const title =
+
+                meaningful(
+                  evidence
+                    .Source_URL
                 )
-              )}
 
-            </span>
+                  ?
 
-          </article>
+                  `
+
+                    <a
+                      class="source-link"
+                      href="${esc(
+                        evidence.Source_URL
+                      )}"
+                      target="_blank"
+                      rel="noopener"
+                    >
+
+                      ${esc(
+                        evidence.Source_Title ||
+                        evidence.Evidence_ID
+                      )}
+
+                    </a>
+
+                  `
+
+                  :
+
+                  esc(
+                    evidence.Source_Title ||
+                    "—"
+                  );
+
+
+              const statusClass =
+
+                String(
+                  evidence
+                    .Evidence_Status
+                )
+                  .toUpperCase()
+                  .includes(
+                    "ACTIVE"
+                  )
+
+                ||
+
+                String(
+                  evidence
+                    .Evidence_Status
+                )
+                  .toUpperCase()
+                  .includes(
+                    "COMPLETE"
+                  )
+
+                  ?
+                  "success"
+
+                  :
+                  "neutral";
+
+
+              return `
+
+                <tr>
+
+                  <td>
+                    ${esc(
+                      evidence.Evidence_ID
+                    )}
+                  </td>
+
+
+                  <td>
+                    ${title}
+                  </td>
+
+
+                  <td>
+                    ${esc(
+                      evidence.Source_Organisation ||
+                      "—"
+                    )}
+                  </td>
+
+
+                  <td>
+                    ${esc(
+                      evidence.Locator ||
+                      "—"
+                    )}
+                  </td>
+
+
+                  <td>
+
+                    <span class="pill ${statusClass}">
+
+                      ${esc(
+                        evidence.Evidence_Status ||
+                        "—"
+                      )}
+
+                    </span>
+
+                  </td>
+
+                </tr>
+
+              `;
+
+            }
+          )
+
+          .join("")
+
+        :
 
         `
-      )
-      .join("");
 
+          <tr>
 
-  logActivity(
-    "Questionnaire",
-    "RUN",
-    "Generated recommendations",
-    "admin"
-  );
+            <td
+              colspan="5"
+              class="empty-cell"
+            >
+              No evidence records match the filters.
+            </td>
+
+          </tr>
+
+        `;
 
 }
 
 
 
-/* ==========================================================
-   ACTIVITY LOG
-========================================================== */
+/* =============================================
+   PLAN
+============================================= */
+
+function initPlan() {
+
+  let step =
+    1;
+
+
+  const max =
+    6;
+
+
+
+  const render = () => {
+
+    document
+
+      .querySelectorAll(
+        "[data-qpanel]"
+      )
+
+      .forEach(
+        panel => {
+
+          panel
+            .classList
+            .toggle(
+
+              "active",
+
+              Number(
+                panel
+                  .dataset
+                  .qpanel
+              ) ===
+              step
+
+            );
+
+        }
+      );
+
+
+
+    document
+
+      .querySelectorAll(
+        "[data-qstep]"
+      )
+
+      .forEach(
+        button => {
+
+          button
+            .classList
+            .toggle(
+
+              "active",
+
+              Number(
+                button
+                  .dataset
+                  .qstep
+              ) ===
+              step
+
+            );
+
+        }
+      );
+
+
+
+    if (
+      $("prevStep")
+    ) {
+
+      $("prevStep")
+        .style
+        .visibility =
+
+          step === 1
+
+            ?
+            "hidden"
+
+            :
+            "visible";
+
+    }
+
+
+
+    if (
+      $("nextStep")
+    ) {
+
+      $("nextStep")
+        .textContent =
+
+          step === max
+
+            ?
+            "Finish"
+
+            :
+            "Continue";
+
+    }
+
+  };
+
+
+
+  document
+
+    .querySelectorAll(
+      "[data-qstep]"
+    )
+
+    .forEach(
+      button => {
+
+        button.onclick =
+          () => {
+
+            step =
+              Number(
+                button
+                  .dataset
+                  .qstep
+              );
+
+
+            render();
+
+          };
+
+      }
+    );
+
+
+
+  if (
+    $("nextStep")
+  ) {
+
+    $("nextStep")
+      .onclick =
+        () => {
+
+          if (
+            step <
+            max
+          ) {
+
+            step++;
+
+          }
+
+          else {
+
+            alert(
+              "Questionnaire shell complete. Upload the questionnaire source next and the remaining steps can be wired."
+            );
+
+          }
+
+
+          render();
+
+        };
+
+  }
+
+
+
+  if (
+    $("prevStep")
+  ) {
+
+    $("prevStep")
+      .onclick =
+        () => {
+
+          if (
+            step >
+            1
+          ) {
+
+            step--;
+
+          }
+
+
+          render();
+
+        };
+
+  }
+
+
+
+  if (
+    $("saveDraft")
+  ) {
+
+    $("saveDraft")
+      .onclick =
+        () => {
+
+          const entries = [
+
+            ...new FormData(
+              $("planForm")
+            )
+              .entries()
+
+          ];
+
+
+          localStorage
+            .setItem(
+
+              "zcf_plan_draft",
+
+              JSON.stringify(
+                entries
+              )
+
+            );
+
+
+          alert(
+            "Draft saved locally in this browser."
+          );
+
+        };
+
+  }
+
+
+
+  if (
+    $("clearPlan")
+  ) {
+
+    $("clearPlan")
+      .onclick =
+        () => {
+
+          $("planForm")
+            .reset();
+
+
+          localStorage
+            .removeItem(
+              "zcf_plan_draft"
+            );
+
+        };
+
+  }
+
+
+  render();
+
+}
+
+
+
+/* =============================================
+   PROGRESS
+============================================= */
+
+function initProgress() {
+
+  const getRecords =
+    () =>
+
+      JSON.parse(
+
+        localStorage
+          .getItem(
+            "zcf_progress_imports"
+          )
+
+        ||
+        "[]"
+
+      );
+
+
+
+  const render =
+    () => {
+
+      const rows =
+        getRecords();
+
+
+
+      if (
+        $("pRows")
+      ) {
+
+        $("pRows")
+          .textContent =
+
+            rows.reduce(
+
+              (
+                total,
+                row
+              ) =>
+
+                total +
+                (
+                  row.rows ||
+                  0
+                ),
+
+              0
+
+            );
+
+      }
+
+
+
+      if (
+        $("uploadRecord")
+      ) {
+
+        $("uploadRecord")
+          .innerHTML =
+
+            rows.length
+
+              ?
+
+              rows
+                .map(
+                  row => `
+
+                    <tr>
+
+                      <td>
+                        ${esc(
+                          row.when
+                        )}
+                      </td>
+
+                      <td>
+                        ${esc(
+                          row.kind
+                        )}
+                      </td>
+
+                      <td>
+                        ${esc(
+                          row.file
+                        )}
+                      </td>
+
+                      <td>
+                        ${row.rows}
+                      </td>
+
+                      <td>
+                        ${row.cols}
+                      </td>
+
+                      <td>
+                        ${esc(
+                          row.notes
+                        )}
+                      </td>
+
+                    </tr>
+
+                  `
+                )
+                .join("")
+
+              :
+
+              `
+
+                <tr>
+
+                  <td
+                    colspan="6"
+                    class="empty-cell"
+                  >
+                    No imports yet.
+                  </td>
+
+                </tr>
+
+              `;
+
+      }
+
+    };
+
+
+
+  async function inspect(
+    save
+  ) {
+
+    const file =
+      $("progressFile")
+        ?.files[
+          0
+        ];
+
+
+    if (
+      !file
+    ) {
+
+      return alert(
+        "Choose a CSV first."
+      );
+
+    }
+
+
+    const parsed =
+      parseCSV(
+        await file.text()
+      );
+
+
+    const record = {
+
+      when:
+        new Date()
+          .toLocaleString(),
+
+      kind:
+        save
+          ?
+          "Import"
+          :
+          "Dry run",
+
+      file:
+        file.name,
+
+      rows:
+        Math.max(
+          0,
+          parsed.length -
+          1
+        ),
+
+      cols:
+        parsed[0]
+          ?.length ||
+        0,
+
+      notes:
+        "Local browser prototype"
+
+    };
+
+
+    if (
+      save
+    ) {
+
+      const records =
+        getRecords();
+
+
+      records.unshift(
+        record
+      );
+
+
+      localStorage
+        .setItem(
+
+          "zcf_progress_imports",
+
+          JSON.stringify(
+            records.slice(
+              0,
+              30
+            )
+          )
+
+        );
+
+
+      render();
+
+    }
+
+    else {
+
+      alert(
+
+        `Dry run: ${record.rows} rows and ${record.cols} columns detected.`
+
+      );
+
+    }
+
+  }
+
+
+
+  if (
+    $("dryRun")
+  ) {
+
+    $("dryRun")
+      .onclick =
+        () =>
+          inspect(
+            false
+          );
+
+  }
+
+
+
+  if (
+    $("importAnswers")
+  ) {
+
+    $("importAnswers")
+      .onclick =
+        () =>
+          inspect(
+            true
+          );
+
+  }
+
+
+
+  if (
+    $("clearHistory")
+  ) {
+
+    $("clearHistory")
+      .onclick =
+        () => {
+
+          if (
+            $("clearConfirm")
+              .value ===
+            "CLEAR"
+          ) {
+
+            localStorage
+              .removeItem(
+                "zcf_progress_imports"
+              );
+
+
+            $("clearConfirm")
+              .value =
+                "";
+
+
+            render();
+
+          }
+
+          else {
+
+            alert(
+              "Type CLEAR to confirm."
+            );
+
+          }
+
+        };
+
+  }
+
+
+  render();
+
+}
+
+
+
+/* =============================================
+   MEMBER PLAN
+============================================= */
+
+function initMember() {
+
+  if (
+    $("continueMember")
+  ) {
+
+    $("continueMember")
+      .onclick =
+        () => {
+
+          const id =
+            clean(
+              $("companyId")
+                .value
+            );
+
+
+          if (
+            id !==
+            "9990000001"
+          ) {
+
+            $("memberError")
+              .textContent =
+                "Use demo Company ID 9990000001 for this prototype.";
+
+
+            return;
+
+          }
+
+
+          $("memberError")
+            .textContent =
+              "";
+
+
+          $("memberResult")
+            .classList
+            .remove(
+              "hidden"
+            );
+
+
+          $("memberResult")
+            .scrollIntoView({
+              behavior:
+                "smooth"
+            });
+
+        };
+
+  }
+
+}
+
+
+
+/* =============================================
+   LOCAL ACTIVITY
+============================================= */
 
 function getActivity() {
 
   try {
 
     return JSON.parse(
-      localStorage.getItem(
-        "zcfActivity"
-      ) ||
+
+      localStorage
+        .getItem(
+          "zcf_activity"
+        )
+
+      ||
       "[]"
+
     );
 
   }
 
 
-  catch (
-    error
-  ) {
+  catch {
 
     return [];
 
@@ -3179,88 +3092,68 @@ function getActivity() {
 function logActivity(
   category,
   action,
-  description,
-  user
+  description
 ) {
 
-  let activity =
+  const activity =
     getActivity();
-
-
-  const last =
-    activity[0];
-
-
-  if (
-    last &&
-    last.category ===
-    category &&
-    last.action ===
-    action &&
-    last.description ===
-    description
-  ) {
-
-    return;
-
-  }
 
 
   activity.unshift({
 
-    timestamp:
+    when:
       new Date()
-        .toISOString(),
+        .toLocaleString(),
 
     category,
 
     action,
 
-    description,
-
-    user
+    description
 
   });
 
 
-  activity =
-    activity.slice(
-      0,
-      12
+  localStorage
+    .setItem(
+
+      "zcf_activity",
+
+      JSON.stringify(
+        activity.slice(
+          0,
+          12
+        )
+      )
+
     );
 
 
-  localStorage.setItem(
+  if (
+    document.body
+      .dataset
+      .page ===
+    "dashboard"
+  ) {
 
-    "zcfActivity",
+    renderActivity();
 
-    JSON.stringify(
-      activity
-    )
-
-  );
-
-
-  renderActivity();
+  }
 
 }
 
 
 
-/* ==========================================================
-   ACTIVITY UI
-========================================================== */
+/* =============================================
+   RENDER ACTIVITY
+============================================= */
 
 function renderActivity() {
 
-  const container =
-    document.getElementById(
-      "recentActivity"
-    );
-
-
   if (
-    !container
+    !$(
+      "activityList"
+    )
   ) {
 
     return;
@@ -3272,506 +3165,128 @@ function renderActivity() {
     getActivity();
 
 
-  if (
-    !activity.length
-  ) {
 
-    container.innerHTML = `
+  $("activityList")
+    .innerHTML =
 
-      <div
-        style="
-          padding:18px 0;
-          color:#788798;
-          font-size:10px;
-        "
-      >
-        No activity recorded in this browser yet.
-      </div>
+      activity.length
 
-    `;
+        ?
 
-    return;
+        activity
 
-  }
+          .map(
+            item => `
 
-
-  container.innerHTML =
-
-    activity
-      .map(
-        item => {
-
-
-          const date =
-            new Date(
-              item.timestamp
-            );
-
-
-          return `
-
-            <div
-              class="activity-row"
-            >
-
-              <div
-                class="activity-date"
-              >
-
-                ${date.toLocaleString()}
-
-              </div>
-
-
-              <div
-                class="activity-main"
-              >
-
-                <strong>
-                  ${escapeHTML(
-                    item.category
-                  )}
-                </strong>
-
-                ·
+              <div class="activity-row">
 
                 <span>
-                  ${escapeHTML(
-                    item.action
+                  ${esc(
+                    item.when
                   )}
                 </span>
 
-                <div
-                  class="small-text"
-                >
-                  ${escapeHTML(
-                    truncate(
-                      item.description,
-                      100
-                    )
+                <strong>
+
+                  ${esc(
+                    item.category
                   )}
-                </div>
+
+                  ·
+
+                  ${esc(
+                    item.action
+                  )}
+
+                  <br>
+
+                  <small>
+                    ${esc(
+                      item.description
+                    )}
+                  </small>
+
+                </strong>
+
+                <span>
+                  admin
+                </span>
 
               </div>
 
+            `
+          )
 
-              <div
-                class="activity-user"
-              >
-                ${escapeHTML(
-                  item.user
-                )}
-              </div>
+          .join("")
 
+        :
 
-            </div>
+        `
 
-          `;
+          <div class="activity-row">
 
-        }
-      )
-      .join("");
+            <span>
+              —
+            </span>
 
-}
+            <strong>
+              No local activity recorded
+            </strong>
 
+            <span>
+              admin
+            </span>
 
+          </div>
 
-/* ==========================================================
-   HEALTH
-========================================================== */
-
-function updateHealth() {
-
-  document.getElementById(
-    "healthSources"
-  ).textContent =
-    `${loadedSources} / ${DATA_SOURCES.length}`;
-
-
-  document.getElementById(
-    "healthRecords"
-  ).textContent =
-    initiatives.length;
-
-
-  document.getElementById(
-    "healthDuplicates"
-  ).textContent =
-    duplicatesRemoved;
-
-
-  document.getElementById(
-    "healthStatus"
-  ).textContent =
-    loadedSources ===
-    DATA_SOURCES.length
-
-      ? "Healthy"
-
-      : "Partial";
+        `;
 
 }
 
 
 
-/* ==========================================================
-   ADD INITIATIVE MODAL
-========================================================== */
-
-function openModal() {
-
-  document.getElementById(
-    "modalBackdrop"
-  ).classList.add(
-    "open"
-  );
-
-}
-
-
-
-function closeModal() {
-
-  document.getElementById(
-    "modalBackdrop"
-  ).classList.remove(
-    "open"
-  );
-
-}
-
-
-
-function saveSessionInitiative() {
-
-  const name =
-    clean(
-      document.getElementById(
-        "newInitiativeName"
-      ).value
-    );
-
-
-  const topic =
-    clean(
-      document.getElementById(
-        "newInitiativeTopic"
-      ).value
-    );
-
-
-  const description =
-    clean(
-      document.getElementById(
-        "newInitiativeDescription"
-      ).value
-    );
-
-
-  if (
-    !name
-  ) {
-
-    alert(
-      "Please enter an initiative name."
-    );
-
-    return;
-
-  }
-
-
-  const item = {
-
-    id:
-      `session-${Date.now()}`,
-
-    initiative:
-      name,
-
-    topic:
-      topic ||
-      "Uncategorised",
-
-    subTopic:
-      "",
-
-    description,
-
-    why:
-      "",
-
-    how:
-      "",
-
-    sector:
-      "All",
-
-    excluded:
-      "",
-
-    kpi:
-      "",
-
-    evidence:
-      "",
-
-    reference:
-      "",
-
-    cost:
-      "",
-
-    carbon:
-      "",
-
-    roi:
-      "",
-
-    impact:
-      "",
-
-    tools:
-      "",
-
-    oldInitiative:
-      "",
-
-    source:
-      "Browser session"
-
-  };
-
-
-  initiatives.unshift(
-    item
-  );
-
-
-  filteredInitiatives =
-    [
-      ...initiatives
-    ];
-
-
-  buildFactorRecords();
-
-  buildEvidenceRecords();
-
-  updateEverything();
-
-
-  logActivity(
-    "Initiative",
-    "CREATE",
-    name,
-    "admin"
-  );
-
-
-  closeModal();
-
-}
-
-
-
-/* ==========================================================
+/* =============================================
    EVENTS
-========================================================== */
+============================================= */
 
-document
-  .getElementById(
-    "initiativeSearch"
-  )
-  .addEventListener(
-    "input",
-    filterInitiatives
-  );
+if (
+  $("clearActivity")
+) {
 
+  $("clearActivity")
+    .onclick =
+      () => {
 
-document
-  .getElementById(
-    "topicFilter"
-  )
-  .addEventListener(
-    "change",
-    filterInitiatives
-  );
+        localStorage
+          .removeItem(
+            "zcf_activity"
+          );
 
 
-document
-  .getElementById(
-    "subTopicFilter"
-  )
-  .addEventListener(
-    "change",
-    filterInitiatives
-  );
+        renderActivity();
 
+      };
 
-document
-  .getElementById(
-    "sectorFilter"
-  )
-  .addEventListener(
-    "change",
-    filterInitiatives
-  );
-
-
-document
-  .getElementById(
-    "readinessFilter"
-  )
-  .addEventListener(
-    "change",
-    filterInitiatives
-  );
-
-
-document
-  .getElementById(
-    "factorSearch"
-  )
-  .addEventListener(
-    "input",
-    renderFactors
-  );
-
-
-document
-  .getElementById(
-    "factorTypeFilter"
-  )
-  .addEventListener(
-    "change",
-    renderFactors
-  );
-
-
-document
-  .getElementById(
-    "evidenceSearch"
-  )
-  .addEventListener(
-    "input",
-    renderEvidence
-  );
-
-
-document
-  .getElementById(
-    "runQuestionnaire"
-  )
-  .addEventListener(
-    "click",
-    runQuestionnaire
-  );
-
-
-document
-  .getElementById(
-    "refreshData"
-  )
-  .addEventListener(
-    "click",
-    loadData
-  );
-
-
-document
-  .getElementById(
-    "closeDrawer"
-  )
-  .addEventListener(
-    "click",
-    closeDrawer
-  );
-
-
-document
-  .getElementById(
-    "drawerBackdrop"
-  )
-  .addEventListener(
-    "click",
-    closeDrawer
-  );
-
-
-document
-  .getElementById(
-    "addInitiativeButton"
-  )
-  .addEventListener(
-    "click",
-    openModal
-  );
-
-
-document
-  .getElementById(
-    "closeModal"
-  )
-  .addEventListener(
-    "click",
-    closeModal
-  );
-
-
-document
-  .getElementById(
-    "saveNewInitiative"
-  )
-  .addEventListener(
-    "click",
-    saveSessionInitiative
-  );
-
-
-document
-  .getElementById(
-    "modalBackdrop"
-  )
-  .addEventListener(
-    "click",
-    event => {
-
-      if (
-        event.target.id ===
-        "modalBackdrop"
-      ) {
-
-        closeModal();
-
-      }
-
-    }
-  );
-
-
-document
-  .getElementById(
-    "clearActivity"
-  )
-  .addEventListener(
-    "click",
-    () => {
-
-      localStorage.removeItem(
-        "zcfActivity"
-      );
-
-
-      renderActivity();
-
-    }
-  );
+}
 
 
 
-/* ==========================================================
+if (
+  $("refreshData")
+) {
+
+  $("refreshData")
+    .onclick =
+      loadAll;
+
+}
+
+
+
+/* =============================================
    START
-========================================================== */
+============================================= */
 
-loadData();
+activeNav();
+
+loadAll();
