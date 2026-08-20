@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>
+  Factors · ZCF CAP
+</title>
+
+<link
+  rel="stylesheet"
+  href="style.css"
+>
+
+</head>
+
+
+<body data-page="factors">
+
+
+<header class="topbar">
+
+  <a
+    class="brand"
+    href="index.html"
+  >
+
+    <span class="brand-mark">
+
+      <i></i>
+
+      <b></b>
+
+    </span>
+
+
+    <span class="brand-copy">
+
+      <strong>
+        ZERO CARBON FORUM
+      </strong>
+
+      <small>
+        CAP
+        <em>Governance</em>
+      </small>
+
+    </span>
+
+  </a>
+
+
+  <nav class="main-nav">
+
+    <a href="index.html" data-page="dashboard">
+      Dashboard
+    </a>
+
+    <a href="plan.html" data-page="plan">
+      Plan
+    </a>
+
+    <a href="progress.html" data-page="progress">
+      Progress
+    </a>
+
+    <a href="initiatives.html" data-page="initiatives">
+      Initiatives
+    </a>
+
+    <a href="factors.html" data-page="factors">
+      Factors
+    </a>
+
+    <a href="evidence.html" data-page="evidence">
+      Evidence
+    </a>
+
+    <a href="questionnaires.html" data-page="questionnaires">
+      Questionnaires
+    </a>
+
+    <a href="member-plan.html" class="member-link">
+      Member plan
+    </a>
+
+  </nav>
+
+
+  <div class="top-actions">
+
+    <button
+      id="refreshData"
+      class="text-btn"
+    >
+      Refresh
+    </button>
+
+    <span id="dataStatus">
+      Loading…
+    </span>
+
+  </div>
+
+</header>
+
+
+<main class="page-shell">
+
+
+<section class="heading compact">
+
+  <h1>
+    Factors
+  </h1>
+
+  <p id="factorSubtitle">
+    Loading value-card factor bank…
+  </p>
+
+</section>
+
+
+<div class="filter-row">
+
+  <input
+    id="factorSearch"
+    placeholder="Search ID, name, initiative"
+  >
+
+
+  <select id="factorType">
+
+    <option value="">
+      All types
+    </option>
+
+    <option value="Cost">
+      Cost
+    </option>
+
+    <option value="Carbon">
+      Carbon
+    </option>
+
+    <option value="Timing">
+      Timing
+    </option>
+
+    <option value="Efficiency">
+      Efficiency
+    </option>
+
+  </select>
+
+
+  <select id="factorAvailability">
+
+    <option value="">
+      All availability
+    </option>
+
+  </select>
+
+</div>
+
+
+<section class="panel table-panel">
+
+  <div class="table-wrap">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Factor_ID
+          </th>
+
+          <th>
+            Card_ID
+          </th>
+
+          <th>
+            Type
+          </th>
+
+          <th>
+            Factor_Name
+          </th>
+
+          <th>
+            Published_Display_Value
+          </th>
+
+          <th>
+            Evidence
+          </th>
+
+          <th>
+            Availability
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody id="factorTable">
+
+        <tr>
+
+          <td
+            colspan="7"
+            class="empty-cell"
+          >
+            Loading…
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+
+</main>
+
+
+<footer class="footer">
+
+  <p>
+    © 2026 Zero Carbon Forum · Climate Action Plan Governance prototype.
+  </p>
+
+</footer>
+
+
+<script src="app.js"></script>
+
+
+</body>
+
+</html>
