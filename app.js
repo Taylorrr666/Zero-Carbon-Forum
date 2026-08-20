@@ -710,6 +710,9 @@ function activeNav() {
     initiatives:
       "initiatives.html",
 
+    "initiative-detail":
+      "initiatives.html",
+
     factors:
       "factors.html",
 
@@ -778,6 +781,13 @@ function initPage() {
     case "initiatives":
 
       initInitiatives();
+
+      break;
+
+
+    case "initiative-detail":
+
+      renderInitiativeDetail();
 
       break;
 
@@ -1673,24 +1683,37 @@ function renderInitiatives() {
 
                   <td class="initiative-title">
 
-                    <strong>
+                    <a
+                      class="initiative-detail-link"
+                      href="initiative-detail.html?id=${encodeURIComponent(
+                        item.Initiative_ID
+                      )}"
+                    >
+
                       ${esc(
                         item.Initiative_Name
                       )}
-                    </strong>
+
+                    </a>
 
                     <small>
+
                       ${esc(
                         item.Initiative_ID
                       )}
+
                       ·
+
                       ${esc(
                         item.Topic
                       )}
+
                       ·
+
                       ${esc(
                         item.Sub_Topic
                       )}
+
                     </small>
 
                   </td>
@@ -1756,6 +1779,875 @@ function renderInitiatives() {
           </tr>
 
         `;
+
+}
+
+
+
+/* =============================================
+   INITIATIVE DETAIL
+============================================= */
+
+function renderInitiativeDetail() {
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const initiativeId =
+    clean(
+      params.get(
+        "id"
+      )
+    );
+
+
+  const initiative =
+    DB.initiatives.find(
+      item =>
+        item.Initiative_ID ===
+        initiativeId
+    );
+
+
+  if (
+    !initiative
+  ) {
+
+    if (
+      $("detailLoading")
+    ) {
+
+      $("detailLoading")
+        .classList
+        .add(
+          "hidden"
+        );
+
+    }
+
+
+    if (
+      $("detailError")
+    ) {
+
+      $("detailError")
+        .classList
+        .remove(
+          "hidden"
+        );
+
+    }
+
+
+    return;
+
+  }
+
+
+
+  document.title =
+    `${initiative.Initiative_Name} · ZCF CAP`;
+
+
+  if (
+    $("detailTitle")
+  ) {
+
+    $("detailTitle")
+      .textContent =
+        initiative.Initiative_Name ||
+        "Untitled initiative";
+
+  }
+
+
+  if (
+    $("detailId")
+  ) {
+
+    $("detailId")
+      .textContent =
+        initiative.Initiative_ID ||
+        "";
+
+  }
+
+
+  if (
+    $("detailTaxonomy")
+  ) {
+
+    $("detailTaxonomy")
+      .textContent =
+
+        [
+          initiative.Topic,
+          initiative.Sub_Topic
+        ]
+
+          .filter(
+            Boolean
+          )
+
+          .join(
+            " · "
+          );
+
+  }
+
+
+  if (
+    $("detailDescription")
+  ) {
+
+    $("detailDescription")
+      .textContent =
+        initiative.Description ||
+        "No description available.";
+
+  }
+
+
+  if (
+    $("detailBenefit")
+  ) {
+
+    $("detailBenefit")
+      .textContent =
+        initiative.Why_Benefit ||
+        initiative.WhyBenefit ||
+        "No benefit description available.";
+
+  }
+
+
+  if (
+    $("detailHow")
+  ) {
+
+    $("detailHow")
+      .textContent =
+        initiative.How_Text ||
+        initiative.How ||
+        "No implementation guidance available.";
+
+  }
+
+
+  if (
+    $("detailKpi")
+  ) {
+
+    $("detailKpi")
+      .textContent =
+        initiative.KPI ||
+        "No KPI recorded.";
+
+  }
+
+
+  if (
+    $("detailIncluded")
+  ) {
+
+    $("detailIncluded")
+      .textContent =
+        initiative.Sector_Included ||
+        "No sector inclusion information recorded.";
+
+  }
+
+
+  if (
+    $("detailExcluded")
+  ) {
+
+    $("detailExcluded")
+      .textContent =
+        initiative.Sector_Not_Included ||
+        initiative.Sector_Excluded ||
+        "No exclusion or applicability caveat recorded.";
+
+  }
+
+
+
+  const factorTypes = [
+
+    {
+      type:
+        "Cost",
+
+      title:
+        "Cost"
+    },
+
+    {
+      type:
+        "Carbon",
+
+      title:
+        "Carbon abatement"
+    },
+
+    {
+      type:
+        "Timing",
+
+      title:
+        "Payback"
+    },
+
+    {
+      type:
+        "Efficiency",
+
+      title:
+        "Efficiency"
+    }
+
+  ];
+
+
+
+  const factors =
+    factorTypes.map(
+      config => {
+
+        const factor =
+          factorOfType(
+            initiativeId,
+            config.type
+          );
+
+
+        return {
+          ...config,
+          factor
+        };
+
+      }
+    );
+
+
+
+  if (
+    $("detailFactorCards")
+  ) {
+
+    $("detailFactorCards")
+      .innerHTML =
+
+        factors
+          .map(
+            item =>
+              renderDetailFactorCard(
+                item.title,
+                item.factor
+              )
+          )
+          .join("");
+
+  }
+
+
+
+  const cases =
+
+    DB.cases
+
+      .filter(
+        item =>
+          item.Initiative_ID ===
+          initiativeId
+      )
+
+      .sort(
+        (
+          a,
+          b
+        ) =>
+
+          Number(
+            a.Sort_Order ||
+            0
+          )
+
+          -
+
+          Number(
+            b.Sort_Order ||
+            0
+          )
+      );
+
+
+
+  if (
+    $("detailCases")
+  ) {
+
+    if (
+      cases.length
+    ) {
+
+      $("detailCases")
+        .innerHTML =
+
+          cases
+
+            .map(
+              item =>
+                renderCaseStudy(
+                  item
+                )
+            )
+
+            .join("");
+
+    }
+
+    else {
+
+      $("detailCases")
+        .innerHTML = `
+
+          <div class="detail-empty">
+
+            No case study is currently linked to this initiative.
+
+          </div>
+
+        `;
+
+    }
+
+  }
+
+
+
+  if (
+    $("detailLoading")
+  ) {
+
+    $("detailLoading")
+      .classList
+      .add(
+        "hidden"
+      );
+
+  }
+
+
+  if (
+    $("initiativeDetail")
+  ) {
+
+    $("initiativeDetail")
+      .classList
+      .remove(
+        "hidden"
+      );
+
+  }
+
+
+  logActivity(
+
+    "Initiative",
+
+    "VIEW",
+
+    `${initiativeId} · ${initiative.Initiative_Name}`
+
+  );
+
+}
+
+
+
+/* =============================================
+   DETAIL FACTOR CARD
+============================================= */
+
+function renderDetailFactorCard(
+  title,
+  factor
+) {
+
+  if (
+    !factor
+  ) {
+
+    return `
+
+      <article class="detail-factor-card">
+
+        <div class="factor-card-head">
+
+          <span>
+            ${esc(
+              title
+            )}
+          </span>
+
+        </div>
+
+        <div class="factor-main-value factor-empty">
+          —
+        </div>
+
+        <div class="factor-card-footer">
+          No factor linked
+        </div>
+
+      </article>
+
+    `;
+
+  }
+
+
+
+  const displayValue =
+
+    meaningful(
+      factor.Published_Display_Value
+    )
+
+      ?
+      factor.Published_Display_Value
+
+      :
+
+      meaningful(
+        factor.Interface_Language
+      )
+
+        ?
+        factor.Interface_Language
+
+        :
+        "—";
+
+
+
+  const evidenceIds =
+
+    DB.factorEvidenceMap
+
+      .filter(
+        row =>
+          row.Factor_ID ===
+          factor.Factor_ID
+      )
+
+      .sort(
+        (
+          a,
+          b
+        ) =>
+
+          Number(
+            a.Sort_Order ||
+            0
+          )
+
+          -
+
+          Number(
+            b.Sort_Order ||
+            0
+          )
+      )
+
+      .map(
+        row =>
+          row.Evidence_ID
+      )
+
+      .filter(
+        Boolean
+      );
+
+
+
+  const primaryEvidence =
+
+    factor.Primary_Evidence_ID
+
+    ||
+
+    evidenceIds[0]
+
+    ||
+
+    "";
+
+
+
+  const evidenceLink =
+
+    primaryEvidence
+
+      ?
+
+      `evidence.html?q=${encodeURIComponent(
+        primaryEvidence
+      )}`
+
+      :
+
+      "evidence.html";
+
+
+
+  return `
+
+    <article class="detail-factor-card">
+
+
+      <div class="factor-card-head">
+
+        <span>
+          ${esc(
+            title
+          )}
+        </span>
+
+        <small>
+          ${esc(
+            factor.Factor_ID
+          )}
+        </small>
+
+      </div>
+
+
+      <div class="factor-main-value">
+
+        ${esc(
+          displayValue
+        )}
+
+      </div>
+
+
+      ${
+        meaningful(
+          factor.Applicability_Caveat
+        )
+
+          ?
+
+          `
+
+            <p class="factor-caveat">
+
+              ${esc(
+                factor.Applicability_Caveat
+              )}
+
+            </p>
+
+          `
+
+          :
+
+          ""
+      }
+
+
+      <div class="factor-card-footer">
+
+        <a
+          href="${evidenceLink}"
+        >
+          View figures and evidence
+        </a>
+
+        <span>
+
+          ${
+            evidenceIds.length
+          }
+
+          evidence
+
+        </span>
+
+      </div>
+
+
+    </article>
+
+  `;
+
+}
+
+
+
+/* =============================================
+   CASE STUDY
+============================================= */
+
+function renderCaseStudy(
+  caseItem
+) {
+
+  const sources =
+
+    DB.caseSources
+
+      .filter(
+        source =>
+          source.Case_ID ===
+          caseItem.Case_ID
+      )
+
+      .sort(
+        (
+          a,
+          b
+        ) =>
+
+          Number(
+            a.Sort_Order ||
+            0
+          )
+
+          -
+
+          Number(
+            b.Sort_Order ||
+            0
+          )
+      );
+
+
+
+  const sourceHtml =
+
+    sources.length
+
+      ?
+
+      sources
+
+        .map(
+          source => {
+
+            if (
+              meaningful(
+                source.Source_URL
+              )
+            ) {
+
+              return `
+
+                <a
+                  href="${esc(
+                    source.Source_URL
+                  )}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+
+                  ${esc(
+                    source.Label ||
+                    source.Source_Host ||
+                    "Source"
+                  )}
+
+                </a>
+
+              `;
+
+            }
+
+
+            return `
+
+              <span>
+
+                ${esc(
+                  source.Label ||
+                  source.Source_Host ||
+                  "Source"
+                )}
+
+              </span>
+
+            `;
+
+          }
+        )
+
+        .join(
+          '<span class="source-divider">·</span>'
+        )
+
+      :
+
+      `
+
+        <span>
+          No source linked
+        </span>
+
+      `;
+
+
+
+  return `
+
+    <article class="case-study-card">
+
+
+      <div class="case-study-top">
+
+        <span class="case-badge">
+          CASE
+        </span>
+
+        <span class="case-id">
+          ${esc(
+            caseItem.Case_ID
+          )}
+        </span>
+
+      </div>
+
+
+      <h3>
+
+        ${esc(
+          caseItem.Title ||
+          "Case study"
+        )}
+
+      </h3>
+
+
+      <div class="case-narrative">
+
+        ${formatCaseNarrative(
+          caseItem.Narrative
+        )}
+
+      </div>
+
+
+      <div class="case-sources">
+
+        ${sourceHtml}
+
+      </div>
+
+
+    </article>
+
+  `;
+
+}
+
+
+
+/* =============================================
+   FORMAT CASE NARRATIVE
+============================================= */
+
+function formatCaseNarrative(
+  narrative
+) {
+
+  if (
+    !meaningful(
+      narrative
+    )
+  ) {
+
+    return `
+
+      <p>
+        No case narrative available.
+      </p>
+
+    `;
+
+  }
+
+
+  return clean(
+    narrative
+  )
+
+    .split(
+      /\r?\n/
+    )
+
+    .filter(
+      line =>
+        clean(
+          line
+        )
+    )
+
+    .map(
+      line => {
+
+        const safe =
+          esc(
+            line
+          );
+
+
+        if (
+          line.length <
+          90
+
+          &&
+          (
+            line.includes(
+              ":"
+            )
+
+            ||
+
+            line.includes(
+              "–"
+            )
+          )
+        ) {
+
+          return `
+
+            <strong class="case-subheading">
+
+              ${safe}
+
+            </strong>
+
+          `;
+
+        }
+
+
+        return `
+
+          <p>
+            ${safe}
+          </p>
+
+        `;
+
+      }
+    )
+
+    .join("");
 
 }
 
@@ -2079,6 +2971,33 @@ function renderFactors() {
 ============================================= */
 
 function initEvidence() {
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const queryFromUrl =
+    clean(
+      params.get(
+        "q"
+      )
+    );
+
+
+  if (
+    queryFromUrl &&
+    $("evidenceSearch")
+  ) {
+
+    $("evidenceSearch")
+      .value =
+        queryFromUrl;
+
+  }
+
+
 
   const statuses = [
 
@@ -3097,6 +4016,22 @@ function logActivity(
 
   const activity =
     getActivity();
+
+
+  const last =
+    activity[0];
+
+
+  if (
+    last &&
+    last.category === category &&
+    last.action === action &&
+    last.description === description
+  ) {
+
+    return;
+
+  }
 
 
   activity.unshift({
